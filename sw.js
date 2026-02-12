@@ -1,5 +1,5 @@
 
-const CACHE_NAME = 'my-komposita-v1.4'; // Version incrémentée
+const CACHE_NAME = 'my-komposita-v1.6'; // Version incrémentée pour forcer le rafraîchissement
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',
@@ -8,6 +8,16 @@ const ASSETS_TO_CACHE = [
   '/types.ts',
   '/constants.tsx',
   '/metadata.json',
+  '/services/db.ts',
+  '/components/Layout.tsx',
+  '/components/LessonCard.tsx',
+  '/screens/AuthScreen.tsx',
+  '/screens/HomeScreen.tsx',
+  '/screens/LessonsScreen.tsx',
+  '/screens/LessonDetail.tsx',
+  '/screens/DashboardScreen.tsx',
+  '/screens/ProfileScreen.tsx',
+  '/screens/PlacementTest.tsx',
   'https://cdn.tailwindcss.com',
   'https://fonts.googleapis.com/css2?family=Fredoka:wght@300;400;500;600;700&display=swap',
   'https://cdn-icons-png.flaticon.com/512/197/197571.png'
@@ -16,6 +26,7 @@ const ASSETS_TO_CACHE = [
 self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
+      console.log('Mise en cache des ressources...');
       return cache.addAll(ASSETS_TO_CACHE);
     })
   );

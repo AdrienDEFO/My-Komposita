@@ -3,19 +3,28 @@ import { AppState, Level } from '../types.ts';
 
 const DB_KEY = 'my_komposita_pwa_db';
 
+const DEFAULT_STATE: AppState = {
+  user: null,
+  currentLevel: Level.A1
+};
+
 export const getDB = (): AppState => {
-  const data = localStorage.getItem(DB_KEY);
-  if (!data) {
-    return {
-      user: null,
-      currentLevel: Level.A1
-    };
+  try {
+    const data = localStorage.getItem(DB_KEY);
+    if (!data) return DEFAULT_STATE;
+    return JSON.parse(data);
+  } catch (error) {
+    console.error("Erreur de lecture DB:", error);
+    return DEFAULT_STATE;
   }
-  return JSON.parse(data);
 };
 
 export const saveDB = (state: AppState) => {
-  localStorage.setItem(DB_KEY, JSON.stringify(state));
+  try {
+    localStorage.setItem(DB_KEY, JSON.stringify(state));
+  } catch (error) {
+    console.error("Erreur de sauvegarde DB:", error);
+  }
 };
 
 export const clearDB = () => {

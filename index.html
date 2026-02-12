@@ -19,6 +19,15 @@
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
     <script>
+        // Détection d'erreurs fatales pour le debug
+        window.onerror = function(msg, url, line, col, error) {
+            console.error("ERREUR FATALE:", msg, "à", url, ":", line);
+            // On affiche l'erreur à l'écran si l'app ne charge pas du tout
+            if (document.getElementById('root').innerHTML === "") {
+                document.getElementById('root').innerHTML = `<div style="padding:20px;color:red;font-family:sans-serif;"><h2>Erreur au chargement</h2><p>${msg}</p></div>`;
+            }
+        };
+
         tailwind.config = {
             theme: {
                 extend: {
@@ -69,7 +78,6 @@
     <script>
         let refreshing = false;
         if ('serviceWorker' in navigator) {
-            // Détection du changement de contrôleur (nouveau SW activé)
             navigator.serviceWorker.addEventListener('controllerchange', () => {
                 if (!refreshing) {
                     window.location.reload();
@@ -78,24 +86,16 @@
             });
 
             window.addEventListener('load', () => {
-                // Utilisation d'un chemin relatif direct sans construction d'objet URL risquée
-                // On vérifie que le protocole est sécurisé (requis pour SW)
                 const isSecure = window.location.protocol === 'https:' || window.location.hostname === 'localhost';
-                
                 if (isSecure) {
                     navigator.serviceWorker.register('./sw.js')
                         .then(reg => {
-                            console.log('Service Worker prêt');
-                            setInterval(() => {
-                                reg.update().catch(() => {}); 
-                            }, 60000);
+                            console.log('Service Worker prêt (v1.6)');
+                            setInterval(() => { reg.update().catch(() => {}); }, 60000);
                         })
                         .catch(err => {
-                            // Erreur capturée sans interrompre l'exécution de l'app
-                            console.info('Service Worker non disponible dans cet environnement :', err.message);
+                            console.info('Service Worker indisponible :', err.message);
                         });
-                } else {
-                    console.info('Service Worker désactivé (Origine non sécurisée)');
                 }
             });
         }
