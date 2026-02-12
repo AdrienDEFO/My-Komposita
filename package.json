@@ -1,0 +1,13 @@
+
+{
+  "name": "my-komposita",
+  "version": "1.2.1",
+  "scripts": {
+    "start": "npx servor . index.html 8080 --browse",
+    "build": "mkdir -p dist && cp -r * dist/ || true"
+  },
+  "dependencies": {
+    "lucide-react": "^0.344.0"
+  },
+  "private": true
+}

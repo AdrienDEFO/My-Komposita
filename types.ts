@@ -1,0 +1,83 @@
+
+export enum Level {
+  A1 = 'A1',
+  A2 = 'A2',
+  B1 = 'B1',
+  B2 = 'B2',
+  C1 = 'C1'
+}
+
+export enum Language {
+  FR = 'Français',
+  EN = 'English',
+  DE = 'Deutsch'
+}
+
+export enum ExerciseType {
+  COMPOSITION = 'COMPOSITION',
+  DECOMPOSITION = 'DECOMPOSITION',
+  TRANSLATION = 'TRANSLATION',
+  LINKING_ELEMENT = 'LINKING_ELEMENT',
+  PARAPHRASE = 'PARAPHRASE'
+}
+
+export interface Exercise {
+  id: string;
+  type: ExerciseType;
+  question: string;
+  options?: string[];
+  correctAnswer: string;
+  explanation?: string;
+  isQRO?: boolean;
+}
+
+export interface Kompositum {
+  id: string;
+  word: string;
+  article: 'der' | 'die' | 'das';
+  translation: { [key: string]: string }; // Traduction multi-langue
+  components: {
+    word1: string;
+    word2: string;
+    linkingElement?: string;
+  };
+  declensions: {
+    nominative: string;
+    genitive: string;
+    dative: string;
+    accusative: string;
+  };
+  category: string;
+  level: Level;
+  synonyms?: string[];
+}
+
+export interface Lesson {
+  id: number;
+  level: Level;
+  title: string;
+  targetWords: Kompositum[];
+  exercises: Exercise[];
+  isLocked: boolean;
+}
+
+export interface User {
+  id: string;
+  username: string;
+  email: string;
+  level: Level;
+  language: Language; // Langue de l'UI
+  points: number;
+  lives: number;
+  lastLifeUpdate: number;
+  completedLessons: number[];
+  unlockedBatches: number;
+  dailyStreak: number;
+  lastDailyChallenge: number;
+  learnedWords: string[];
+}
+
+export interface AppState {
+  user: User | null;
+  currentLevel: Level;
+}
