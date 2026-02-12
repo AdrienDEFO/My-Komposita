@@ -17,18 +17,6 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
-    <script type="importmap">
-    {
-      "imports": {
-        "react": "https://esm.sh/react@18.2.0",
-        "react/": "https://esm.sh/react@18.2.0/",
-        "react-dom": "https://esm.sh/react-dom@18.2.0",
-        "react-dom/": "https://esm.sh/react-dom@18.2.0/",
-        "lucide-react": "https://esm.sh/lucide-react@0.344.0?external=react,react-dom"
-      }
-    }
-    </script>
-
     <script>
         window.hardResetApp = async function() {
             if (window.confirm("Réinitialiser l'application ? Cela effacera le cache et les erreurs de Service Worker.")) {
@@ -85,13 +73,11 @@
         .btn-bounce:active { transform: scale(0.95); }
         .hide-scrollbar::-webkit-scrollbar { display: none; }
     </style>
-<link rel="stylesheet" href="/index.css">
 </head>
 <body class="bg-slate-50 text-slate-900">
     <div id="root"></div>
     
-    <script type="module" src="https://esm.sh/run"></script>
-    <script type="text/tsx" src="index.tsx"></script>
+    <script type="module" src="/index.tsx"></script>
 
     <script>
         // Enregistrement simplifié du Service Worker pour éviter les erreurs d'URL invalide
@@ -115,6 +101,5 @@
             });
         }
     </script>
-<script type="module" src="/index.tsx"></script>
 </body>
 </html>
