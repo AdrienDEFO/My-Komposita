@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <link rel="manifest" href="metadata.json">
+    
+    <meta name="theme-color" content="#2563eb">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="My Komposita">
+    <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/197/197571.png">
+    
+    <title>My Komposita</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <script type="importmap">
+    {
+      "imports": {
+        "react": "https://esm.sh/react@18.2.0",
+        "react/": "https://esm.sh/react@18.2.0/",
+        "react-dom": "https://esm.sh/react-dom@18.2.0",
+        "react-dom/": "https://esm.sh/react-dom@18.2.0/",
+        "lucide-react": "https://esm.sh/lucide-react@0.344.0?external=react,react-dom"
+      }
+    }
+    </script>
+
+    <script>
+        window.hardResetApp = async function() {
+            if (window.confirm("Réinitialiser l'application ? Cela effacera le cache et les erreurs de Service Worker.")) {
+                try {
+                    const names = await caches.keys();
+                    await Promise.all(names.map(name => caches.delete(name)));
+                    const regs = await navigator.serviceWorker.getRegistrations();
+                    await Promise.all(regs.map(reg => reg.unregister()));
+                    window.location.reload(true);
+                } catch (e) {
+                    window.location.reload(true);
+                }
+            }
+        };
+
+        window.onerror = function(msg, url, line) {
+            console.error("ERREUR FATALE:", msg, "at", url, ":", line);
+            const root = document.getElementById('root');
+            if (root && root.innerHTML.trim() === "") {
+                root.innerHTML = `<div style="padding:40px;text-align:center;font-family:sans-serif;height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;background:#f8fafc">
+                    <div style="background:white;padding:30px;border-radius:30px;shadow:0 10px 25px rgba(0,0,0,0.05);max-width:320px">
+                        <h2 style="color:#ef4444;font-weight:900;margin-bottom:10px">Oups !</h2>
+                        <p style="color:#64748b;font-size:14px;margin-bottom:20px">L'application a rencontré un problème au démarrage.</p>
+                        <button onclick="window.hardResetApp()" style="background:#2563eb;color:white;border:none;padding:15px 30px;border-radius:15px;font-weight:bold;cursor:pointer;width:100%">Réparer et Recharger</button>
+                    </div>
+                </div>`;
+            }
+        };
+
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Fredoka', 'sans-serif'] },
+                }
+            }
+        }
+    </script>
+
+    <style>
+        :root {
+            --safe-area-inset-top: env(safe-area-inset-top, 0px);
+            --safe-area-inset-bottom: env(safe-area-inset-bottom, 0px);
+        }
+        body {
+            font-family: 'Fredoka', sans-serif;
+            background-color: #f8fafc;
+            padding-top: var(--safe-area-inset-top);
+            padding-bottom: var(--safe-area-inset-bottom);
+            margin: 0;
+            overflow-x: hidden;
+            -webkit-tap-highlight-color: transparent;
+        }
+        #root { min-height: 100vh; }
+        .btn-bounce:active { transform: scale(0.95); }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+    </style>
+<link rel="stylesheet" href="/index.css">
+</head>
+<body class="bg-slate-50 text-slate-900">
+    <div id="root"></div>
+    
+    <script type="module" src="https://esm.sh/run"></script>
+    <script type="text/tsx" src="index.tsx"></script>
+
+    <script>
+        // Enregistrement simplifié du Service Worker pour éviter les erreurs d'URL invalide
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js')
+                    .then(reg => {
+                        console.log('MyKomposita SW: Enregistré');
+                        reg.onupdatefound = () => {
+                            const installingWorker = reg.installing;
+                            installingWorker.onstatechange = () => {
+                                if (installingWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                                    console.log('Nouvelle version disponible');
+                                }
+                            };
+                        };
+                    })
+                    .catch(err => {
+                        console.warn('MyKomposita SW: Erreur non critique', err.message);
+                    });
+            });
+        }
+    </script>
+<script type="module" src="/index.tsx"></script>
+</body>
+</html>
