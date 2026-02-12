@@ -22,11 +22,25 @@
         // Détection d'erreurs fatales pour le debug
         window.onerror = function(msg, url, line, col, error) {
             console.error("ERREUR FATALE:", msg, "à", url, ":", line);
-            // On affiche l'erreur à l'écran si l'app ne charge pas du tout
-            if (document.getElementById('root').innerHTML === "") {
-                document.getElementById('root').innerHTML = `<div style="padding:20px;color:red;font-family:sans-serif;"><h2>Erreur au chargement</h2><p>${msg}</p></div>`;
+            const root = document.getElementById('root');
+            if (root && root.innerHTML.trim() === "") {
+                root.innerHTML = `<div style="padding:40px;text-align:center;color:#ef4444;font-family:sans-serif;">
+                    <h2 style="font-weight:900">Oups !</h2>
+                    <p style="color:#64748b">L'application n'a pas pu démarrer.</p>
+                    <code style="background:#fee2e2;padding:4px 8px;border-radius:4px;font-size:12px">${msg}</code>
+                    <br><br>
+                    <button onclick="window.location.reload()" style="background:#2563eb;color:white;border:none;padding:12px 24px;border-radius:12px;font-weight:bold">Réessayer</button>
+                </div>`;
             }
         };
+
+        // Sécurité si rien ne se passe après 5 secondes
+        setTimeout(() => {
+            const root = document.getElementById('root');
+            if (root && root.innerHTML.trim() === "") {
+                console.warn("L'application met trop de temps à charger...");
+            }
+        }, 5000);
 
         tailwind.config = {
             theme: {
@@ -88,13 +102,14 @@
             window.addEventListener('load', () => {
                 const isSecure = window.location.protocol === 'https:' || window.location.hostname === 'localhost';
                 if (isSecure) {
+                    // Utilisation d'un chemin relatif pour sw.js
                     navigator.serviceWorker.register('./sw.js')
                         .then(reg => {
-                            console.log('Service Worker prêt (v1.6)');
+                            console.log('Service Worker enregistré (v1.7)');
                             setInterval(() => { reg.update().catch(() => {}); }, 60000);
                         })
                         .catch(err => {
-                            console.info('Service Worker indisponible :', err.message);
+                            console.info('Service Worker non disponible :', err.message);
                         });
                 }
             });
