@@ -1,9 +1,12 @@
 
-const CACHE_NAME = 'my-komposita-v1.2';
+const CACHE_NAME = 'my-komposita-v1.3';
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',
   '/index.tsx',
+  '/App.tsx',
+  '/types.ts',
+  '/constants.tsx',
   '/metadata.json',
   'https://cdn.tailwindcss.com',
   'https://fonts.googleapis.com/css2?family=Fredoka:wght@300;400;500;600;700&display=swap',

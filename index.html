@@ -6,19 +6,30 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <link rel="manifest" href="metadata.json">
     
-    <!-- Meta tags pour Android (Chrome) -->
     <meta name="theme-color" content="#2563eb">
     <meta name="mobile-web-app-capable" content="yes">
-    
-    <!-- Meta tags pour iOS (Safari) -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="My Komposita">
     <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/197/197571.png">
     
     <title>My Komposita</title>
+    
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Fredoka', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+
     <style>
         :root {
             --safe-area-inset-top: env(safe-area-inset-top, 0px);
@@ -26,57 +37,42 @@
         }
         body {
             font-family: 'Fredoka', sans-serif;
-            -webkit-tap-highlight-color: transparent;
-            user-select: none;
-            overscroll-behavior-y: contain;
             background-color: #f8fafc;
             padding-top: var(--safe-area-inset-top);
             padding-bottom: var(--safe-area-inset-bottom);
+            margin: 0;
         }
+        #root { min-height: 100vh; }
         .btn-bounce:active { transform: scale(0.95); }
-        .hide-scrollbar::-webkit-scrollbar { display: none; }
-        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-        
-        @keyframes slideUp {
-            from { transform: translateY(20px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
-        }
-        .animate-slide-up { animation: slideUp 0.4s ease-out forwards; }
-
-        /* Animation pour l'invite d'installation */
-        @keyframes bounceIn {
-            0% { transform: scale(0.3); opacity: 0; }
-            50% { transform: scale(1.05); opacity: 1; }
-            70% { transform: scale(0.9); }
-            100% { transform: scale(1); }
-        }
-        .animate-bounce-in { animation: bounceIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
     </style>
+
     <script type="importmap">
 {
   "imports": {
     "react": "https://esm.sh/react@18.2.0",
-    "react/": "https://esm.sh/react@18.2.0/",
     "react-dom": "https://esm.sh/react-dom@18.2.0",
-    "react-dom/": "https://esm.sh/react-dom@18.2.0/",
     "lucide-react": "https://esm.sh/lucide-react@0.344.0?external=react,react-dom",
-    "@/": "./"
+    "react-dom/": "https://esm.sh/react-dom@^19.2.4/",
+    "react/": "https://esm.sh/react@^19.2.4/"
   }
 }
 </script>
 </head>
 <body class="bg-slate-50 text-slate-900">
     <div id="root"></div>
-    <script type="module" src="index.tsx"></script>
+    
+    <!-- Moteur d'exécution pour compiler le TSX en temps réel -->
+    <script type="module" src="https://esm.sh/run"></script>
+    
+    <!-- On définit le script comme text/tsx pour qu'il soit pris en charge par le chargeur -->
+    <script type="text/tsx" src="index.tsx"></script>
+
     <script>
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('./sw.js')
-                    .then(reg => {
-                        console.log('SW enregistré !');
-                        reg.update(); // Forcer la mise à jour
-                    })
-                    .catch(err => console.log('Erreur SW', err));
+                    .then(reg => console.log('SW prêt'))
+                    .catch(err => console.log('SW erreur', err));
             });
         }
     </script>

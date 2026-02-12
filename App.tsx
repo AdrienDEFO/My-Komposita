@@ -1,15 +1,15 @@
 
 import React, { useState, useEffect } from 'react';
-import { Level, User, Lesson } from './types';
-import { getDB, saveDB, clearDB } from './services/db';
-import AuthScreen from './screens/AuthScreen';
-import HomeScreen from './screens/HomeScreen';
-import LessonsScreen from './screens/LessonsScreen';
-import DashboardScreen from './screens/DashboardScreen';
-import ProfileScreen from './screens/ProfileScreen';
-import LessonDetail from './screens/LessonDetail';
-import PlacementTest from './screens/PlacementTest';
-import Layout from './components/Layout';
+import { Level, User, Lesson } from './types.ts';
+import { getDB, saveDB, clearDB } from './services/db.ts';
+import AuthScreen from './screens/AuthScreen.tsx';
+import HomeScreen from './screens/HomeScreen.tsx';
+import LessonsScreen from './screens/LessonsScreen.tsx';
+import DashboardScreen from './screens/DashboardScreen.tsx';
+import ProfileScreen from './screens/ProfileScreen.tsx';
+import LessonDetail from './screens/LessonDetail.tsx';
+import PlacementTest from './screens/PlacementTest.tsx';
+import Layout from './components/Layout.tsx';
 
 export default function App() {
   const [activeTab, setActiveTab] = useState('home');
