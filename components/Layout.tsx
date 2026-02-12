@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Home, Book, Award, User, Heart, Zap } from 'lucide-react';
-import { User as UserType } from '../types';
+import { User as UserType } from '../types.ts';
 
 interface LayoutProps {
   children: React.ReactNode;

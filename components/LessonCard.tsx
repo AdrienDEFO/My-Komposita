@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Lock, CheckCircle, ChevronRight } from 'lucide-react';
-import { Lesson, Language, User } from '../types';
+import { Lesson, Language, User } from '../types.ts';
 
 interface LessonCardProps {
   lesson: Lesson;

@@ -1,5 +1,5 @@
 
-import { AppState, Level } from '../types';
+import { AppState, Level } from '../types.ts';
 
 const DB_KEY = 'my_komposita_pwa_db';
 

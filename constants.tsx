@@ -1,5 +1,5 @@
 
-import { Level, Kompositum, Lesson, ExerciseType, Language } from './types';
+import { Level, Kompositum, Lesson, ExerciseType, Language } from './types.ts';
 
 export const POINTS_PER_BATCH = 100;
 export const MAX_LIVES = 5;

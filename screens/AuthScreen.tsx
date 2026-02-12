@@ -1,7 +1,7 @@
 
 import React, { useState } from 'react';
 import { LogIn, UserPlus, Mail, Lock, User as UserIcon } from 'lucide-react';
-import { User, Level, Language } from '../types';
+import { User, Level, Language } from '../types.ts';
 
 interface AuthScreenProps {
   onLogin: (user: User) => void;

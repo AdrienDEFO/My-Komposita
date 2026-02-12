@@ -1,9 +1,9 @@
 
 import React, { useState } from 'react';
 import { LogOut, Info, ChevronRight, UserCircle, Globe, Languages, Mail, Phone, ChevronLeft } from 'lucide-react';
-import { getDB, saveDB } from '../services/db';
-import { CONTACT } from '../constants';
-import { Language, User } from '../types';
+import { getDB, saveDB } from '../services/db.ts';
+import { CONTACT } from '../constants.tsx';
+import { Language, User } from '../types.ts';
 
 interface ProfileScreenProps {
   onLogout: () => void;
