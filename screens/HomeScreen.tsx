@@ -1,6 +1,5 @@
-
 import React, { useState, useMemo, useEffect } from 'react';
-import { Flame, Trophy, Calendar, Volume2, Search, X, ChevronRight, BookOpen, Download, WifiOff, Sparkles, Share, PlusSquare } from 'lucide-react';
+import { Flame, Trophy, Volume2, Search, X, BookOpen, Share, PlusSquare, Download, WifiOff, Sparkles, Check } from 'lucide-react';
 import { MOCK_KOMPOSITA, TRANSLATIONS } from '../constants.tsx';
 import { Language, User } from '../types.ts';
 
@@ -12,58 +11,62 @@ interface HomeScreenProps {
 const HomeScreen: React.FC<HomeScreenProps> = ({ onStartPlacement, user }) => {
   const [showDict, setShowDict] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
-  const [sortAsc, setSortAsc] = useState(true);
-  
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
-  const [showInstallModal, setShowInstallModal] = useState(false);
-  const [isIOS, setIsIOS] = useState(false);
-  const [isStandalone, setIsStandalone] = useState(false);
   const [isOffline, setIsOffline] = useState(!navigator.onLine);
+  const [isStandalone, setIsStandalone] = useState(false);
+  const [installStatus, setInstallStatus] = useState<'idle' | 'installing' | 'done'>('idle');
   
-  const [playingId, setPlayingId] = useState<string | null>(null);
   const uiLang = user?.language || Language.FR;
 
   useEffect(() => {
-    const standalone = window.matchMedia('(display-mode: standalone)').matches || (window.navigator as any).standalone === true;
-    setIsStandalone(standalone);
-
-    const isIosDevice = /iPad|iPhone|iPod/.test(navigator.userAgent) && !(window as any).MSStream;
-    setIsIOS(isIosDevice);
+    const checkStandalone = () => {
+      const isS = window.matchMedia('(display-mode: standalone)').matches || (window.navigator as any).standalone === true;
+      setIsStandalone(isS);
+    };
+    
+    checkStandalone();
 
     const handleBeforeInstallPrompt = (e: Event) => {
       e.preventDefault();
       setDeferredPrompt(e);
-      if (!standalone) {
-        setTimeout(() => setShowInstallModal(true), 3000);
-      }
+      console.log('PWA: Ready for installation');
     };
 
-    if (isIosDevice && !standalone) {
-      setTimeout(() => setShowInstallModal(true), 5000);
-    }
-
     const handleConnectionChange = () => setIsOffline(!navigator.onLine);
+    const handleAppInstalled = () => {
+      setInstallStatus('done');
+      setIsStandalone(true);
+      setDeferredPrompt(null);
+    };
 
     window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+    window.addEventListener('appinstalled', handleAppInstalled);
     window.addEventListener('online', handleConnectionChange);
     window.addEventListener('offline', handleConnectionChange);
 
     return () => {
       window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+      window.removeEventListener('appinstalled', handleAppInstalled);
       window.removeEventListener('online', handleConnectionChange);
       window.removeEventListener('offline', handleConnectionChange);
     };
   }, []);
 
-  const handleInstallAction = async () => {
-    if (deferredPrompt) {
-      deferredPrompt.prompt();
-      const { outcome } = await deferredPrompt.userChoice;
-      if (outcome === 'accepted') {
-        setDeferredPrompt(null);
-        setShowInstallModal(false);
-      }
+  const handleInstall = async () => {
+    if (!deferredPrompt) return;
+    
+    setInstallStatus('installing');
+    deferredPrompt.prompt();
+    const { outcome } = await deferredPrompt.userChoice;
+    
+    if (outcome === 'accepted') {
+      console.log('User accepted the install prompt');
+      setInstallStatus('done');
+    } else {
+      console.log('User dismissed the install prompt');
+      setInstallStatus('idle');
     }
+    setDeferredPrompt(null);
   };
 
   const learnedWordsList = useMemo(() => 
@@ -71,75 +74,150 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ onStartPlacement, user }) => {
     [user?.learnedWords]
   );
 
-  const filteredWords = useMemo(() => {
-    let result = learnedWordsList.filter(w => 
-      w.word.toLowerCase().includes(searchTerm.toLowerCase()) || 
-      w.translation[uiLang]?.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-    return result.sort((a, b) => sortAsc ? a.word.localeCompare(b.word) : b.word.localeCompare(a.word));
-  }, [learnedWordsList, searchTerm, sortAsc, uiLang]);
-
-  const speak = (text: string, wordId: string) => {
+  const speak = (text: string) => {
     window.speechSynthesis.cancel();
-    setPlayingId(wordId);
     const utterance = new SpeechSynthesisUtterance(text);
     utterance.lang = 'de-DE';
-    utterance.onend = () => setPlayingId(null);
     window.speechSynthesis.speak(utterance);
   };
 
   return (
-    <div className="p-6 space-y-8 animate-slide-up relative">
-      {showInstallModal && !isStandalone && (
-        <div className="fixed inset-0 z-[100] flex items-end justify-center p-6 bg-slate-900/40 backdrop-blur-sm">
-          <div className="w-full max-w-sm bg-white rounded-[2.5rem] p-8 shadow-2xl animate-bounce-in">
-            <div className="flex justify-between items-start mb-6">
-              <div className="w-16 h-16 bg-blue-600 rounded-3xl flex items-center justify-center text-white text-2xl font-black shadow-xl">MK</div>
-              <button onClick={() => setShowInstallModal(false)} className="p-2 bg-slate-100 rounded-full"><X className="w-5 h-5 text-slate-400" /></button>
-            </div>
-            <h3 className="text-2xl font-black text-slate-800 mb-2">Installer l'app ?</h3>
-            <p className="text-slate-500 font-medium mb-8">
-              {isIOS ? "Partager > Sur l'écran d'accueil" : "Installez l'app pour apprendre hors ligne !"}
+    <div className="p-6 space-y-8 animate-slide-up pb-32">
+      {/* Badge Offline */}
+      {isOffline && (
+        <div className="bg-orange-500 text-white p-3 rounded-2xl flex items-center justify-center gap-2 text-[10px] font-black animate-pulse shadow-lg shadow-orange-200">
+          <WifiOff className="w-3 h-3" /> MODE HORS LIGNE ACTIVÉ
+        </div>
+      )}
+
+      <header className="flex justify-between items-start">
+        <div>
+          <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">{TRANSLATIONS.welcome[uiLang]}</p>
+          <h1 className="text-4xl font-black text-slate-900">{user?.username} !</h1>
+        </div>
+        {!isStandalone && (
+           <div className="bg-blue-100 p-2 rounded-2xl">
+             <Sparkles className="w-5 h-5 text-blue-600 animate-pulse" />
+           </div>
+        )}
+      </header>
+
+      {/* Proposer l'installation PWA */}
+      {deferredPrompt && !isStandalone && (
+        <div className="bg-gradient-to-br from-blue-600 to-blue-700 p-6 rounded-[2.5rem] text-white shadow-xl shadow-blue-200 relative overflow-hidden">
+          <div className="absolute top-0 right-0 p-4 opacity-10">
+             <Download className="w-24 h-24" />
+          </div>
+          <div className="relative z-10">
+            <h3 className="font-black text-xl mb-1">Installer My Komposita</h3>
+            <p className="text-sm text-blue-100 font-medium mb-6 leading-tight">
+              Ajoutez l'application à votre écran d'accueil pour apprendre sans connexion internet.
             </p>
-            {isIOS ? (
-              <div className="space-y-3">
-                <div className="flex items-center gap-3 p-3 bg-blue-50 rounded-xl text-blue-700 font-bold"><Share /> 1. Partager</div>
-                <div className="flex items-center gap-3 p-3 bg-blue-50 rounded-xl text-blue-700 font-bold"><PlusSquare /> 2. Écran d'accueil</div>
-              </div>
-            ) : (
-              <button onClick={handleInstallAction} className="w-full bg-blue-600 text-white py-4 rounded-2xl font-black shadow-lg">INSTALLER</button>
-            )}
+            <button 
+              onClick={handleInstall}
+              disabled={installStatus === 'installing'}
+              className="bg-white text-blue-600 px-8 py-3.5 rounded-2xl font-black text-sm shadow-lg btn-bounce flex items-center gap-2"
+            >
+              {installStatus === 'installing' ? 'Installation...' : installStatus === 'done' ? <><Check className="w-4 h-4" /> INSTALLÉ</> : <><Download className="w-4 h-4" /> INSTALLER MAINTENANT</>}
+            </button>
           </div>
         </div>
       )}
-      <header>
-        <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">{TRANSLATIONS.welcome[uiLang]}</p>
-        <h1 className="text-4xl font-black text-slate-900">{user?.username} !</h1>
-      </header>
+
       <div className="grid grid-cols-2 gap-4">
-        <div className="bg-white p-5 rounded-3xl border border-slate-100"><Flame className="w-4 h-4 text-orange-500 mb-2" /><p className="text-2xl font-black">{user?.dailyStreak || 0} J</p></div>
-        <div className="bg-white p-5 rounded-3xl border border-slate-100"><Trophy className="w-4 h-4 text-blue-600 mb-2" /><p className="text-2xl font-black">{user?.level}</p></div>
+        <div className="bg-white p-5 rounded-3xl border border-slate-100 shadow-sm flex flex-col justify-center">
+          <div className="flex items-center gap-2 mb-2">
+            <div className="w-6 h-6 bg-orange-100 rounded-lg flex items-center justify-center">
+              <Flame className="w-3.5 h-3.5 text-orange-500" />
+            </div>
+            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-tight">Série</p>
+          </div>
+          <p className="text-2xl font-black text-slate-800">{user?.dailyStreak || 0} JOURS</p>
+        </div>
+        <div className="bg-white p-5 rounded-3xl border border-slate-100 shadow-sm flex flex-col justify-center">
+          <div className="flex items-center gap-2 mb-2">
+            <div className="w-6 h-6 bg-blue-100 rounded-lg flex items-center justify-center">
+              <Trophy className="w-3.5 h-3.5 text-blue-600" />
+            </div>
+            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-tight">Niveau</p>
+          </div>
+          <p className="text-2xl font-black text-slate-800">{user?.level}</p>
+        </div>
       </div>
-      <button onClick={onStartPlacement} className="w-full bg-blue-600 p-6 rounded-[2rem] text-white text-left shadow-xl shadow-blue-200">
-        <h3 className="text-xl font-black">Défi du jour</h3>
-        <p className="text-blue-100 opacity-80 mb-4">+50 XP</p>
-        <span className="bg-white/20 px-4 py-2 rounded-xl font-bold">Commencer</span>
+
+      <button onClick={onStartPlacement} className="w-full bg-white p-8 rounded-[2.5rem] border-4 border-blue-50 text-left shadow-sm relative overflow-hidden group btn-bounce">
+        <div className="absolute top-0 right-0 p-8 opacity-5 transform translate-x-4 -translate-y-4 group-hover:scale-110 transition-transform">
+          <BookOpen className="w-32 h-32 text-blue-600" />
+        </div>
+        <h3 className="text-2xl font-black text-slate-800 mb-1">Défi du jour</h3>
+        <p className="text-slate-400 font-bold mb-6">+50 XP • Maîtrisez de nouveaux mots</p>
+        <span className="bg-blue-600 text-white px-8 py-4 rounded-2xl font-black text-sm shadow-lg shadow-blue-100">COMMENCER</span>
       </button>
-      <div className="flex justify-between items-center px-1">
-          <h2 className="text-xl font-black text-slate-800">Maîtrisés ({learnedWordsList.length})</h2>
-          <button onClick={() => setShowDict(true)} className="text-blue-600 font-bold">Voir tout</button>
+
+      <div>
+          <div className="flex justify-between items-center px-1 mb-4">
+              <h2 className="text-xl font-black text-slate-800">Lexique acquis ({learnedWordsList.length})</h2>
+              <button onClick={() => setShowDict(true)} className="text-blue-600 font-black text-xs uppercase tracking-widest">Tout voir</button>
+          </div>
+          
+          <div className="grid grid-cols-1 gap-3">
+            {learnedWordsList.slice(0, 3).map(word => (
+              <div key={word.id} className="bg-white p-4 rounded-2xl flex justify-between items-center border border-slate-50 shadow-sm hover:border-blue-100 transition-colors">
+                <div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-[10px] font-black text-blue-400 uppercase">{word.article}</span>
+                    <p className="font-black text-slate-800 text-lg">{word.word}</p>
+                  </div>
+                  <p className="text-[11px] text-slate-400 font-bold uppercase tracking-tight">{word.translation[uiLang]}</p>
+                </div>
+                <button 
+                  onClick={() => speak(word.word)} 
+                  className="p-4 bg-slate-50 rounded-2xl text-slate-400 hover:bg-blue-600 hover:text-white transition-all btn-bounce"
+                >
+                  <Volume2 className="w-5 h-5" />
+                </button>
+              </div>
+            ))}
+            {learnedWordsList.length === 0 && (
+              <div className="text-center py-16 bg-white rounded-[2.5rem] border-2 border-dashed border-slate-100">
+                <div className="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Sparkles className="w-6 h-6 text-slate-200" />
+                </div>
+                <p className="text-slate-300 font-black italic">Commencez une leçon pour enrichir votre lexique !</p>
+              </div>
+            )}
+          </div>
       </div>
+
       {showDict && (
-        <div className="fixed inset-0 z-50 bg-slate-50 flex flex-col p-6 overflow-y-auto">
-           <div className="flex justify-between items-center mb-6">
-              <h2 className="text-2xl font-black">Dictionnaire</h2>
-              <button onClick={() => setShowDict(false)} className="p-2 bg-white rounded-full"><X /></button>
+        <div className="fixed inset-0 z-[100] bg-slate-50 flex flex-col animate-slide-up">
+           <header className="p-6 bg-white border-b flex justify-between items-center">
+              <h2 className="text-2xl font-black text-slate-900">Mon Lexique</h2>
+              <button onClick={() => setShowDict(false)} className="p-3 bg-slate-100 rounded-2xl text-slate-500 btn-bounce"><X className="w-6 h-6" /></button>
+           </header>
+           <div className="p-4 border-b bg-white">
+              <div className="relative">
+                <Search className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-300 w-5 h-5" />
+                <input 
+                  type="text" 
+                  placeholder="Rechercher un mot..."
+                  className="w-full pl-14 pr-4 py-5 bg-slate-50 rounded-[1.5rem] border-none focus:ring-2 focus:ring-blue-500 font-bold text-slate-700"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                />
+              </div>
            </div>
-           <div className="space-y-4 pb-20">
-              {learnedWordsList.map(word => (
-                <div key={word.id} className="bg-white p-4 rounded-2xl flex justify-between items-center border border-slate-100 shadow-sm">
-                  <div><p className="font-black">{word.word}</p><p className="text-xs text-slate-400">{word.translation[uiLang]}</p></div>
-                  <button onClick={() => speak(word.word, word.id)} className="p-2 bg-blue-50 rounded-lg text-blue-600"><Volume2 className="w-4 h-4" /></button>
+           <div className="flex-1 overflow-y-auto p-6 space-y-3 hide-scrollbar">
+              {learnedWordsList.filter(w => w.word.toLowerCase().includes(searchTerm.toLowerCase())).map(word => (
+                <div key={word.id} className="bg-white p-5 rounded-2xl flex justify-between items-center border border-slate-100 shadow-sm">
+                  <div>
+                    <div className="flex items-center gap-2">
+                       <span className="text-[10px] font-black text-blue-400 uppercase">{word.article}</span>
+                       <p className="font-black text-slate-800 text-lg">{word.word}</p>
+                    </div>
+                    <p className="text-xs text-slate-400 font-black uppercase tracking-tight">{word.translation[uiLang]}</p>
+                  </div>
+                  <button onClick={() => speak(word.word)} className="p-4 bg-blue-50 rounded-2xl text-blue-600 btn-bounce"><Volume2 className="w-5 h-5" /></button>
                 </div>
               ))}
            </div>
