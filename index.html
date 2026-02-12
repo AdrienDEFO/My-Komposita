@@ -44,6 +44,8 @@
         }
         #root { min-height: 100vh; }
         .btn-bounce:active { transform: scale(0.95); }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     </style>
 
     <script type="importmap">
@@ -61,18 +63,40 @@
 <body class="bg-slate-50 text-slate-900">
     <div id="root"></div>
     
-    <!-- Moteur d'exécution pour compiler le TSX en temps réel -->
     <script type="module" src="https://esm.sh/run"></script>
-    
-    <!-- Script principal -->
     <script type="text/tsx" src="index.tsx"></script>
 
     <script>
+        let refreshing = false;
         if ('serviceWorker' in navigator) {
+            // Détection du changement de contrôleur (nouveau SW activé)
+            navigator.serviceWorker.addEventListener('controllerchange', () => {
+                if (!refreshing) {
+                    window.location.reload();
+                    refreshing = true;
+                }
+            });
+
             window.addEventListener('load', () => {
-                navigator.serviceWorker.register('./sw.js')
-                    .then(reg => console.log('SW prêt'))
-                    .catch(err => console.log('SW erreur', err));
+                // Utilisation d'un chemin relatif direct sans construction d'objet URL risquée
+                // On vérifie que le protocole est sécurisé (requis pour SW)
+                const isSecure = window.location.protocol === 'https:' || window.location.hostname === 'localhost';
+                
+                if (isSecure) {
+                    navigator.serviceWorker.register('./sw.js')
+                        .then(reg => {
+                            console.log('Service Worker prêt');
+                            setInterval(() => {
+                                reg.update().catch(() => {}); 
+                            }, 60000);
+                        })
+                        .catch(err => {
+                            // Erreur capturée sans interrompre l'exécution de l'app
+                            console.info('Service Worker non disponible dans cet environnement :', err.message);
+                        });
+                } else {
+                    console.info('Service Worker désactivé (Origine non sécurisée)');
+                }
             });
         }
     </script>

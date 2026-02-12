@@ -1,5 +1,5 @@
 
-const CACHE_NAME = 'my-komposita-v1.3';
+const CACHE_NAME = 'my-komposita-v1.4'; // Version incrémentée
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',
