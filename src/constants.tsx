@@ -172,22 +172,69 @@ export const MOCK_KOMPOSITA: Kompositum[] = [
     components: { word1: 'zusammen', word2: 'Arbeit' },
     declensions: { nominative: 'die Zusammenarbeit', genitive: 'der Zusammenarbeit', dative: 'der Zusammenarbeit', accusative: 'die Zusammenarbeit' },
     category: 'Travail'
+  },
+  // C1
+  {
+    id: '21', word: 'Wirtschaftswachstum', article: 'das', level: Level.C1,
+    translation: { [Language.FR]: 'Croissance économique', [Language.EN]: 'Economic growth', [Language.DE]: 'Wirtschaftswachstum' },
+    components: { word1: 'Wirtschaft', word2: 'Wachstum', linkingElement: 's' },
+    declensions: { nominative: 'das Wirtschaftswachstum', genitive: 'des Wirtschaftswachstums', dative: 'dem Wirtschaftswachstum', accusative: 'das Wirtschaftswachstum' },
+    category: 'Économie'
+  },
+  {
+    id: '22', word: 'Auseinandersetzung', article: 'die', level: Level.C1,
+    translation: { [Language.FR]: 'Confrontation / Débat', [Language.EN]: 'Confrontation', [Language.DE]: 'Auseinandersetzung' },
+    components: { word1: 'auseinander', word2: 'Setzung' },
+    declensions: { nominative: 'die Auseinandersetzung', genitive: 'der Auseinandersetzung', dative: 'der Auseinandersetzung', accusative: 'die Auseinandersetzung' },
+    category: 'Abstrait'
+  },
+  {
+    id: '23', word: 'Gerechtigkeitsempfinden', article: 'das', level: Level.C1,
+    translation: { [Language.FR]: 'Sens de la justice', [Language.EN]: 'Sense of justice', [Language.DE]: 'Gerechtigkeitsempfinden' },
+    components: { word1: 'Gerechtigkeit', word2: 'Empfinden', linkingElement: 's' },
+    declensions: { nominative: 'das Gerechtigkeitsempfinden', genitive: 'des Gerechtigkeitsempfindens', dative: 'dem Gerechtigkeitsempfinden', accusative: 'das Gerechtigkeitsempfinden' },
+    category: 'Psychologie'
+  },
+  {
+    id: '24', word: 'Selbstverwirklichung', article: 'die', level: Level.C1,
+    translation: { [Language.FR]: 'Épanouissement personnel', [Language.EN]: 'Self-fulfillment', [Language.DE]: 'Selbstverwirklichung' },
+    components: { word1: 'Selbst', word2: 'Verwirklichung' },
+    declensions: { nominative: 'die Selbstverwirklichung', genitive: 'der Selbstverwirklichung', dative: 'der Selbstverwirklichung', accusative: 'die Selbstverwirklichung' },
+    category: 'Abstrait'
+  },
+  {
+    id: '25', word: 'Entscheidungsfreiheit', article: 'die', level: Level.C1,
+    translation: { [Language.FR]: 'Liberté de décision', [Language.EN]: 'Freedom of choice', [Language.DE]: 'Entscheidungsfreiheit' },
+    components: { word1: 'Entscheidung', word2: 'Freiheit', linkingElement: 's' },
+    declensions: { nominative: 'die Entscheidungsfreiheit', genitive: 'der Entscheidungsfreiheit', dative: 'der Entscheidungsfreiheit', accusative: 'die Entscheidungsfreiheit' },
+    category: 'Philosophie'
   }
 ];
 
 export const generatePlacementTest = (): Exercise[] => {
   const testExercises: Exercise[] = [];
-  const levels = [Level.A1, Level.A2, Level.B1, Level.B2];
+  const levels = [Level.A1, Level.A2, Level.B1, Level.B2, Level.C1];
   
   levels.forEach(lvl => {
     const lvlWords = MOCK_KOMPOSITA.filter(w => w.level === lvl);
-    // Pick 3 random words for each level
-    const selectedWords = [...lvlWords].sort(() => Math.random() - 0.5).slice(0, 3);
+    // Pick 4 random words for each level for a more robust test (total 16 questions)
+    const selectedWords = [...lvlWords].sort(() => Math.random() - 0.5).slice(0, 4);
     
     selectedWords.forEach((word, idx) => {
       // Vary exercise types for the test
-      const types = [ExerciseType.TRANSLATION, ExerciseType.ARTICLE, ExerciseType.DECOMPOSITION];
-      const type = types[idx % types.length];
+      const types = [
+        ExerciseType.TRANSLATION, 
+        ExerciseType.ARTICLE, 
+        ExerciseType.DECOMPOSITION,
+        ExerciseType.COMPOSITION,
+        ExerciseType.LINKING_ELEMENT
+      ];
+      
+      // If word doesn't have a linking element, don't ask for it
+      let type = types[idx % types.length];
+      if (type === ExerciseType.LINKING_ELEMENT && !word.components.linkingElement) {
+        type = ExerciseType.TRANSLATION;
+      }
       
       if (type === ExerciseType.TRANSLATION) {
         testExercises.push({
@@ -196,7 +243,7 @@ export const generatePlacementTest = (): Exercise[] => {
           question: `Comment dit-on "${word.translation[Language.FR]}" en allemand ?`,
           correctAnswer: word.word,
           options: [word.word, ...MOCK_KOMPOSITA.filter(w => w.id !== word.id).slice(0, 3).map(w => w.word)].sort(() => Math.random() - 0.5),
-          explanation: lvl // Store level in explanation field temporarily for scoring
+          explanation: lvl
         });
       } else if (type === ExerciseType.ARTICLE) {
         testExercises.push({
@@ -207,18 +254,31 @@ export const generatePlacementTest = (): Exercise[] => {
           options: ['der', 'die', 'das'].sort(() => Math.random() - 0.5),
           explanation: lvl
         });
-      } else {
+      } else if (type === ExerciseType.DECOMPOSITION) {
         testExercises.push({
           id: `test-${lvl}-${word.id}-decomp`,
           type: ExerciseType.DECOMPOSITION,
-          question: `De quoi est composé "${word.word}" ?`,
+          question: `Décomposez "${word.word}" (Mot1 + Mot2) :`,
           correctAnswer: `${word.components.word1} + ${word.components.word2}`,
-          options: [
-            `${word.components.word1} + ${word.components.word2}`,
-            `${word.components.word1} + Saft`,
-            `Haus + ${word.components.word2}`,
-            `Kind + Garten`
-          ].sort(() => Math.random() - 0.5),
+          isQRO: true,
+          explanation: lvl
+        });
+      } else if (type === ExerciseType.COMPOSITION) {
+        testExercises.push({
+          id: `test-${lvl}-${word.id}-comp`,
+          type: ExerciseType.COMPOSITION,
+          question: `Composez le mot : ${word.components.word1} + ${word.components.linkingElement || ''} + ${word.components.word2} = ?`,
+          correctAnswer: word.word,
+          isQRO: true,
+          explanation: lvl
+        });
+      } else if (type === ExerciseType.LINKING_ELEMENT) {
+        testExercises.push({
+          id: `test-${lvl}-${word.id}-link`,
+          type: ExerciseType.LINKING_ELEMENT,
+          question: `Quel est l'élément de liaison dans "${word.word}" ?`,
+          correctAnswer: word.components.linkingElement || 'Aucun',
+          isQRO: true,
           explanation: lvl
         });
       }
@@ -268,28 +328,23 @@ export const generateLessons = (level: Level): Lesson[] => {
         isQRO: true
       });
 
-      // 4. Decomposition (QCM)
+      // 4. Decomposition (QRO)
       exercises.push({
         id: `ex-${i}-${wordIdx}-decomp`,
         type: ExerciseType.DECOMPOSITION,
-        question: `De quoi est composé "${word.word}" ?`,
+        question: `Décomposez "${word.word}" (Mot1 + Mot2) :`,
         correctAnswer: `${word.components.word1} + ${word.components.word2}`,
-        options: [
-          `${word.components.word1} + ${word.components.word2}`,
-          `${word.components.word1} + Saft`,
-          `Haus + ${word.components.word2}`,
-          `Kind + Garten`
-        ].sort(() => Math.random() - 0.5)
+        isQRO: true
       });
 
-      // 5. Linking Element (QCM) - Only if it has one or for variety
+      // 5. Linking Element (QRO)
       if (word.components.linkingElement) {
         exercises.push({
           id: `ex-${i}-${wordIdx}-link`,
           type: ExerciseType.LINKING_ELEMENT,
-          question: `Quel est l'élément de liaison entre "${word.components.word1}" et "${word.components.word2}" ?`,
+          question: `Quel est l'élément de liaison dans "${word.word}" ?`,
           correctAnswer: word.components.linkingElement,
-          options: [word.components.linkingElement, 's', 'n', 'e', 'Aucun'].sort(() => Math.random() - 0.5)
+          isQRO: true
         });
       } else {
         // Paraphrase instead
