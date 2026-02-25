@@ -1,15 +1,16 @@
 
 import React, { useState, useEffect } from 'react';
-import { X, ArrowRight, Check, AlertCircle, Volume2, Star } from 'lucide-react';
-import { Lesson, Kompositum, ExerciseType } from '../types.ts';
+import { X, Star } from 'lucide-react';
+import { Lesson, User } from '../types.ts';
 import { updateUserProgress } from '../services/db.ts';
 
 interface LessonDetailProps {
   lesson: Lesson;
   onFinish: () => void;
+  user: User | null;
 }
 
-const LessonDetail: React.FC<LessonDetailProps> = ({ lesson, onFinish }) => {
+const LessonDetail: React.FC<LessonDetailProps> = ({ lesson, onFinish, user }) => {
   const [step, setStep] = useState<'intro1' | 'intro2' | 'exercises' | 'summary'>('intro1');
   const [exerciseIdx, setExerciseIdx] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
@@ -17,6 +18,7 @@ const LessonDetail: React.FC<LessonDetailProps> = ({ lesson, onFinish }) => {
   const [isCorrect, setIsCorrect] = useState(false);
   const [pointsEarned, setPointsEarned] = useState(0);
 
+  const uiLang = user?.language || 'Français';
   const currentExercise = lesson.exercises[exerciseIdx];
 
   const speak = (text: string) => {
@@ -64,6 +66,43 @@ const LessonDetail: React.FC<LessonDetailProps> = ({ lesson, onFinish }) => {
         <h2 className="text-4xl font-black text-white mb-2">Bravo !</h2>
         <p className="text-blue-100 font-bold text-xl mb-12">Leçon maîtrisée • +{pointsEarned} XP</p>
         <button onClick={finishLesson} className="w-full bg-white py-5 rounded-[2rem] text-blue-600 font-black text-lg">CONTINUER</button>
+      </div>
+    );
+  }
+
+  if (step === 'intro1' || step === 'intro2') {
+    const word = step === 'intro1' ? lesson.targetWords[0] : lesson.targetWords[1];
+    return (
+      <div className="h-screen flex flex-col bg-white p-8">
+        <header className="flex justify-between items-center mb-12">
+          <button onClick={onFinish} className="p-2"><X className="w-6 h-6 text-slate-300" /></button>
+          <span className="text-blue-600 font-black text-sm uppercase tracking-widest">Nouveau mot</span>
+        </header>
+        <div className="flex-1 flex flex-col items-center justify-center text-center">
+          <div className="w-48 h-48 bg-blue-50 rounded-[3rem] flex items-center justify-center mb-8 shadow-inner">
+            <span className="text-6xl font-black text-blue-600">{word.word[0]}</span>
+          </div>
+          <p className="text-blue-400 font-black text-lg uppercase mb-2">{word.article}</p>
+          <h2 className="text-5xl font-black text-slate-900 mb-4">{word.word}</h2>
+          <p className="text-2xl text-slate-400 font-bold italic">"{word.translation[uiLang]}"</p>
+          
+          <div className="mt-12 flex gap-4">
+            <div className="bg-slate-50 px-6 py-3 rounded-2xl border border-slate-100">
+              <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Composant 1</p>
+              <p className="font-black text-slate-700">{word.components.word1}</p>
+            </div>
+            <div className="bg-slate-50 px-6 py-3 rounded-2xl border border-slate-100">
+              <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Composant 2</p>
+              <p className="font-black text-slate-700">{word.components.word2}</p>
+            </div>
+          </div>
+        </div>
+        <button 
+          onClick={() => setStep(step === 'intro1' ? 'intro2' : 'exercises')} 
+          className="w-full bg-blue-600 py-5 rounded-[2rem] text-white font-black text-lg shadow-xl shadow-blue-100"
+        >
+          CONTINUER
+        </button>
       </div>
     );
   }

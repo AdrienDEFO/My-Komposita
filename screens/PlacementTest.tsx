@@ -1,7 +1,7 @@
 
 import React, { useState } from 'react';
 import { Level } from '../types.ts';
-import { Target, ArrowRight } from 'lucide-react';
+import { Target } from 'lucide-react';
 
 interface PlacementTestProps {
   onComplete: (level: Level) => void;

@@ -1,14 +1,15 @@
-import React, { useState, useMemo, useEffect } from 'react';
-import { Flame, Trophy, Volume2, Search, X, BookOpen, Share, PlusSquare, Download, WifiOff, Sparkles, Check } from 'lucide-react';
+import { useState, useMemo, useEffect } from 'react';
+import { Flame, Trophy, Volume2, Search, X, BookOpen, Download, WifiOff, Sparkles, Check } from 'lucide-react';
 import { MOCK_KOMPOSITA, TRANSLATIONS } from '../constants.tsx';
-import { Language, User } from '../types.ts';
+import { Language, User, Level } from '../types.ts';
 
 interface HomeScreenProps {
   onStartPlacement: () => void;
+  onStartDailyChallenge: () => void;
   user: User | null;
 }
 
-const HomeScreen: React.FC<HomeScreenProps> = ({ onStartPlacement, user }) => {
+const HomeScreen: React.FC<HomeScreenProps> = ({ onStartPlacement, onStartDailyChallenge, user }) => {
   const [showDict, setShowDict] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
@@ -17,6 +18,14 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ onStartPlacement, user }) => {
   const [installStatus, setInstallStatus] = useState<'idle' | 'installing' | 'done'>('idle');
   
   const uiLang = user?.language || Language.FR;
+
+  const handleStartChallenge = () => {
+    if (user?.level === Level.A1 && user?.points === 0 && user?.completedLessons.length === 0) {
+      onStartPlacement();
+    } else {
+      onStartDailyChallenge();
+    }
+  };
 
   useEffect(() => {
     const checkStandalone = () => {
@@ -145,7 +154,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ onStartPlacement, user }) => {
         </div>
       </div>
 
-      <button onClick={onStartPlacement} className="w-full bg-white p-8 rounded-[2.5rem] border-4 border-blue-50 text-left shadow-sm relative overflow-hidden group btn-bounce">
+      <button onClick={handleStartChallenge} className="w-full bg-white p-8 rounded-[2.5rem] border-4 border-blue-50 text-left shadow-sm relative overflow-hidden group btn-bounce">
         <div className="absolute top-0 right-0 p-8 opacity-5 transform translate-x-4 -translate-y-4 group-hover:scale-110 transition-transform">
           <BookOpen className="w-32 h-32 text-blue-600" />
         </div>

@@ -1,4 +1,4 @@
-const CACHE_NAME = 'my-komposita-v2.1';
+const CACHE_NAME = 'my-komposita-v2.2';
 
 const ASSETS_TO_CACHE = [
   './',

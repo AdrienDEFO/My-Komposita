@@ -1,5 +1,5 @@
 
-import { Level, Kompositum, Lesson, ExerciseType, Language } from './types.ts';
+import { Level, Kompositum, Lesson, ExerciseType, Language, Exercise } from './types';
 
 export const POINTS_PER_BATCH = 100;
 export const MAX_LIVES = 5;
@@ -77,6 +77,27 @@ export const MOCK_KOMPOSITA: Kompositum[] = [
     components: { word1: 'Sonnen', word2: 'Brille' },
     declensions: { nominative: 'die Sonnenbrille', genitive: 'der Sonnenbrille', dative: 'der Sonnenbrille', accusative: 'die Sonnenbrille' },
     category: 'Vêtements'
+  },
+  {
+    id: '8', word: 'Kindergarten', article: 'der', level: Level.A1,
+    translation: { [Language.FR]: 'Jardin d\'enfants', [Language.EN]: 'Kindergarten', [Language.DE]: 'Kindergarten' },
+    components: { word1: 'Kind', word2: 'Garten', linkingElement: 'er' },
+    declensions: { nominative: 'der Kindergarten', genitive: 'des Kindergartens', dative: 'dem Kindergarten', accusative: 'den Kindergarten' },
+    category: 'Éducation'
+  },
+  {
+    id: '9', word: 'Schreibtisch', article: 'der', level: Level.A1,
+    translation: { [Language.FR]: 'Bureau', [Language.EN]: 'Desk', [Language.DE]: 'Schreibtisch' },
+    components: { word1: 'Schreib', word2: 'Tisch' },
+    declensions: { nominative: 'der Schreibtisch', genitive: 'des Schreibtisches', dative: 'dem Schreibtisch', accusative: 'den Schreibtisch' },
+    category: 'Maison'
+  },
+  {
+    id: '10', word: 'Wohnzimmer', article: 'das', level: Level.A1,
+    translation: { [Language.FR]: 'Salon', [Language.EN]: 'Living room', [Language.DE]: 'Wohnzimmer' },
+    components: { word1: 'Wohn', word2: 'Zimmer' },
+    declensions: { nominative: 'das Wohnzimmer', genitive: 'des Wohnzimmers', dative: 'dem Wohnzimmer', accusative: 'das Wohnzimmer' },
+    category: 'Maison'
   }
 ];
 
@@ -88,23 +109,80 @@ export const generateLessons = (level: Level): Lesson[] => {
     const word1 = (levelWords.length > 0) ? levelWords[(i * 2) % levelWords.length] : fallbackWords[(i * 2) % fallbackWords.length];
     const word2 = (levelWords.length > 1) ? levelWords[(i * 2 + 1) % levelWords.length] : fallbackWords[(i * 2 + 1) % fallbackWords.length];
     
+    const targetWords = [word1, word2];
+    
+    const exercises: Exercise[] = [];
+    
+    targetWords.forEach((word, wordIdx) => {
+      // 1. Translation (QCM)
+      exercises.push({
+        id: `ex-${i}-${wordIdx}-trans`,
+        type: ExerciseType.TRANSLATION,
+        question: `Comment dit-on "${word.translation[Language.FR]}" en allemand ?`,
+        correctAnswer: word.word,
+        options: [word.word, ...MOCK_KOMPOSITA.filter(w => w.id !== word.id).slice(0, 3).map(w => w.word)].sort(() => Math.random() - 0.5)
+      });
+
+      // 2. Article (QCM)
+      exercises.push({
+        id: `ex-${i}-${wordIdx}-art`,
+        type: ExerciseType.ARTICLE,
+        question: `Quel est l'article de "${word.word}" ?`,
+        correctAnswer: word.article,
+        options: ['der', 'die', 'das'].sort(() => Math.random() - 0.5)
+      });
+
+      // 3. Composition (QRO)
+      exercises.push({
+        id: `ex-${i}-${wordIdx}-comp`,
+        type: ExerciseType.COMPOSITION,
+        question: `Composez le mot : ${word.components.word1} + ${word.components.linkingElement || ''} + ${word.components.word2} = ?`,
+        correctAnswer: word.word,
+        isQRO: true
+      });
+
+      // 4. Decomposition (QCM)
+      exercises.push({
+        id: `ex-${i}-${wordIdx}-decomp`,
+        type: ExerciseType.DECOMPOSITION,
+        question: `De quoi est composé "${word.word}" ?`,
+        correctAnswer: `${word.components.word1} + ${word.components.word2}`,
+        options: [
+          `${word.components.word1} + ${word.components.word2}`,
+          `${word.components.word1} + Saft`,
+          `Haus + ${word.components.word2}`,
+          `Kind + Garten`
+        ].sort(() => Math.random() - 0.5)
+      });
+
+      // 5. Linking Element (QCM) - Only if it has one or for variety
+      if (word.components.linkingElement) {
+        exercises.push({
+          id: `ex-${i}-${wordIdx}-link`,
+          type: ExerciseType.LINKING_ELEMENT,
+          question: `Quel est l'élément de liaison entre "${word.components.word1}" et "${word.components.word2}" ?`,
+          correctAnswer: word.components.linkingElement,
+          options: [word.components.linkingElement, 's', 'n', 'e', 'Aucun'].sort(() => Math.random() - 0.5)
+        });
+      } else {
+        // Paraphrase instead
+        exercises.push({
+          id: `ex-${i}-${wordIdx}-para`,
+          type: ExerciseType.PARAPHRASE,
+          question: `Quel mot correspond à : "${word.translation[Language.FR]}" ?`,
+          correctAnswer: word.word,
+          isQRO: true
+        });
+      }
+    });
+
     return {
       id: i + 1,
       level,
       title: `${word1.word} & ${word2.word}`,
       targetWords: [word1, word2],
       isLocked: i >= 4,
-      exercises: Array.from({ length: 10 }).map((_, exIdx) => {
-        const target = exIdx < 5 ? word1 : word2;
-        return {
-          id: `ex-${i}-${exIdx}`,
-          type: Object.values(ExerciseType)[exIdx % 5],
-          question: `Comment dit-on "${target.translation[Language.FR]}" ?`,
-          correctAnswer: target.word,
-          options: [target.word, "Ein anderes Wort", "Falsches Wort", "Nicht dies"].sort(() => Math.random() - 0.5),
-          isQRO: exIdx >= 8
-        };
-      })
+      exercises: exercises.sort(() => Math.random() - 0.5).slice(0, 10)
     };
   });
 };

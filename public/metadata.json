@@ -8,13 +8,13 @@
   "theme_color": "#2563eb",
   "icons": [
     {
-      "src": "https://cdn-icons-png.flaticon.com/512/197/197571.png",
+      "src": "https://cdn-icons-png.flaticon.com/512/808/808439.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "https://cdn-icons-png.flaticon.com/512/197/197571.png",
+      "src": "https://cdn-icons-png.flaticon.com/512/808/808439.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"
@@ -22,14 +22,18 @@
   ],
   "orientation": "portrait",
   "scope": "./",
-  "categories": ["education", "language"],
+  "categories": [
+    "education",
+    "language"
+  ],
   "screenshots": [
     {
-      "src": "https://cdn-icons-png.flaticon.com/512/197/197571.png",
+      "src": "https://cdn-icons-png.flaticon.com/512/808/808439.png",
       "sizes": "512x512",
       "type": "image/png",
       "form_factor": "narrow",
       "label": "Apprendre l'allemand"
     }
-  ]
+  ],
+  "requestFramePermissions": []
 }

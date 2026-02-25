@@ -18,7 +18,9 @@ export enum ExerciseType {
   DECOMPOSITION = 'DECOMPOSITION',
   TRANSLATION = 'TRANSLATION',
   LINKING_ELEMENT = 'LINKING_ELEMENT',
-  PARAPHRASE = 'PARAPHRASE'
+  PARAPHRASE = 'PARAPHRASE',
+  SPEAKING = 'SPEAKING',
+  ARTICLE = 'ARTICLE'
 }
 
 export interface Exercise {
@@ -29,6 +31,8 @@ export interface Exercise {
   correctAnswer: string;
   explanation?: string;
   isQRO?: boolean;
+  wordToSpeak?: string; // For SPEAKING type
+  components?: string[]; // For COMPOSITION/DECOMPOSITION
 }
 
 export interface Kompositum {

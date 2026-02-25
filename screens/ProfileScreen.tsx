@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { LogOut, Info, ChevronRight, UserCircle, Globe, Languages, Mail, Phone, ChevronLeft } from 'lucide-react';
+import { LogOut, Info, ChevronRight, UserCircle, Globe, Languages, Mail, ChevronLeft, Puzzle } from 'lucide-react';
 import { getDB, saveDB } from '../services/db.ts';
 import { CONTACT } from '../constants.tsx';
 import { Language, User } from '../types.ts';
@@ -56,7 +56,9 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ onLogout, user }) => {
         </button>
         
         <div className="text-center mb-8">
-          <div className="w-20 h-20 bg-blue-600 rounded-[2rem] flex items-center justify-center mx-auto mb-4 text-white font-black text-3xl shadow-xl shadow-blue-200">MK</div>
+          <div className="w-20 h-20 bg-blue-600 rounded-[2rem] flex items-center justify-center mx-auto mb-4 text-white shadow-xl shadow-blue-200">
+            <Puzzle className="w-10 h-10" />
+          </div>
           <h2 className="text-2xl font-black text-slate-900">{CONTACT.appName}</h2>
           <p className="text-slate-400 font-bold">Version {CONTACT.version}</p>
         </div>

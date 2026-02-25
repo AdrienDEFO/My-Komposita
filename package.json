@@ -2,19 +2,24 @@
   "name": "my-komposita",
   "version": "1.2.1",
   "scripts": {
-    "start": "npx servor . index.html 8080 --browse",
-    "build": "vite build"
+    "dev": "vite",
+    "start": "vite",
+    "build": "vite build",
+    "lint": "tsc --noEmit"
   },
   "dependencies": {
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "lucide-react": "^0.344.0"
+    "@tailwindcss/vite": "^4.2.0",
+    "@vitejs/plugin-react": "^5.1.4",
+    "lucide-react": "^0.344.0",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4",
+    "tailwindcss": "^4.2.0",
+    "vite": "^7.3.1"
   },
   "private": true,
   "devDependencies": {
-    "@types/react": "^18.2.0",
-    "@types/react-dom": "^18.2.0",
-    "@vitejs/plugin-react": "^5.1.4",
-    "vite": "^7.3.1"
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "typescript": "^5.9.3"
   }
 }

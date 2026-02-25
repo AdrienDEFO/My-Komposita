@@ -1,15 +1,20 @@
 
 import React from 'react';
 import { Trophy, Medal, Crown, Star, Flame, Zap } from 'lucide-react';
+import { User } from '../types.ts';
 
-const DashboardScreen: React.FC = () => {
+interface DashboardScreenProps {
+  user: User | null;
+}
+
+const DashboardScreen: React.FC<DashboardScreenProps> = ({ user }) => {
   const leaderboard = [
     { name: 'Adrien Defo', points: 4500, avatar: 'AD' },
     { name: 'Lalende Waffo', points: 4200, avatar: 'LW' },
     { name: 'Sophie M.', points: 3800, avatar: 'SM' },
     { name: 'Thomas K.', points: 3500, avatar: 'TK' },
-    { name: 'Vous', points: 120, avatar: 'ME', current: true },
-  ];
+    { name: user?.username || 'Vous', points: user?.points || 0, avatar: user?.username?.[0] || 'V', current: true },
+  ].sort((a, b) => b.points - a.points);
 
   return (
     <div className="p-6 space-y-8 animate-slide-up">

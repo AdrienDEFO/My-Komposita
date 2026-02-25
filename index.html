@@ -3,101 +3,46 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <link rel="manifest" href="metadata.json">
+    <link rel="manifest" href="/metadata.json">
     
     <meta name="theme-color" content="#2563eb">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="My Komposita">
-    <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/197/197571.png">
+    <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/808/808439.png">
     
     <title>My Komposita</title>
     
-    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    
-    <script>
-        window.hardResetApp = async function() {
-            if (window.confirm("Réinitialiser l'application ? Cela effacera le cache et les erreurs de Service Worker.")) {
-                try {
-                    const names = await caches.keys();
-                    await Promise.all(names.map(name => caches.delete(name)));
-                    const regs = await navigator.serviceWorker.getRegistrations();
-                    await Promise.all(regs.map(reg => reg.unregister()));
-                    window.location.reload(true);
-                } catch (e) {
-                    window.location.reload(true);
-                }
-            }
-        };
-
-        window.onerror = function(msg, url, line) {
-            console.error("ERREUR FATALE:", msg, "at", url, ":", line);
-            const root = document.getElementById('root');
-            if (root && root.innerHTML.trim() === "") {
-                root.innerHTML = `<div style="padding:40px;text-align:center;font-family:sans-serif;height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;background:#f8fafc">
-                    <div style="background:white;padding:30px;border-radius:30px;shadow:0 10px 25px rgba(0,0,0,0.05);max-width:320px">
-                        <h2 style="color:#ef4444;font-weight:900;margin-bottom:10px">Oups !</h2>
-                        <p style="color:#64748b;font-size:14px;margin-bottom:20px">L'application a rencontré un problème au démarrage.</p>
-                        <button onclick="window.hardResetApp()" style="background:#2563eb;color:white;border:none;padding:15px 30px;border-radius:15px;font-weight:bold;cursor:pointer;width:100%">Réparer et Recharger</button>
-                    </div>
-                </div>`;
-            }
-        };
-
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: { sans: ['Fredoka', 'sans-serif'] },
-                }
-            }
-        }
-    </script>
-
-    <style>
-        :root {
-            --safe-area-inset-top: env(safe-area-inset-top, 0px);
-            --safe-area-inset-bottom: env(safe-area-inset-bottom, 0px);
-        }
-        body {
-            font-family: 'Fredoka', sans-serif;
-            background-color: #f8fafc;
-            padding-top: var(--safe-area-inset-top);
-            padding-bottom: var(--safe-area-inset-bottom);
-            margin: 0;
-            overflow-x: hidden;
-            -webkit-tap-highlight-color: transparent;
-        }
-        #root { min-height: 100vh; }
-        .btn-bounce:active { transform: scale(0.95); }
-        .hide-scrollbar::-webkit-scrollbar { display: none; }
-    </style>
 </head>
 <body class="bg-slate-50 text-slate-900">
+    <div id="splash-screen">
+        <div class="splash-logo">
+            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8V4H8"/><path d="M16 12h4v4"/><path d="M12 16v4h4"/><path d="M8 12H4v-4"/><path d="M15 4a2 2 0 1 0-4 0"/><path d="M20 15a2 2 0 1 1 0 4"/><path d="M9 20a2 2 0 1 1 4 0"/><path d="M4 9a2 2 0 1 0 0-4"/></svg>
+        </div>
+    </div>
     <div id="root"></div>
     
-    <script type="module" src="/index.tsx"></script>
+    <script type="module" src="/src/main.tsx"></script>
 
     <script>
-        // Enregistrement simplifié du Service Worker pour éviter les erreurs d'URL invalide
+        // Failsafe: remove splash screen after 6 seconds
+        setTimeout(() => {
+            const splash = document.getElementById('splash-screen');
+            if (splash && splash.style.opacity !== '0') {
+                splash.style.opacity = '0';
+                setTimeout(() => splash.remove(), 500);
+            }
+        }, 6000);
+
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
-                navigator.serviceWorker.register('sw.js')
-                    .then(reg => {
-                        console.log('MyKomposita SW: Enregistré');
-                        reg.onupdatefound = () => {
-                            const installingWorker = reg.installing;
-                            installingWorker.onstatechange = () => {
-                                if (installingWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                                    console.log('Nouvelle version disponible');
-                                }
-                            };
-                        };
-                    })
-                    .catch(err => {
-                        console.warn('MyKomposita SW: Erreur non critique', err.message);
-                    });
+                navigator.serviceWorker.register('/sw.js')
+                    .then(reg => console.log('SW registered'))
+                    .catch(err => console.warn('SW error', err));
             });
         }
     </script>

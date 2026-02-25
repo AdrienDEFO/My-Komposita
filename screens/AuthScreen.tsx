@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { LogIn, UserPlus, Mail, Lock, User as UserIcon } from 'lucide-react';
+import { LogIn, UserPlus, Mail, Lock, User as UserIcon, Puzzle } from 'lucide-react';
 import { User, Level, Language } from '../types.ts';
 
 interface AuthScreenProps {
@@ -38,7 +38,7 @@ const AuthScreen: React.FC<AuthScreenProps> = ({ onLogin }) => {
       <div className="w-full max-w-md animate-slide-up">
         <div className="text-center mb-8">
           <div className="inline-flex w-20 h-20 bg-white/20 backdrop-blur-md rounded-3xl items-center justify-center mb-4 border border-white/30 shadow-xl">
-            <span className="text-white text-3xl font-black italic">MK</span>
+            <Puzzle className="text-white w-10 h-10" />
           </div>
           <h1 className="text-4xl font-black text-white mb-2">My Komposita</h1>
           <p className="text-blue-100 font-medium">L'allemand par les mots composés</p>
