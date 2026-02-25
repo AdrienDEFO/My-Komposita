@@ -1,7 +1,7 @@
 import { useState, useMemo, useEffect } from 'react';
 import { Flame, Trophy, Volume2, Search, X, BookOpen, Download, WifiOff, Sparkles, Check } from 'lucide-react';
-import { MOCK_KOMPOSITA, TRANSLATIONS } from '../constants.tsx';
-import { Language, User, Level } from '../types.ts';
+import { MOCK_KOMPOSITA, TRANSLATIONS } from '../constants';
+import { Language, User, Level } from '../types';
 
 interface HomeScreenProps {
   onStartPlacement: () => void;

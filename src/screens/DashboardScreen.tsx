@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Trophy, Medal, Crown, Star, Flame, Zap } from 'lucide-react';
-import { User } from '../types.ts';
+import { User } from '../types';
 
 interface DashboardScreenProps {
   user: User | null;

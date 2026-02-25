@@ -1,8 +1,8 @@
 
 import React, { useMemo } from 'react';
-import { generateLessons } from '../constants.tsx';
-import LessonCard from '../components/LessonCard.tsx';
-import { Level, User, Lesson } from '../types.ts';
+import { generateLessons } from '../constants';
+import LessonCard from '../components/LessonCard';
+import { Level, User, Lesson } from '../types';
 
 interface LessonsScreenProps {
   onStartLesson: (lesson: Lesson) => void;
