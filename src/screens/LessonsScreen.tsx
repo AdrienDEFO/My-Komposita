@@ -34,7 +34,6 @@ const LessonsScreen: React.FC<LessonsScreenProps> = ({ onStartLesson, user }) =>
             lesson={lesson}
             isCompleted={user?.completedLessons.includes(lesson.id) || false}
             onStart={onStartLesson}
-            user={user}
           />
         ))}
       </div>

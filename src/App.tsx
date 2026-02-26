@@ -101,7 +101,7 @@ export default function App() {
   };
 
   return (
-    <Layout activeTab={activeTab} onTabChange={setActiveTab} user={user}>
+    <Layout activeTab={activeTab} onTabChange={setActiveTab}>
       {renderContent()}
     </Layout>
   );
