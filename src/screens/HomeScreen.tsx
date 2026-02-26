@@ -111,6 +111,47 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ onStartPlacement, onStartDailyC
         )}
       </header>
 
+      {/* Test de niveau et Sélection */}
+      <div className="bg-white p-6 rounded-[2.5rem] border border-slate-100 shadow-sm space-y-6">
+        <div>
+          <h2 className="text-xl font-black text-slate-800 mb-2">Identifier votre niveau</h2>
+          <p className="text-sm text-slate-400 font-bold mb-4">Passez le test global pour débloquer automatiquement les niveaux adaptés.</p>
+          <button 
+            onClick={onStartPlacement}
+            className="w-full bg-blue-600 text-white py-4 rounded-2xl font-black text-sm shadow-lg shadow-blue-100 flex items-center justify-center gap-2 btn-bounce"
+          >
+            <Trophy className="w-5 h-5" /> COMMENCER LE TEST GLOBAL
+          </button>
+        </div>
+
+        <div className="pt-4 border-t border-slate-50">
+          <h3 className="text-sm font-black text-slate-800 mb-4 uppercase tracking-widest">Ou choisir un niveau de départ</h3>
+          <div className="grid grid-cols-3 gap-2">
+            {Object.values(Level).map((lvl) => (
+              <button
+                key={lvl}
+                onClick={() => {
+                  // Trigger a skip test for this specific level
+                  // We need a way to tell App.tsx to start a skip test for this level
+                  // I'll use a custom event or a prop if available
+                  (window as any).dispatchEvent(new CustomEvent('start-skip-test', { detail: lvl }));
+                }}
+                className={`py-3 rounded-xl font-black text-xs transition-all ${
+                  user?.level === lvl 
+                    ? 'bg-blue-600 text-white shadow-md' 
+                    : 'bg-slate-50 text-slate-400 hover:bg-slate-100'
+                }`}
+              >
+                {lvl}
+              </button>
+            ))}
+          </div>
+          <p className="text-[10px] text-slate-300 font-bold mt-3 text-center uppercase tracking-tight">
+            Réussissez le test du niveau choisi pour le débloquer ainsi que les niveaux inférieurs.
+          </p>
+        </div>
+      </div>
+
       {/* Proposer l'installation PWA */}
       {deferredPrompt && !isStandalone && (
         <div className="bg-gradient-to-br from-blue-600 to-blue-700 p-6 rounded-[2.5rem] text-white shadow-xl shadow-blue-200 relative overflow-hidden">

@@ -1,27 +1,57 @@
 
 import React, { useState } from 'react';
-import { LogOut, Info, ChevronRight, UserCircle, Globe, Languages, Mail, ChevronLeft, Puzzle } from 'lucide-react';
+import { LogOut, Info, ChevronRight, UserCircle, Globe, Languages, Mail, ChevronLeft, Puzzle, Target } from 'lucide-react';
 import { getDB, saveDB } from '../services/db.ts';
 import { CONTACT } from '../constants.tsx';
-import { Language, User } from '../types.ts';
+import { Language, User, Level } from '../types.ts';
 
 interface ProfileScreenProps {
   onLogout: () => void;
+  onLevelChange: (level: Level) => void;
   user: User | null;
 }
 
-const ProfileScreen: React.FC<ProfileScreenProps> = ({ onLogout, user }) => {
+const ProfileScreen: React.FC<ProfileScreenProps> = ({ onLogout, onLevelChange, user }) => {
   const [showAbout, setShowAbout] = useState(false);
   const [showLang, setShowLang] = useState(false);
+  const [showLevel, setShowLevel] = useState(false);
 
   const changeLanguage = async (lang: Language) => {
-    const db = await getDB();
+    const db = getDB();
     if (db.user) {
       db.user.language = lang;
-      await saveDB(db);
-      window.location.reload(); // Recharger pour appliquer les changements PWA
+      saveDB(db);
+      window.location.reload();
     }
   };
+
+  if (showLevel) {
+    return (
+      <div className="p-6 h-full bg-slate-50 animate-slide-up">
+        <button onClick={() => setShowLevel(false)} className="flex items-center gap-2 text-blue-600 font-black uppercase text-xs mb-8">
+          <ChevronLeft className="w-5 h-5" /> Retour
+        </button>
+        <h2 className="text-3xl font-black text-slate-900 mb-8">Changer de niveau</h2>
+        <div className="space-y-3">
+          {Object.values(Level).map((lvl) => (
+            <button
+              key={lvl}
+              onClick={() => {
+                onLevelChange(lvl);
+                setShowLevel(false);
+              }}
+              className={`w-full p-5 rounded-3xl border-2 flex justify-between items-center transition-all ${
+                user?.level === lvl ? 'border-blue-600 bg-blue-50 text-blue-700' : 'border-white bg-white text-slate-600'
+              }`}
+            >
+              <span className="font-black">{lvl}</span>
+              {user?.level === lvl && <Target className="w-6 h-6" />}
+            </button>
+          ))}
+        </div>
+      </div>
+    );
+  }
 
   if (showLang) {
     return (
@@ -100,6 +130,20 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ onLogout, user }) => {
       </div>
 
       <div className="space-y-3">
+        <button 
+          onClick={() => setShowLevel(true)}
+          className="w-full flex items-center p-5 bg-white rounded-3xl border border-slate-100 shadow-sm btn-bounce group"
+        >
+          <div className="w-12 h-12 bg-orange-50 rounded-2xl flex items-center justify-center text-orange-600 group-hover:bg-orange-600 group-hover:text-white transition-colors">
+            <Target className="w-6 h-6" />
+          </div>
+          <div className="flex-1 text-left ml-4">
+            <p className="font-black text-slate-700 leading-none">Niveau</p>
+            <p className="text-[10px] font-bold text-slate-400 uppercase mt-1 tracking-tight">{user?.level}</p>
+          </div>
+          <ChevronRight className="w-5 h-5 text-slate-300" />
+        </button>
+
         <button 
           onClick={() => setShowLang(true)}
           className="w-full flex items-center p-5 bg-white rounded-3xl border border-slate-100 shadow-sm btn-bounce group"

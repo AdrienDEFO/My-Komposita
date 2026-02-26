@@ -1,14 +1,15 @@
 
 import React, { useState, useMemo } from 'react';
 import { Level, Exercise } from '../types';
-import { Target, CheckCircle2 } from 'lucide-react';
+import { Target, CheckCircle2, XCircle } from 'lucide-react';
 import { generatePlacementTest } from '../constants';
 
 interface PlacementTestProps {
   onComplete: (level: Level) => void;
+  targetLevel?: Level; // If provided, it's a skip test for this specific level
 }
 
-const PlacementTest: React.FC<PlacementTestProps> = ({ onComplete }) => {
+const PlacementTest: React.FC<PlacementTestProps> = ({ onComplete, targetLevel }) => {
   const [step, setStep] = useState<'welcome' | 'testing' | 'result'>('welcome');
   const [currentQ, setCurrentQ] = useState(0);
   const [correctCount, setCorrectCount] = useState(0);
@@ -25,7 +26,14 @@ const PlacementTest: React.FC<PlacementTestProps> = ({ onComplete }) => {
     [Level.C1]: 0
   });
 
-  const testQuestions: Exercise[] = useMemo(() => generatePlacementTest(), []);
+  const testQuestions: Exercise[] = useMemo(() => {
+    const allQuestions = generatePlacementTest();
+    if (targetLevel) {
+      // If it's a skip test, only take questions for that level
+      return allQuestions.filter(q => q.explanation === targetLevel);
+    }
+    return allQuestions;
+  }, [targetLevel]);
 
   const handleSelect = (idx: number) => {
     if (isAnswered) return;
@@ -72,7 +80,12 @@ const PlacementTest: React.FC<PlacementTestProps> = ({ onComplete }) => {
   };
 
   const getFinalLevel = () => {
-    // Logic: If user got at least 3/4 correct in a level, they pass that level
+    if (targetLevel) {
+      // For a skip test, we need at least 3/4 (75%) to pass
+      return correctCount >= 3 ? targetLevel : null;
+    }
+    // Logic: If user got at least 75% (3/4) correct in a level, they are considered to have mastered it
+    // We check from highest to lowest
     if (levelScores[Level.C1] >= 3) return Level.C1;
     if (levelScores[Level.B2] >= 3) return Level.B2;
     if (levelScores[Level.B1] >= 3) return Level.B1;
@@ -86,28 +99,58 @@ const PlacementTest: React.FC<PlacementTestProps> = ({ onComplete }) => {
         <div className="w-24 h-24 bg-white/20 rounded-full flex items-center justify-center mb-8">
           <Target className="w-12 h-12 text-white" />
         </div>
-        <h1 className="text-4xl font-black mb-4">Test d'Évaluation</h1>
-        <p className="text-blue-100 mb-12 text-lg font-medium">Déterminons votre niveau actuel pour personnaliser votre apprentissage.</p>
+        <h1 className="text-4xl font-black mb-4">{targetLevel ? `Sauter vers ${targetLevel}` : "Test d'Évaluation"}</h1>
+        <p className="text-blue-100 mb-12 text-lg font-medium">
+          {targetLevel 
+            ? `Réussissez ce test (min. 75%) pour débloquer directement le niveau ${targetLevel}.`
+            : "Déterminons votre niveau actuel. Vous pouvez sauter des niveaux si vous obtenez un score suffisant (75% par niveau)."}
+        </p>
         <button onClick={() => setStep('testing')} className="w-full max-w-xs bg-white text-blue-600 py-5 rounded-[2rem] font-black text-xl shadow-2xl transform transition active:scale-95">COMMENCER</button>
-        <button onClick={() => onComplete(Level.A1)} className="mt-8 text-blue-200 underline font-bold">Passer le test (Niveau A1)</button>
+        {!targetLevel && <button onClick={() => onComplete(Level.A1)} className="mt-8 text-blue-200 underline font-bold">Passer le test (Niveau A1)</button>}
+        {targetLevel && <button onClick={() => onComplete(Level.A1)} className="mt-8 text-blue-200 underline font-bold">Annuler</button>}
       </div>
     );
   }
 
   if (step === 'result') {
     const finalLvl = getFinalLevel();
+    const isSuccess = targetLevel ? finalLvl !== null : true;
+
     return (
-      <div className="h-screen bg-blue-600 flex flex-col items-center justify-center p-8 text-white text-center">
-        <CheckCircle2 className="w-24 h-24 text-green-400 mb-8" />
-        <h1 className="text-4xl font-black mb-2">Test Terminé !</h1>
+      <div className="h-screen bg-blue-600 flex flex-col items-center justify-center p-8 text-white text-center overflow-y-auto">
+        <div className={`w-24 h-24 rounded-full flex items-center justify-center mb-8 ${isSuccess ? 'bg-green-400' : 'bg-red-400'}`}>
+          {isSuccess ? <CheckCircle2 className="w-12 h-12 text-white" /> : <XCircle className="w-12 h-12 text-white" />}
+        </div>
+        <h1 className="text-4xl font-black mb-2">{isSuccess ? "Félicitations !" : "Pas encore..."}</h1>
         <p className="text-blue-100 mb-8 text-xl font-bold">Votre score : {correctCount}/{testQuestions.length}</p>
         
+        {!targetLevel && (
+          <div className="grid grid-cols-1 gap-3 w-full max-w-sm mb-8">
+            {Object.entries(levelScores).map(([lvl, score]) => (
+              <div key={lvl} className="bg-white/10 p-4 rounded-2xl flex justify-between items-center">
+                <span className="font-black text-blue-100">{lvl}</span>
+                <div className="flex items-center gap-2">
+                  <span className={`font-black ${score >= 3 ? 'text-green-400' : 'text-blue-200'}`}>{score}/4</span>
+                  {score >= 3 && <CheckCircle2 className="w-4 h-4 text-green-400" />}
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+
         <div className="bg-white/10 p-8 rounded-[3rem] mb-12 w-full max-w-sm">
-          <p className="text-blue-200 uppercase tracking-widest font-black text-sm mb-2">Niveau suggéré</p>
-          <p className="text-6xl font-black">{finalLvl}</p>
+          <p className="text-blue-200 uppercase tracking-widest font-black text-sm mb-2">
+            {targetLevel ? (isSuccess ? "Niveau débloqué" : "Niveau actuel conservé") : "Niveau suggéré"}
+          </p>
+          <p className="text-6xl font-black">{finalLvl || Level.A1}</p>
         </div>
 
-        <button onClick={() => onComplete(finalLvl)} className="w-full max-w-xs bg-white text-blue-600 py-5 rounded-[2rem] font-black text-xl shadow-2xl transform transition active:scale-95">DÉMARRER L'AVENTURE</button>
+        <button 
+          onClick={() => onComplete(finalLvl || Level.A1)} 
+          className="w-full max-w-xs bg-white text-blue-600 py-5 rounded-[2rem] font-black text-xl shadow-2xl transform transition active:scale-95"
+        >
+          {isSuccess ? "DÉMARRER L'AVENTURE" : "RETOUR"}
+        </button>
       </div>
     );
   }

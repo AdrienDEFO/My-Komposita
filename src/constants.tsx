@@ -65,6 +65,41 @@ export const MOCK_KOMPOSITA: Kompositum[] = [
     declensions: { nominative: 'der Handschuh', genitive: 'des Handschuhs', dative: 'dem Handschuh', accusative: 'den Handschuh' },
     category: 'Vêtements'
   },
+  {
+    id: 'a1-6', word: 'Schulbuch', article: 'das', level: Level.A1,
+    translation: { [Language.FR]: 'Livre scolaire', [Language.EN]: 'School book', [Language.DE]: 'Schulbuch' },
+    components: { word1: 'Schule', word2: 'Buch' },
+    declensions: { nominative: 'das Schulbuch', genitive: 'des Schulbuchs', dative: 'dem Schulbuch', accusative: 'das Schulbuch' },
+    category: 'Éducation'
+  },
+  {
+    id: 'a1-7', word: 'Wasserglas', article: 'das', level: Level.A1,
+    translation: { [Language.FR]: 'Verre d\'eau', [Language.EN]: 'Water glass', [Language.DE]: 'Wasserglas' },
+    components: { word1: 'Wasser', word2: 'Glas' },
+    declensions: { nominative: 'das Wasserglas', genitive: 'des Wasserglases', dative: 'dem Wasserglas', accusative: 'das Wasserglas' },
+    category: 'Maison'
+  },
+  {
+    id: 'a1-8', word: 'Tischlampe', article: 'die', level: Level.A1,
+    translation: { [Language.FR]: 'Lampe de table', [Language.EN]: 'Table lamp', [Language.DE]: 'Tischlampe' },
+    components: { word1: 'Tisch', word2: 'Lampe' },
+    declensions: { nominative: 'die Tischlampe', genitive: 'der Tischlampe', dative: 'der Tischlampe', accusative: 'die Tischlampe' },
+    category: 'Maison'
+  },
+  {
+    id: 'a1-9', word: 'Fußball', article: 'der', level: Level.A1,
+    translation: { [Language.FR]: 'Ballon de football', [Language.EN]: 'Football', [Language.DE]: 'Fußball' },
+    components: { word1: 'Fuß', word2: 'Ball' },
+    declensions: { nominative: 'der Fußball', genitive: 'des Fußballs', dative: 'dem Fußball', accusative: 'den Fußball' },
+    category: 'Sport'
+  },
+  {
+    id: 'a1-10', word: 'Wochenende', article: 'das', level: Level.A1,
+    translation: { [Language.FR]: 'Week-end', [Language.EN]: 'Weekend', [Language.DE]: 'Wochenende' },
+    components: { word1: 'Woche', word2: 'Ende' },
+    declensions: { nominative: 'das Wochenende', genitive: 'des Wochenendes', dative: 'dem Wochenende', accusative: 'das Wochenende' },
+    category: 'Temps'
+  },
   // A2
   {
     id: '6', word: 'Fahrrad', article: 'das', level: Level.A2,
@@ -99,6 +134,41 @@ export const MOCK_KOMPOSITA: Kompositum[] = [
     translation: { [Language.FR]: 'Avion', [Language.EN]: 'Airplane', [Language.DE]: 'Flugzeug' },
     components: { word1: 'Flug', word2: 'Zeug' },
     declensions: { nominative: 'das Flugzeug', genitive: 'des Flugzeugs', dative: 'dem Flugzeug', accusative: 'das Flugzeug' },
+    category: 'Transport'
+  },
+  {
+    id: 'a2-6', word: 'Reisepass', article: 'der', level: Level.A2,
+    translation: { [Language.FR]: 'Passeport', [Language.EN]: 'Passport', [Language.DE]: 'Reisepass' },
+    components: { word1: 'Reise', word2: 'Pass' },
+    declensions: { nominative: 'der Reisepass', genitive: 'des Reisepasses', dative: 'dem Reisepass', accusative: 'den Reisepass' },
+    category: 'Voyage'
+  },
+  {
+    id: 'a2-7', word: 'Bücherregal', article: 'das', level: Level.A2,
+    translation: { [Language.FR]: 'Bibliothèque (meuble)', [Language.EN]: 'Bookshelf', [Language.DE]: 'Bücherregal' },
+    components: { word1: 'Bücher', word2: 'Regal' },
+    declensions: { nominative: 'das Bücherregal', genitive: 'des Bücherregals', dative: 'dem Bücherregal', accusative: 'das Bücherregal' },
+    category: 'Maison'
+  },
+  {
+    id: 'a2-8', word: 'Kreditkarte', article: 'die', level: Level.A2,
+    translation: { [Language.FR]: 'Carte de crédit', [Language.EN]: 'Credit card', [Language.DE]: 'Kreditkarte' },
+    components: { word1: 'Kredit', word2: 'Karte' },
+    declensions: { nominative: 'die Kreditkarte', genitive: 'der Kreditkarte', dative: 'der Kreditkarte', accusative: 'die Kreditkarte' },
+    category: 'Finance'
+  },
+  {
+    id: 'a2-9', word: 'Mülltonne', article: 'die', level: Level.A2,
+    translation: { [Language.FR]: 'Poubelle', [Language.EN]: 'Dustbin', [Language.DE]: 'Mülltonne' },
+    components: { word1: 'Müll', word2: 'Tonne' },
+    declensions: { nominative: 'die Mülltonne', genitive: 'der Mülltonne', dative: 'der Mülltonne', accusative: 'die Mülltonne' },
+    category: 'Maison'
+  },
+  {
+    id: 'a2-10', word: 'Parkplatz', article: 'der', level: Level.A2,
+    translation: { [Language.FR]: 'Place de parking', [Language.EN]: 'Parking space', [Language.DE]: 'Parkplatz' },
+    components: { word1: 'Park', word2: 'Platz' },
+    declensions: { nominative: 'der Parkplatz', genitive: 'des Parkplatzes', dative: 'dem Parkplatz', accusative: 'den Parkplatz' },
     category: 'Transport'
   },
   // B1
@@ -137,6 +207,41 @@ export const MOCK_KOMPOSITA: Kompositum[] = [
     declensions: { nominative: 'die Taschenlampe', genitive: 'der Taschenlampe', dative: 'der Taschenlampe', accusative: 'die Taschenlampe' },
     category: 'Accessoires'
   },
+  {
+    id: '26', word: 'Kaffeemaschine', article: 'die', level: Level.B1,
+    translation: { [Language.FR]: 'Machine à café', [Language.EN]: 'Coffee machine', [Language.DE]: 'Kaffeemaschine' },
+    components: { word1: 'Kaffee', word2: 'Maschine' },
+    declensions: { nominative: 'die Kaffeemaschine', genitive: 'der Kaffeemaschine', dative: 'der Kaffeemaschine', accusative: 'die Kaffeemaschine' },
+    category: 'Aliments'
+  },
+  {
+    id: 'b1-7', word: 'Zahnarzt', article: 'der', level: Level.B1,
+    translation: { [Language.FR]: 'Dentiste', [Language.EN]: 'Dentist', [Language.DE]: 'Zahnarzt' },
+    components: { word1: 'Zahn', word2: 'Arzt' },
+    declensions: { nominative: 'der Zahnarzt', genitive: 'des Zahnarztes', dative: 'dem Zahnarzt', accusative: 'den Zahnarzt' },
+    category: 'Santé'
+  },
+  {
+    id: 'b1-8', word: 'Fahrkarte', article: 'die', level: Level.B1,
+    translation: { [Language.FR]: 'Ticket de transport', [Language.EN]: 'Ticket', [Language.DE]: 'Fahrkarte' },
+    components: { word1: 'Fahr', word2: 'Karte' },
+    declensions: { nominative: 'die Fahrkarte', genitive: 'der Fahrkarte', dative: 'der Fahrkarte', accusative: 'die Fahrkarte' },
+    category: 'Transport'
+  },
+  {
+    id: 'b1-9', word: 'Haushaltsgerät', article: 'das', level: Level.B1,
+    translation: { [Language.FR]: 'Appareil ménager', [Language.EN]: 'Household appliance', [Language.DE]: 'Haushaltsgerät' },
+    components: { word1: 'Haushalt', word2: 'Gerät', linkingElement: 's' },
+    declensions: { nominative: 'das Haushaltsgerät', genitive: 'des Haushaltsgeräts', dative: 'dem Haushaltsgerät', accusative: 'das Haushaltsgerät' },
+    category: 'Maison'
+  },
+  {
+    id: 'b1-10', word: 'Lebensmittel', article: 'das', level: Level.B1,
+    translation: { [Language.FR]: 'Denrée alimentaire', [Language.EN]: 'Foodstuff', [Language.DE]: 'Lebensmittel' },
+    components: { word1: 'Leben', word2: 'Mittel', linkingElement: 's' },
+    declensions: { nominative: 'das Lebensmittel', genitive: 'des Lebensmittels', dative: 'dem Lebensmittel', accusative: 'das Lebensmittel' },
+    category: 'Aliments'
+  },
   // B2
   {
     id: '16', word: 'Herausforderung', article: 'die', level: Level.B2,
@@ -173,6 +278,41 @@ export const MOCK_KOMPOSITA: Kompositum[] = [
     declensions: { nominative: 'die Zusammenarbeit', genitive: 'der Zusammenarbeit', dative: 'der Zusammenarbeit', accusative: 'die Zusammenarbeit' },
     category: 'Travail'
   },
+  {
+    id: '27', word: 'Nachhaltigkeit', article: 'die', level: Level.B2,
+    translation: { [Language.FR]: 'Durabilité', [Language.EN]: 'Sustainability', [Language.DE]: 'Nachhaltigkeit' },
+    components: { word1: 'nachhalt', word2: 'keit' },
+    declensions: { nominative: 'die Nachhaltigkeit', genitive: 'der Nachhaltigkeit', dative: 'der Nachhaltigkeit', accusative: 'die Nachhaltigkeit' },
+    category: 'Environnement'
+  },
+  {
+    id: 'b2-7', word: 'Berufserfahrung', article: 'die', level: Level.B2,
+    translation: { [Language.FR]: 'Expérience professionnelle', [Language.EN]: 'Work experience', [Language.DE]: 'Berufserfahrung' },
+    components: { word1: 'Beruf', word2: 'Erfahrung', linkingElement: 's' },
+    declensions: { nominative: 'die Berufserfahrung', genitive: 'der Berufserfahrung', dative: 'der Berufserfahrung', accusative: 'die Berufserfahrung' },
+    category: 'Travail'
+  },
+  {
+    id: 'b2-8', word: 'Entwicklungsland', article: 'das', level: Level.B2,
+    translation: { [Language.FR]: 'Pays en développement', [Language.EN]: 'Developing country', [Language.DE]: 'Entwicklungsland' },
+    components: { word1: 'Entwicklung', word2: 'Land', linkingElement: 's' },
+    declensions: { nominative: 'das Entwicklungsland', genitive: 'des Entwicklungslandes', dative: 'dem Entwicklungsland', accusative: 'das Entwicklungsland' },
+    category: 'Politique'
+  },
+  {
+    id: 'b2-9', word: 'Gleichberechtigung', article: 'die', level: Level.B2,
+    translation: { [Language.FR]: 'Égalité des droits', [Language.EN]: 'Equality', [Language.DE]: 'Gleichberechtigung' },
+    components: { word1: 'gleich', word2: 'Berechtigung' },
+    declensions: { nominative: 'die Gleichberechtigung', genitive: 'der Gleichberechtigung', dative: 'der Gleichberechtigung', accusative: 'die Gleichberechtigung' },
+    category: 'Société'
+  },
+  {
+    id: 'b2-10', word: 'Wiedervereinigung', article: 'die', level: Level.B2,
+    translation: { [Language.FR]: 'Réunification', [Language.EN]: 'Reunification', [Language.DE]: 'Wiedervereinigung' },
+    components: { word1: 'wieder', word2: 'Vereinigung' },
+    declensions: { nominative: 'die Wiedervereinigung', genitive: 'der Wiedervereinigung', dative: 'der Wiedervereinigung', accusative: 'die Wiedervereinigung' },
+    category: 'Histoire'
+  },
   // C1
   {
     id: '21', word: 'Wirtschaftswachstum', article: 'das', level: Level.C1,
@@ -208,6 +348,41 @@ export const MOCK_KOMPOSITA: Kompositum[] = [
     components: { word1: 'Entscheidung', word2: 'Freiheit', linkingElement: 's' },
     declensions: { nominative: 'die Entscheidungsfreiheit', genitive: 'der Entscheidungsfreiheit', dative: 'der Entscheidungsfreiheit', accusative: 'die Entscheidungsfreiheit' },
     category: 'Philosophie'
+  },
+  {
+    id: '28', word: 'Glaubwürdigkeit', article: 'die', level: Level.C1,
+    translation: { [Language.FR]: 'Crédibilité', [Language.EN]: 'Credibility', [Language.DE]: 'Glaubwürdigkeit' },
+    components: { word1: 'glaubwürdig', word2: 'keit' },
+    declensions: { nominative: 'die Glaubwürdigkeit', genitive: 'der Glaubwürdigkeit', dative: 'der Glaubwürdigkeit', accusative: 'die Glaubwürdigkeit' },
+    category: 'Abstrait'
+  },
+  {
+    id: 'c1-7', word: 'Verallgemeinerung', article: 'die', level: Level.C1,
+    translation: { [Language.FR]: 'Généralisation', [Language.EN]: 'Generalization', [Language.DE]: 'Verallgemeinerung' },
+    components: { word1: 'allgemein', word2: 'erung' },
+    declensions: { nominative: 'die Verallgemeinerung', genitive: 'der Verallgemeinerung', dative: 'der Verallgemeinerung', accusative: 'die Verallgemeinerung' },
+    category: 'Abstrait'
+  },
+  {
+    id: 'c1-8', word: 'Voraussetzung', article: 'die', level: Level.C1,
+    translation: { [Language.FR]: 'Condition préalable', [Language.EN]: 'Prerequisite', [Language.DE]: 'Voraussetzung' },
+    components: { word1: 'voraus', word2: 'Setzung' },
+    declensions: { nominative: 'die Voraussetzung', genitive: 'der Voraussetzung', dative: 'der Voraussetzung', accusative: 'die Voraussetzung' },
+    category: 'Abstrait'
+  },
+  {
+    id: 'c1-9', word: 'Wettbewerbsfähigkeit', article: 'die', level: Level.C1,
+    translation: { [Language.FR]: 'Compétitivité', [Language.EN]: 'Competitiveness', [Language.DE]: 'Wettbewerbsfähigkeit' },
+    components: { word1: 'Wettbewerb', word2: 'Fähigkeit', linkingElement: 's' },
+    declensions: { nominative: 'die Wettbewerbsfähigkeit', genitive: 'der Wettbewerbsfähigkeit', dative: 'der Wettbewerbsfähigkeit', accusative: 'die Wettbewerbsfähigkeit' },
+    category: 'Économie'
+  },
+  {
+    id: 'c1-10', word: 'Zukunftsperspektive', article: 'die', level: Level.C1,
+    translation: { [Language.FR]: 'Perspective d\'avenir', [Language.EN]: 'Future perspective', [Language.DE]: 'Zukunftsperspektive' },
+    components: { word1: 'Zukunft', word2: 'Perspektive', linkingElement: 's' },
+    declensions: { nominative: 'die Zukunftsperspektive', genitive: 'der Zukunftsperspektive', dative: 'der Zukunftsperspektive', accusative: 'die Zukunftsperspektive' },
+    category: 'Abstrait'
   }
 ];
 
@@ -293,10 +468,15 @@ export const generateLessons = (level: Level): Lesson[] => {
   const fallbackWords = MOCK_KOMPOSITA;
   
   return Array.from({ length: 24 }).map((_, i) => {
-    const word1 = (levelWords.length > 0) ? levelWords[(i * 2) % levelWords.length] : fallbackWords[(i * 2) % fallbackWords.length];
-    const word2 = (levelWords.length > 1) ? levelWords[(i * 2 + 1) % levelWords.length] : fallbackWords[(i * 2 + 1) % fallbackWords.length];
+    // Select 3 words per lesson for more depth
+    const wordsPool = levelWords.length >= 3 ? levelWords : fallbackWords;
+    const startIndex = (i * 3) % wordsPool.length;
     
-    const targetWords = [word1, word2];
+    const targetWords = [
+      wordsPool[startIndex],
+      wordsPool[(startIndex + 1) % wordsPool.length],
+      wordsPool[(startIndex + 2) % wordsPool.length]
+    ];
     
     const exercises: Exercise[] = [];
     
@@ -337,7 +517,7 @@ export const generateLessons = (level: Level): Lesson[] => {
         isQRO: true
       });
 
-      // 5. Linking Element (QRO)
+      // 5. Linking Element (QRO) or Paraphrase
       if (word.components.linkingElement) {
         exercises.push({
           id: `ex-${i}-${wordIdx}-link`,
@@ -347,7 +527,6 @@ export const generateLessons = (level: Level): Lesson[] => {
           isQRO: true
         });
       } else {
-        // Paraphrase instead
         exercises.push({
           id: `ex-${i}-${wordIdx}-para`,
           type: ExerciseType.PARAPHRASE,
@@ -358,13 +537,17 @@ export const generateLessons = (level: Level): Lesson[] => {
       }
     });
 
+    const category = targetWords.every(w => w.category === targetWords[0].category) 
+      ? targetWords[0].category 
+      : 'Divers';
+
     return {
       id: i + 1,
       level,
-      title: `${word1.word} & ${word2.word}`,
-      targetWords: [word1, word2],
+      title: `${category}: ${targetWords.map(w => w.word).join(', ')}`,
+      targetWords,
       isLocked: i >= 4,
-      exercises: exercises.sort(() => Math.random() - 0.5).slice(0, 10)
+      exercises: exercises.sort(() => Math.random() - 0.5).slice(0, 12) // 12 exercises per lesson
     };
   });
 };

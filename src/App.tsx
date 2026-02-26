@@ -10,6 +10,7 @@ import DashboardScreen from './screens/DashboardScreen';
 import ProfileScreen from './screens/ProfileScreen';
 import LessonDetail from './screens/LessonDetail';
 import PlacementTest from './screens/PlacementTest';
+import DictionaryScreen from './screens/DictionaryScreen';
 import Layout from './components/Layout';
 
 export default function App() {
@@ -17,6 +18,7 @@ export default function App() {
   const [user, setUser] = useState<User | null>(getDB().user);
   const [currentLesson, setCurrentLesson] = useState<Lesson | null>(null);
   const [showPlacement, setShowPlacement] = useState(false);
+  const [targetLevel, setTargetLevel] = useState<Level | undefined>(undefined);
 
   useEffect(() => {
     // Hide splash screen once React is mounted
@@ -40,14 +42,34 @@ export default function App() {
     setActiveTab('home');
   };
 
-  const handleLevelSelected = (level: Level) => {
+  useEffect(() => {
+    const handleSkipTestEvent = (e: any) => {
+      handleStartSkipTest(e.detail);
+    };
+    window.addEventListener('start-skip-test', handleSkipTestEvent);
+    return () => window.removeEventListener('start-skip-test', handleSkipTestEvent);
+  }, []);
+
+  const handleLevelSelected = (level: Level | null) => {
     if (!user) return;
-    const updatedUser = { ...user, level };
-    const db = getDB();
-    db.user = updatedUser;
-    saveDB(db);
-    setUser(updatedUser);
+    if (level) {
+      const db = getDB();
+      if (db.user) {
+        db.user.level = level;
+        // Unlock batches based on level
+        const levelIndex = Object.values(Level).indexOf(level);
+        db.user.unlockedBatches = Math.max(db.user.unlockedBatches, (levelIndex * 4) + 1);
+        saveDB(db);
+        setUser({ ...db.user });
+      }
+    }
     setShowPlacement(false);
+    setTargetLevel(undefined);
+  };
+
+  const handleStartSkipTest = (level: Level) => {
+    setTargetLevel(level);
+    setShowPlacement(true);
   };
 
   const handleStartDailyChallenge = () => {
@@ -69,7 +91,7 @@ export default function App() {
   }
 
   if (showPlacement) {
-    return <PlacementTest onComplete={handleLevelSelected} />;
+    return <PlacementTest onComplete={handleLevelSelected} targetLevel={targetLevel} />;
   }
 
   if (currentLesson) {
@@ -90,11 +112,13 @@ export default function App() {
       case 'home':
         return <HomeScreen onStartPlacement={() => setShowPlacement(true)} onStartDailyChallenge={handleStartDailyChallenge} user={user} />;
       case 'lessons':
-        return <LessonsScreen onStartLesson={setCurrentLesson} user={user} />;
+        return <LessonsScreen onStartLesson={setCurrentLesson} onStartSkipTest={handleStartSkipTest} user={user} />;
+      case 'dictionary':
+        return <DictionaryScreen user={user} />;
       case 'dashboard':
         return <DashboardScreen user={user} />;
       case 'profile':
-        return <ProfileScreen onLogout={handleLogout} user={user} />;
+        return <ProfileScreen onLogout={handleLogout} onLevelChange={handleLevelSelected} user={user} />;
       default:
         return <HomeScreen onStartPlacement={() => setShowPlacement(true)} onStartDailyChallenge={handleStartDailyChallenge} user={user} />;
     }

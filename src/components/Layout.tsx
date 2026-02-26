@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Home, BookOpen, BarChart3, User as UserIcon } from 'lucide-react';
+import { Home, BookOpen, BarChart3, User as UserIcon, Book } from 'lucide-react';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -29,6 +29,13 @@ const Layout: React.FC<LayoutProps> = ({ children, activeTab, onTabChange }) => 
         >
           <BookOpen className={`w-6 h-6 ${activeTab === 'lessons' ? 'fill-blue-600/10' : ''}`} />
           <span className="text-[10px] font-black uppercase tracking-widest">Leçons</span>
+        </button>
+        <button 
+          onClick={() => onTabChange('dictionary')}
+          className={`flex flex-col items-center gap-1 transition-all ${activeTab === 'dictionary' ? 'text-blue-600 scale-110' : 'text-slate-300'}`}
+        >
+          <Book className={`w-6 h-6 ${activeTab === 'dictionary' ? 'fill-blue-600/10' : ''}`} />
+          <span className="text-[10px] font-black uppercase tracking-widest">Lexique</span>
         </button>
         <button 
           onClick={() => onTabChange('dashboard')}

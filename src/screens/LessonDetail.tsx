@@ -11,7 +11,7 @@ interface LessonDetailProps {
 }
 
 const LessonDetail: React.FC<LessonDetailProps> = ({ lesson, onFinish, user }) => {
-  const [step, setStep] = useState<'intro1' | 'intro2' | 'exercises' | 'summary'>('intro1');
+  const [step, setStep] = useState<'intro1' | 'intro2' | 'intro3' | 'exercises' | 'summary'>('intro1');
   const [exerciseIdx, setExerciseIdx] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
   const [qroValue, setQroValue] = useState('');
@@ -62,6 +62,7 @@ const LessonDetail: React.FC<LessonDetailProps> = ({ lesson, onFinish, user }) =
   useEffect(() => {
     if (step === 'intro1') speak(lesson.targetWords[0].word);
     if (step === 'intro2') speak(lesson.targetWords[1].word);
+    if (step === 'intro3') speak(lesson.targetWords[2].word);
   }, [step]);
 
   const handleCheckAnswer = () => {
@@ -107,8 +108,9 @@ const LessonDetail: React.FC<LessonDetailProps> = ({ lesson, onFinish, user }) =
     );
   }
 
-  if (step === 'intro1' || step === 'intro2') {
-    const word = step === 'intro1' ? lesson.targetWords[0] : lesson.targetWords[1];
+  if (step === 'intro1' || step === 'intro2' || step === 'intro3') {
+    const wordIndex = step === 'intro1' ? 0 : step === 'intro2' ? 1 : 2;
+    const word = lesson.targetWords[wordIndex];
     return (
       <div className="h-screen flex flex-col bg-white p-8">
         <header className="flex justify-between items-center mb-12">
@@ -117,7 +119,7 @@ const LessonDetail: React.FC<LessonDetailProps> = ({ lesson, onFinish, user }) =
             <button onClick={() => setIsMuted(!isMuted)} className="p-2 text-slate-400">
               {isMuted ? <VolumeX /> : <Volume2 />}
             </button>
-            <span className="text-blue-600 font-black text-sm uppercase tracking-widest">Nouveau mot</span>
+            <span className="text-blue-600 font-black text-sm uppercase tracking-widest">Nouveau mot {wordIndex + 1}/3</span>
           </div>
         </header>
         <div className="flex-1 flex flex-col items-center justify-center text-center">
@@ -146,10 +148,14 @@ const LessonDetail: React.FC<LessonDetailProps> = ({ lesson, onFinish, user }) =
           </div>
         </div>
         <button 
-          onClick={() => setStep(step === 'intro1' ? 'intro2' : 'exercises')} 
+          onClick={() => {
+            if (step === 'intro1') setStep('intro2');
+            else if (step === 'intro2') setStep('intro3');
+            else setStep('exercises');
+          }} 
           className="w-full bg-blue-600 py-5 rounded-[2rem] text-white font-black text-xl shadow-xl shadow-blue-100 transform transition active:scale-95"
         >
-          C'EST PARTI !
+          {step === 'intro3' ? "C'EST PARTI !" : "SUIVANT"}
         </button>
       </div>
     );

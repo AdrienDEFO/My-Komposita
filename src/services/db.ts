@@ -31,6 +31,17 @@ export const clearDB = () => {
   localStorage.removeItem(DB_KEY);
 };
 
+export const updateUserLevel = (level: Level) => {
+  const state = getDB();
+  if (state.user) {
+    state.user.level = level;
+    // When skipping levels, we might want to give some base points or unlock batches
+    const levelIndex = Object.values(Level).indexOf(level);
+    state.user.unlockedBatches = Math.max(state.user.unlockedBatches, (levelIndex * 4) + 1);
+    saveDB(state);
+  }
+};
+
 export const updateUserProgress = (points: number, livesChange: number = 0, lessonId?: number, newWordIds: string[] = []) => {
   const state = getDB();
   if (state.user) {
