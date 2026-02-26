@@ -74,6 +74,7 @@ export interface User {
   points: number;
   lives: number;
   lastLifeUpdate: number;
+  lastLifeChallenge: number;
   completedLessons: number[];
   unlockedBatches: number;
   dailyStreak: number;

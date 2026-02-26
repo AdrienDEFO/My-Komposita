@@ -1,15 +1,16 @@
 import { useState, useMemo, useEffect } from 'react';
-import { Flame, Trophy, Volume2, Search, X, BookOpen, Download, WifiOff, Sparkles, Check } from 'lucide-react';
-import { MOCK_KOMPOSITA, TRANSLATIONS } from '../constants';
+import { Flame, Trophy, Volume2, Search, X, BookOpen, Download, WifiOff, Sparkles, Check, Heart, Zap } from 'lucide-react';
+import { MOCK_KOMPOSITA, TRANSLATIONS, LIFE_CHALLENGE_TIME } from '../constants';
 import { Language, User, Level } from '../types';
 
 interface HomeScreenProps {
   onStartPlacement: () => void;
   onStartDailyChallenge: () => void;
+  onStartLifeChallenge: () => void;
   user: User | null;
 }
 
-const HomeScreen: React.FC<HomeScreenProps> = ({ onStartPlacement, onStartDailyChallenge, user }) => {
+const HomeScreen: React.FC<HomeScreenProps> = ({ onStartPlacement, onStartDailyChallenge, onStartLifeChallenge, user }) => {
   const [showDict, setShowDict] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
@@ -18,6 +19,13 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ onStartPlacement, onStartDailyC
   const [installStatus, setInstallStatus] = useState<'idle' | 'installing' | 'done'>('idle');
   
   const uiLang = user?.language || Language.FR;
+
+  const canDoLifeChallenge = useMemo(() => {
+    if (!user) return false;
+    if (user.lives > 0) return false;
+    const now = Date.now();
+    return now - user.lastLifeChallenge >= LIFE_CHALLENGE_TIME;
+  }, [user?.lives, user?.lastLifeChallenge]);
 
   const handleStartChallenge = () => {
     if (user?.level === Level.A1 && user?.points === 0 && user?.completedLessons.length === 0) {
@@ -174,26 +182,62 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ onStartPlacement, onStartDailyC
         </div>
       )}
 
-      <div className="grid grid-cols-2 gap-4">
-        <div className="bg-white p-5 rounded-3xl border border-slate-100 shadow-sm flex flex-col justify-center">
-          <div className="flex items-center gap-2 mb-2">
+      <div className="grid grid-cols-3 gap-3">
+        <div className="bg-white p-4 rounded-3xl border border-slate-100 shadow-sm flex flex-col justify-center">
+          <div className="flex items-center gap-2 mb-1">
             <div className="w-6 h-6 bg-orange-100 rounded-lg flex items-center justify-center">
               <Flame className="w-3.5 h-3.5 text-orange-500" />
             </div>
             <p className="text-[10px] font-bold text-slate-400 uppercase tracking-tight">Série</p>
           </div>
-          <p className="text-2xl font-black text-slate-800">{user?.dailyStreak || 0} JOURS</p>
+          <p className="text-xl font-black text-slate-800">{user?.dailyStreak || 0} J</p>
         </div>
-        <div className="bg-white p-5 rounded-3xl border border-slate-100 shadow-sm flex flex-col justify-center">
-          <div className="flex items-center gap-2 mb-2">
+        <div className="bg-white p-4 rounded-3xl border border-slate-100 shadow-sm flex flex-col justify-center">
+          <div className="flex items-center gap-2 mb-1">
             <div className="w-6 h-6 bg-blue-100 rounded-lg flex items-center justify-center">
               <Trophy className="w-3.5 h-3.5 text-blue-600" />
             </div>
             <p className="text-[10px] font-bold text-slate-400 uppercase tracking-tight">Niveau</p>
           </div>
-          <p className="text-2xl font-black text-slate-800">{user?.level}</p>
+          <p className="text-xl font-black text-slate-800">{user?.level}</p>
+        </div>
+        <div className={`p-4 rounded-3xl border shadow-sm flex flex-col justify-center transition-colors ${user?.lives === 0 ? 'bg-red-50 border-red-100' : 'bg-white border-slate-100'}`}>
+          <div className="flex items-center gap-2 mb-1">
+            <div className={`w-6 h-6 rounded-lg flex items-center justify-center ${user?.lives === 0 ? 'bg-red-100' : 'bg-red-50'}`}>
+              <Heart className={`w-3.5 h-3.5 ${user?.lives === 0 ? 'text-red-600 animate-pulse' : 'text-red-500'}`} />
+            </div>
+            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-tight">Vies</p>
+          </div>
+          <p className={`text-xl font-black ${user?.lives === 0 ? 'text-red-600' : 'text-slate-800'}`}>{user?.lives || 0}/5</p>
         </div>
       </div>
+
+      {user?.lives === 0 && (
+        <div className="bg-red-600 p-6 rounded-[2.5rem] text-white shadow-xl shadow-red-100 relative overflow-hidden animate-slide-up">
+           <div className="absolute top-0 right-0 p-4 opacity-10">
+              <Zap className="w-24 h-24" />
+           </div>
+           <div className="relative z-10">
+             <h3 className="font-black text-xl mb-1">Plus de vies !</h3>
+             <p className="text-sm text-red-100 font-medium mb-6 leading-tight">
+               Vos vies se rechargent toutes les 24h. En attendant, vous pouvez réviser vos leçons terminées.
+             </p>
+             <button 
+               onClick={onStartLifeChallenge}
+               disabled={!canDoLifeChallenge}
+               className={`w-full py-4 rounded-2xl font-black text-sm shadow-lg btn-bounce flex items-center justify-center gap-2 ${
+                 canDoLifeChallenge ? 'bg-white text-red-600' : 'bg-red-500/50 text-red-200 cursor-not-allowed'
+               }`}
+             >
+               {canDoLifeChallenge ? (
+                 <><Zap className="w-4 h-4" /> RELEVER LE DÉFI (+5 VIES)</>
+               ) : (
+                 <><Check className="w-4 h-4" /> DÉFI DISPONIBLE DANS 48H</>
+               )}
+             </button>
+           </div>
+        </div>
+      )}
 
       <button onClick={handleStartChallenge} className="w-full bg-white p-8 rounded-[2.5rem] border-4 border-blue-50 text-left shadow-sm relative overflow-hidden group btn-bounce">
         <div className="absolute top-0 right-0 p-8 opacity-5 transform translate-x-4 -translate-y-4 group-hover:scale-110 transition-transform">

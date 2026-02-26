@@ -1,5 +1,6 @@
 
 import { AppState, Level } from '../types';
+import { MAX_LIVES, LIFE_REFILL_TIME } from '../constants';
 
 const DB_KEY = 'my_komposita_pwa_db';
 
@@ -12,7 +13,19 @@ export const getDB = (): AppState => {
   try {
     const data = localStorage.getItem(DB_KEY);
     if (!data) return DEFAULT_STATE;
-    return JSON.parse(data);
+    const state = JSON.parse(data);
+    
+    // Auto-refill lives if 24h passed
+    if (state.user && state.user.lives < MAX_LIVES) {
+      const now = Date.now();
+      if (now - state.user.lastLifeUpdate >= LIFE_REFILL_TIME) {
+        state.user.lives = MAX_LIVES;
+        state.user.lastLifeUpdate = now;
+        localStorage.setItem(DB_KEY, JSON.stringify(state));
+      }
+    }
+    
+    return state;
   } catch (error) {
     console.error("Erreur de lecture DB:", error);
     return DEFAULT_STATE;
@@ -46,7 +59,13 @@ export const updateUserProgress = (points: number, livesChange: number = 0, less
   const state = getDB();
   if (state.user) {
     state.user.points += points;
-    state.user.lives = Math.max(0, Math.min(5, state.user.lives + livesChange));
+    
+    const oldLives = state.user.lives;
+    state.user.lives = Math.max(0, Math.min(MAX_LIVES, state.user.lives + livesChange));
+    
+    if (state.user.lives < oldLives) {
+      state.user.lastLifeUpdate = Date.now();
+    }
     
     if (lessonId && !state.user.completedLessons.includes(lessonId)) {
       state.user.completedLessons.push(lessonId);
@@ -61,6 +80,16 @@ export const updateUserProgress = (points: number, livesChange: number = 0, less
     const unlocked = Math.floor(state.user.points / 100) + 1;
     state.user.unlockedBatches = Math.max(state.user.unlockedBatches, unlocked);
     
+    saveDB(state);
+  }
+};
+
+export const completeLifeChallenge = () => {
+  const state = getDB();
+  if (state.user) {
+    state.user.lives = MAX_LIVES;
+    state.user.lastLifeChallenge = Date.now();
+    state.user.lastLifeUpdate = Date.now();
     saveDB(state);
   }
 };

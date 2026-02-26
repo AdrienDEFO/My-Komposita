@@ -10,6 +10,7 @@ import DashboardScreen from './screens/DashboardScreen';
 import ProfileScreen from './screens/ProfileScreen';
 import LessonDetail from './screens/LessonDetail';
 import PlacementTest from './screens/PlacementTest';
+import LifeChallenge from './screens/LifeChallenge';
 import DictionaryScreen from './screens/DictionaryScreen';
 import Layout from './components/Layout';
 
@@ -18,6 +19,7 @@ export default function App() {
   const [user, setUser] = useState<User | null>(getDB().user);
   const [currentLesson, setCurrentLesson] = useState<Lesson | null>(null);
   const [showPlacement, setShowPlacement] = useState(false);
+  const [showLifeChallenge, setShowLifeChallenge] = useState(false);
   const [targetLevel, setTargetLevel] = useState<Level | undefined>(undefined);
 
   useEffect(() => {
@@ -94,6 +96,19 @@ export default function App() {
     return <PlacementTest onComplete={handleLevelSelected} targetLevel={targetLevel} />;
   }
 
+  if (showLifeChallenge) {
+    return (
+      <LifeChallenge 
+        userLevel={user.level} 
+        onComplete={() => {
+          setShowLifeChallenge(false);
+          setUser(getDB().user);
+        }} 
+        onCancel={() => setShowLifeChallenge(false)} 
+      />
+    );
+  }
+
   if (currentLesson) {
     return (
       <LessonDetail 
@@ -110,7 +125,14 @@ export default function App() {
   const renderContent = () => {
     switch (activeTab) {
       case 'home':
-        return <HomeScreen onStartPlacement={() => setShowPlacement(true)} onStartDailyChallenge={handleStartDailyChallenge} user={user} />;
+        return (
+          <HomeScreen 
+            onStartPlacement={() => setShowPlacement(true)} 
+            onStartDailyChallenge={handleStartDailyChallenge} 
+            onStartLifeChallenge={() => setShowLifeChallenge(true)}
+            user={user} 
+          />
+        );
       case 'lessons':
         return <LessonsScreen onStartLesson={setCurrentLesson} onStartSkipTest={handleStartSkipTest} user={user} />;
       case 'dictionary':
@@ -120,7 +142,14 @@ export default function App() {
       case 'profile':
         return <ProfileScreen onLogout={handleLogout} onLevelChange={handleLevelSelected} user={user} />;
       default:
-        return <HomeScreen onStartPlacement={() => setShowPlacement(true)} onStartDailyChallenge={handleStartDailyChallenge} user={user} />;
+        return (
+          <HomeScreen 
+            onStartPlacement={() => setShowPlacement(true)} 
+            onStartDailyChallenge={handleStartDailyChallenge} 
+            onStartLifeChallenge={() => setShowLifeChallenge(true)}
+            user={user} 
+          />
+        );
     }
   };
 

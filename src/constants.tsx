@@ -4,6 +4,7 @@ import { Level, Kompositum, Lesson, ExerciseType, Language, Exercise } from './t
 export const POINTS_PER_BATCH = 100;
 export const MAX_LIVES = 5;
 export const LIFE_REFILL_TIME = 24 * 60 * 60 * 1000;
+export const LIFE_CHALLENGE_TIME = 48 * 60 * 60 * 1000;
 
 export const TRANSLATIONS: { [key: string]: { [key in Language]: string } } = {
   welcome: { [Language.FR]: 'Bienvenue', [Language.EN]: 'Welcome', [Language.DE]: 'Willkommen' },

@@ -18,6 +18,7 @@ const LessonDetail: React.FC<LessonDetailProps> = ({ lesson, onFinish, user }) =
   const [showResult, setShowResult] = useState(false);
   const [isCorrect, setIsCorrect] = useState(false);
   const [pointsEarned, setPointsEarned] = useState(0);
+  const [lives, setLives] = useState(user?.lives || 5);
   const [isMuted, setIsMuted] = useState(false);
 
   const bgMusicRef = useRef<HTMLAudioElement | null>(null);
@@ -78,10 +79,20 @@ const LessonDetail: React.FC<LessonDetailProps> = ({ lesson, onFinish, user }) =
       speak(currentExercise.correctAnswer);
     } else {
       if (!isMuted) incorrectSound.current.play();
+      const newLives = Math.max(0, lives - 1);
+      setLives(newLives);
+      // Update DB immediately for life loss
+      updateUserProgress(0, -1);
     }
   };
 
   const handleNext = () => {
+    if (lives === 0 && !isCorrect) {
+      // If lives are exhausted and the answer was wrong, we can't continue
+      setStep('summary');
+      return;
+    }
+
     setShowResult(false);
     setSelectedAnswer(null);
     setQroValue('');
@@ -93,16 +104,24 @@ const LessonDetail: React.FC<LessonDetailProps> = ({ lesson, onFinish, user }) =
   };
 
   const finishLesson = () => {
+    // Points are added at the end
     updateUserProgress(pointsEarned, 0, lesson.id, lesson.targetWords.map(w => w.id));
     onFinish();
   };
 
   if (step === 'summary') {
+    const isSuccess = lives > 0 || exerciseIdx === lesson.exercises.length - 1;
     return (
-      <div className="h-full bg-blue-600 flex flex-col items-center justify-center p-8 text-center">
-        <Star className="w-24 h-24 text-yellow-300 fill-yellow-300 mb-6 animate-bounce" />
-        <h2 className="text-5xl font-black text-white mb-2">GÉNIAL !</h2>
-        <p className="text-blue-100 font-bold text-xl mb-12">Leçon terminée avec succès • +{pointsEarned} XP</p>
+      <div className={`h-full flex flex-col items-center justify-center p-8 text-center ${isSuccess ? 'bg-blue-600' : 'bg-red-600'}`}>
+        {isSuccess ? (
+          <Star className="w-24 h-24 text-yellow-300 fill-yellow-300 mb-6 animate-bounce" />
+        ) : (
+          <XCircle className="w-24 h-24 text-white mb-6 animate-pulse" />
+        )}
+        <h2 className="text-5xl font-black text-white mb-2">{isSuccess ? 'GÉNIAL !' : 'OUPS...'}</h2>
+        <p className="text-blue-100 font-bold text-xl mb-12">
+          {isSuccess ? `Leçon terminée avec succès • +${pointsEarned} XP` : 'Vous n\'avez plus de vies. Revenez plus tard ou relevez un défi !'}
+        </p>
         <button onClick={finishLesson} className="w-full max-w-sm bg-white py-5 rounded-[2rem] text-blue-600 font-black text-xl shadow-2xl transform transition active:scale-95">CONTINUER</button>
       </div>
     );

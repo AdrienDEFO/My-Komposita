@@ -24,6 +24,7 @@ const AuthScreen: React.FC<AuthScreenProps> = ({ onLogin }) => {
       points: 0,
       lives: 5,
       lastLifeUpdate: Date.now(),
+      lastLifeChallenge: 0,
       completedLessons: [],
       unlockedBatches: 1,
       dailyStreak: 0,

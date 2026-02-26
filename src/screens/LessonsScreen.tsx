@@ -22,11 +22,19 @@ const LessonsScreen: React.FC<LessonsScreenProps> = ({ onStartLesson, onStartSki
     const isLowerLevel = levels.indexOf(selectedLevel) < levels.indexOf(currentLevel);
     const unlockedUpTo = isLowerLevel ? raw.length : (user?.unlockedBatches || 1) * 4;
     
-    return raw.map((l, i) => ({
-      ...l,
-      isLocked: i >= unlockedUpTo
-    }));
-  }, [selectedLevel, currentLevel, user?.unlockedBatches]);
+    const hasLives = (user?.lives || 0) > 0;
+
+    return raw.map((l, i) => {
+      const isAlreadyCompleted = user?.completedLessons.includes(l.id) || false;
+      // If no lives, only completed lessons are accessible
+      const isLockedByLives = !hasLives && !isAlreadyCompleted;
+      
+      return {
+        ...l,
+        isLocked: i >= unlockedUpTo || isLockedByLives
+      };
+    });
+  }, [selectedLevel, currentLevel, user?.unlockedBatches, user?.lives, user?.completedLessons]);
 
   return (
     <div className="p-6 space-y-6 pb-32">
