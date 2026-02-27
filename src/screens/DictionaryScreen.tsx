@@ -91,12 +91,15 @@ const DictionaryScreen: React.FC<DictionaryScreenProps> = ({ user }) => {
           <div key={word.id} className="bg-white p-5 rounded-[2rem] flex justify-between items-center border border-slate-50 shadow-sm group hover:border-blue-100 transition-all">
             <div className="flex-1">
               <div className="flex items-center gap-2 mb-1">
-                <span className="text-[10px] font-black text-blue-400 uppercase">{word.article}</span>
+                <span className="text-[10px] font-black text-blue-400 uppercase">{word.article || word.type}</span>
                 <span className="text-[10px] font-black text-slate-300 uppercase tracking-tighter bg-slate-50 px-2 py-0.5 rounded-full">{word.level}</span>
                 <span className="text-[10px] font-black text-slate-300 uppercase tracking-tighter bg-slate-50 px-2 py-0.5 rounded-full">{word.category}</span>
               </div>
               <h3 className="font-black text-slate-800 text-xl">{word.word}</h3>
-              <p className="text-sm text-slate-400 font-bold uppercase tracking-tight">{word.translation[uiLang]}</p>
+              <div className="flex flex-col">
+                <p className="text-sm text-slate-400 font-bold uppercase tracking-tight">{word.translation[Language.FR]}</p>
+                <p className="text-xs text-slate-300 font-bold uppercase tracking-tight">{word.translation[Language.EN]}</p>
+              </div>
               
               <div className="mt-3 flex gap-2 text-[10px] font-bold text-slate-300">
                 <span className="bg-slate-50 px-2 py-1 rounded-lg">{word.components.word1}</span>

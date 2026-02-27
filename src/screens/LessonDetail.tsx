@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { X, Star, Volume2, VolumeX, CheckCircle2, XCircle } from 'lucide-react';
-import { Lesson, User } from '../types';
+import { Lesson, User, Language } from '../types';
 import { updateUserProgress } from '../services/db';
 
 interface LessonDetailProps {
@@ -25,7 +25,6 @@ const LessonDetail: React.FC<LessonDetailProps> = ({ lesson, onFinish, user }) =
   const correctSound = useRef(new Audio('https://assets.mixkit.co/active_storage/sfx/2013/2013-preview.mp3'));
   const incorrectSound = useRef(new Audio('https://assets.mixkit.co/active_storage/sfx/2018/2018-preview.mp3'));
 
-  const uiLang = user?.language || 'Français';
   const currentExercise = lesson.exercises[exerciseIdx];
 
   const speak = (text: string) => {
@@ -143,11 +142,12 @@ const LessonDetail: React.FC<LessonDetailProps> = ({ lesson, onFinish, user }) =
         </header>
         <div className="flex-1 flex flex-col items-center justify-center text-center">
           <div className="w-48 h-48 bg-blue-50 rounded-[3rem] flex items-center justify-center mb-8 shadow-inner">
-            <span className="text-7xl font-black text-blue-600">{word.word[0]}</span>
+            <span className="text-7xl font-black text-blue-600">{word.word[0].toUpperCase()}</span>
           </div>
-          <p className="text-blue-400 font-black text-xl uppercase mb-2">{word.article}</p>
+          <p className="text-blue-400 font-black text-xl uppercase mb-2">{word.article || word.type}</p>
           <h2 className="text-6xl font-black text-slate-900 mb-4">{word.word}</h2>
-          <p className="text-3xl text-slate-400 font-bold italic">"{word.translation[uiLang]}"</p>
+          <p className="text-3xl text-slate-400 font-bold italic">"{word.translation[Language.FR]}"</p>
+          <p className="text-xl text-slate-300 font-bold italic">"{word.translation[Language.EN]}"</p>
           
           <div className="mt-12 flex gap-4">
             <div className="bg-slate-50 px-8 py-4 rounded-3xl border border-slate-100">

@@ -13,6 +13,12 @@ export enum Language {
   DE = 'Deutsch'
 }
 
+export enum WordType {
+  NOUN = 'NOM',
+  ADJECTIVE = 'ADJECTIF',
+  VERB = 'VERBE'
+}
+
 export enum ExerciseType {
   COMPOSITION = 'COMPOSITION',
   DECOMPOSITION = 'DECOMPOSITION',
@@ -38,14 +44,15 @@ export interface Exercise {
 export interface Kompositum {
   id: string;
   word: string;
-  article: 'der' | 'die' | 'das';
+  type: WordType;
+  article?: 'der' | 'die' | 'das';
   translation: { [key: string]: string }; // Traduction multi-langue
   components: {
     word1: string;
     word2: string;
     linkingElement?: string;
   };
-  declensions: {
+  declensions?: {
     nominative: string;
     genitive: string;
     dative: string;

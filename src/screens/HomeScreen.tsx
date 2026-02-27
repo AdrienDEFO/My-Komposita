@@ -259,10 +259,13 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ onStartPlacement, onStartDailyC
               <div key={word.id} className="bg-white p-4 rounded-2xl flex justify-between items-center border border-slate-50 shadow-sm hover:border-blue-100 transition-colors">
                 <div>
                   <div className="flex items-center gap-2">
-                    <span className="text-[10px] font-black text-blue-400 uppercase">{word.article}</span>
+                    <span className="text-[10px] font-black text-blue-400 uppercase">{word.article || word.type}</span>
                     <p className="font-black text-slate-800 text-lg">{word.word}</p>
                   </div>
-                  <p className="text-[11px] text-slate-400 font-bold uppercase tracking-tight">{word.translation[uiLang]}</p>
+                  <div className="flex flex-col">
+                    <p className="text-[11px] text-slate-400 font-bold uppercase tracking-tight">{word.translation[Language.FR]}</p>
+                    <p className="text-[10px] text-slate-300 font-bold uppercase tracking-tight">{word.translation[Language.EN]}</p>
+                  </div>
                 </div>
                 <button 
                   onClick={() => speak(word.word)} 
@@ -306,10 +309,13 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ onStartPlacement, onStartDailyC
                 <div key={word.id} className="bg-white p-5 rounded-2xl flex justify-between items-center border border-slate-100 shadow-sm">
                   <div>
                     <div className="flex items-center gap-2">
-                       <span className="text-[10px] font-black text-blue-400 uppercase">{word.article}</span>
+                       <span className="text-[10px] font-black text-blue-400 uppercase">{word.article || word.type}</span>
                        <p className="font-black text-slate-800 text-lg">{word.word}</p>
                     </div>
-                    <p className="text-xs text-slate-400 font-black uppercase tracking-tight">{word.translation[uiLang]}</p>
+                    <div className="flex flex-col">
+                      <p className="text-xs text-slate-400 font-black uppercase tracking-tight">{word.translation[Language.FR]}</p>
+                      <p className="text-[10px] text-slate-300 font-black uppercase tracking-tight">{word.translation[Language.EN]}</p>
+                    </div>
                   </div>
                   <button onClick={() => speak(word.word)} className="p-4 bg-blue-50 rounded-2xl text-blue-600 btn-bounce"><Volume2 className="w-5 h-5" /></button>
                 </div>
