@@ -1,20 +1,64 @@
 
-import React, { useState } from 'react';
-import { LogOut, Info, ChevronRight, UserCircle, Globe, Languages, Mail, ChevronLeft, Puzzle, Target } from 'lucide-react';
+import React, { useState, useRef } from 'react';
+import { motion } from 'motion/react';
+import { LogOut, Info, ChevronRight, UserCircle, Globe, Languages, Mail, ChevronLeft, Puzzle, Target, Edit2, Camera, Check, Share2 } from 'lucide-react';
 import { getDB, saveDB } from '../services/db.ts';
 import { CONTACT } from '../constants.tsx';
 import { Language, User, Level } from '../types.ts';
+import { shareProgress } from '../services/feedback';
+import Toast, { ToastType } from '../components/Toast';
 
 interface ProfileScreenProps {
   onLogout: () => void;
   onLevelChange: (level: Level) => void;
+  onUserUpdate: (user: User) => void;
   user: User | null;
 }
 
-const ProfileScreen: React.FC<ProfileScreenProps> = ({ onLogout, onLevelChange, user }) => {
+const ProfileScreen: React.FC<ProfileScreenProps> = ({ onLogout, onLevelChange, onUserUpdate, user }) => {
   const [showAbout, setShowAbout] = useState(false);
   const [showLang, setShowLang] = useState(false);
   const [showLevel, setShowLevel] = useState(false);
+  const [showEdit, setShowEdit] = useState(false);
+  const [toast, setToast] = useState<{ message: string; type: ToastType; visible: boolean }>({
+    message: '',
+    type: 'info',
+    visible: false
+  });
+  
+  const [editName, setEditName] = useState(user?.username || '');
+  const [editAvatar, setEditAvatar] = useState(user?.avatar || '');
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleUpdateProfile = () => {
+    if (!user) return;
+    const updatedUser = { ...user, username: editName, avatar: editAvatar };
+    onUserUpdate(updatedUser);
+    setShowEdit(false);
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setEditAvatar(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleShare = async () => {
+    if (!user) return;
+    const title = 'Mon parcours sur My Komposita';
+    const text = `Salut ! Je suis au niveau ${user.level} sur My Komposita avec ${user.points} XP et une série de ${user.dailyStreak} jours ! Viens apprendre l'allemand avec moi !`;
+    const url = window.location.origin;
+    
+    const result = await shareProgress(title, text, url);
+    if (result === 'copied') {
+      setToast({ message: 'Lien copié dans le presse-papier !', type: 'success', visible: true });
+    }
+  };
 
   const changeLanguage = async (lang: Language) => {
     const db = getDB();
@@ -116,11 +160,83 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ onLogout, onLevelChange, 
     );
   }
 
+  if (showEdit) {
+    return (
+      <motion.div 
+        initial={{ opacity: 0, x: 20 }}
+        animate={{ opacity: 1, x: 0 }}
+        className="p-6 h-full bg-slate-50"
+      >
+        <button onClick={() => setShowEdit(false)} className="flex items-center gap-2 text-blue-600 font-black uppercase text-xs mb-8">
+          <ChevronLeft className="w-5 h-5" /> Retour
+        </button>
+        <h2 className="text-3xl font-black text-slate-900 mb-8">Modifier le profil</h2>
+        
+        <div className="flex flex-col items-center mb-8">
+          <div className="relative">
+            <div className="w-32 h-32 rounded-full bg-white shadow-xl border-4 border-white overflow-hidden flex items-center justify-center">
+              {editAvatar ? (
+                <img src={editAvatar} alt="Avatar" className="w-full h-full object-cover" referrerPolicy="no-referrer" />
+              ) : (
+                <UserCircle className="w-24 h-24 text-blue-600" />
+              )}
+            </div>
+            <button 
+              onClick={() => fileInputRef.current?.click()}
+              className="absolute bottom-0 right-0 w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center text-white border-4 border-slate-50 shadow-lg"
+            >
+              <Camera className="w-5 h-5" />
+            </button>
+            <input 
+              type="file" 
+              ref={fileInputRef} 
+              className="hidden" 
+              accept="image/*"
+              onChange={handleFileChange}
+            />
+          </div>
+          <p className="text-slate-400 text-xs font-bold mt-4 uppercase tracking-widest">Photo de profil</p>
+        </div>
+
+        <div className="space-y-6">
+          <div>
+            <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 ml-4">Nom d'utilisateur</label>
+            <input 
+              type="text" 
+              value={editName}
+              onChange={(e) => setEditName(e.target.value)}
+              className="w-full p-5 bg-white rounded-3xl border border-slate-100 shadow-sm outline-none focus:ring-2 focus:ring-blue-500 font-black text-slate-700"
+              placeholder="Votre nom"
+            />
+          </div>
+
+          <motion.button 
+            whileTap={{ scale: 0.95 }}
+            onClick={handleUpdateProfile}
+            className="w-full bg-blue-600 text-white py-5 rounded-3xl font-black text-lg shadow-xl shadow-blue-100 flex items-center justify-center gap-3"
+          >
+            <Check className="w-6 h-6" /> Enregistrer les modifications
+          </motion.button>
+        </div>
+      </motion.div>
+    );
+  }
+
   return (
     <div className="p-6 space-y-8 animate-slide-up">
-      <div className="text-center pt-8">
-        <div className="w-32 h-32 bg-white rounded-full flex items-center justify-center mx-auto mb-4 shadow-xl border-4 border-white">
-          <UserCircle className="w-24 h-24 text-blue-600" />
+      <div className="text-center pt-8 relative">
+        <button 
+          onClick={() => setShowEdit(true)}
+          className="absolute top-8 right-0 p-3 bg-white rounded-2xl border border-slate-100 shadow-sm text-blue-600"
+        >
+          <Edit2 className="w-5 h-5" />
+        </button>
+        <div className="w-32 h-32 bg-white rounded-full flex items-center justify-center mx-auto mb-4 shadow-xl border-4 border-white overflow-hidden">
+          {user?.avatar ? (
+            <img src={user.avatar} alt="Profile" className="w-full h-full object-cover" referrerPolicy="no-referrer" />
+          ) : (
+            <UserCircle className="w-24 h-24 text-blue-600" />
+          )}
         </div>
         <h2 className="text-3xl font-black text-slate-900">{user?.username}</h2>
         <p className="text-slate-400 font-bold mb-4">{user?.email}</p>
@@ -180,7 +296,24 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ onLogout, onLevelChange, 
           </div>
           <p className="font-black text-red-700 ml-4 flex-1 text-left">Se déconnecter</p>
         </button>
+
+        <button 
+          onClick={handleShare}
+          className="w-full flex items-center p-5 bg-blue-600 rounded-3xl border border-blue-700 mt-4 shadow-lg shadow-blue-200 btn-bounce"
+        >
+          <div className="w-12 h-12 bg-white/20 rounded-2xl flex items-center justify-center text-white">
+            <Share2 className="w-6 h-6" />
+          </div>
+          <p className="font-black text-white ml-4 flex-1 text-left">Partager mon profil</p>
+        </button>
       </div>
+
+      <Toast 
+        isVisible={toast.visible} 
+        message={toast.message} 
+        type={toast.type} 
+        onClose={() => setToast(t => ({ ...t, visible: false }))} 
+      />
     </div>
   );
 };

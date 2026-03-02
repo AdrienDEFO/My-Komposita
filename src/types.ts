@@ -76,6 +76,7 @@ export interface User {
   id: string;
   username: string;
   email: string;
+  avatar?: string;
   level: Level;
   language: Language; // Langue de l'UI
   points: number;
@@ -86,6 +87,7 @@ export interface User {
   unlockedBatches: number;
   dailyStreak: number;
   lastDailyChallenge: number;
+  lastActivityTimestamp: number;
   learnedWords: string[];
 }
 

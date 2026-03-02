@@ -1,11 +1,14 @@
-const CACHE_NAME = 'my-komposita-v2.2';
+const CACHE_NAME = 'my-komposita-v2.3';
 
 const ASSETS_TO_CACHE = [
-  './',
-  'index.html',
-  'metadata.json',
-  'https://cdn.tailwindcss.com',
-  'https://cdn-icons-png.flaticon.com/512/197/197571.png'
+  '/',
+  '/index.html',
+  '/metadata.json',
+  '/src/main.tsx',
+  '/src/index.css',
+  'https://cdn-icons-png.flaticon.com/512/3079/3079165.png',
+  'https://fonts.googleapis.com/css2?family=Fredoka:wght@300;400;500;600;700&display=swap',
+  'https://fonts.gstatic.com/s/fredoka/v12/X7nP4b87MdcF2jMdsWfW.woff2'
 ];
 
 self.addEventListener('install', (event) => {

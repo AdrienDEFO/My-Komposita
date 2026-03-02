@@ -1,5 +1,6 @@
 
 import React from 'react';
+import { motion } from 'motion/react';
 import { Home, BookOpen, BarChart3, User as UserIcon, Book } from 'lucide-react';
 
 interface LayoutProps {
@@ -15,42 +16,47 @@ const Layout: React.FC<LayoutProps> = ({ children, activeTab, onTabChange }) => 
         {children}
       </main>
 
-      <nav className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-md bg-white border-t border-slate-100 px-6 py-4 flex justify-between items-center z-50">
-        <button 
+      <nav className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-md bg-white/80 backdrop-blur-lg border-t border-slate-100 px-6 py-4 flex justify-between items-center z-50">
+        <motion.button 
+          whileTap={{ scale: 0.9 }}
           onClick={() => onTabChange('home')}
           className={`flex flex-col items-center gap-1 transition-all ${activeTab === 'home' ? 'text-blue-600 scale-110' : 'text-slate-300'}`}
         >
           <Home className={`w-6 h-6 ${activeTab === 'home' ? 'fill-blue-600/10' : ''}`} />
           <span className="text-[10px] font-black uppercase tracking-widest">Accueil</span>
-        </button>
-        <button 
+        </motion.button>
+        <motion.button 
+          whileTap={{ scale: 0.9 }}
           onClick={() => onTabChange('lessons')}
           className={`flex flex-col items-center gap-1 transition-all ${activeTab === 'lessons' ? 'text-blue-600 scale-110' : 'text-slate-300'}`}
         >
           <BookOpen className={`w-6 h-6 ${activeTab === 'lessons' ? 'fill-blue-600/10' : ''}`} />
           <span className="text-[10px] font-black uppercase tracking-widest">Leçons</span>
-        </button>
-        <button 
+        </motion.button>
+        <motion.button 
+          whileTap={{ scale: 0.9 }}
           onClick={() => onTabChange('dictionary')}
           className={`flex flex-col items-center gap-1 transition-all ${activeTab === 'dictionary' ? 'text-blue-600 scale-110' : 'text-slate-300'}`}
         >
           <Book className={`w-6 h-6 ${activeTab === 'dictionary' ? 'fill-blue-600/10' : ''}`} />
           <span className="text-[10px] font-black uppercase tracking-widest">Lexique</span>
-        </button>
-        <button 
+        </motion.button>
+        <motion.button 
+          whileTap={{ scale: 0.9 }}
           onClick={() => onTabChange('dashboard')}
           className={`flex flex-col items-center gap-1 transition-all ${activeTab === 'dashboard' ? 'text-blue-600 scale-110' : 'text-slate-300'}`}
         >
           <BarChart3 className={`w-6 h-6 ${activeTab === 'dashboard' ? 'fill-blue-600/10' : ''}`} />
           <span className="text-[10px] font-black uppercase tracking-widest">Stats</span>
-        </button>
-        <button 
+        </motion.button>
+        <motion.button 
+          whileTap={{ scale: 0.9 }}
           onClick={() => onTabChange('profile')}
           className={`flex flex-col items-center gap-1 transition-all ${activeTab === 'profile' ? 'text-blue-600 scale-110' : 'text-slate-300'}`}
         >
           <UserIcon className={`w-6 h-6 ${activeTab === 'profile' ? 'fill-blue-600/10' : ''}`} />
           <span className="text-[10px] font-black uppercase tracking-widest">Profil</span>
-        </button>
+        </motion.button>
       </nav>
     </div>
   );

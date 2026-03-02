@@ -1,7 +1,10 @@
 import { useState, useMemo, useEffect } from 'react';
-import { Flame, Trophy, Volume2, Search, X, BookOpen, Download, WifiOff, Sparkles, Check, Heart, Zap } from 'lucide-react';
+import { motion } from 'motion/react';
+import { Flame, Trophy, Volume2, Search, X, BookOpen, Download, WifiOff, Sparkles, Check, Heart, Zap, Calendar, Share2 } from 'lucide-react';
 import { MOCK_KOMPOSITA, TRANSLATIONS, LIFE_CHALLENGE_TIME } from '../constants';
 import { Language, User, Level } from '../types';
+import { shareProgress } from '../services/feedback';
+import Toast, { ToastType } from '../components/Toast';
 
 interface HomeScreenProps {
   onStartPlacement: () => void;
@@ -17,6 +20,11 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ onStartPlacement, onStartDailyC
   const [isOffline, setIsOffline] = useState(!navigator.onLine);
   const [isStandalone, setIsStandalone] = useState(false);
   const [installStatus, setInstallStatus] = useState<'idle' | 'installing' | 'done'>('idle');
+  const [toast, setToast] = useState<{ message: string; type: ToastType; visible: boolean }>({
+    message: '',
+    type: 'info',
+    visible: false
+  });
   
   const uiLang = user?.language || Language.FR;
 
@@ -86,6 +94,18 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ onStartPlacement, onStartDailyC
     setDeferredPrompt(null);
   };
 
+  const handleShareStreak = async () => {
+    if (!user) return;
+    const title = 'Ma série sur My Komposita';
+    const text = `Je suis sur une série de ${user.dailyStreak} jours sur My Komposita ! Viens me défier et apprendre l'allemand !`;
+    const url = window.location.origin;
+    
+    const result = await shareProgress(title, text, url);
+    if (result === 'copied') {
+      setToast({ message: 'Lien copié dans le presse-papier !', type: 'success', visible: true });
+    }
+  };
+
   const learnedWordsList = useMemo(() => 
     MOCK_KOMPOSITA.filter(w => user?.learnedWords.includes(w.id)),
     [user?.learnedWords]
@@ -99,49 +119,106 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ onStartPlacement, onStartDailyC
   };
 
   return (
-    <div className="p-6 space-y-8 animate-slide-up pb-32">
+    <div className="p-6 space-y-8 pb-32">
       {/* Badge Offline */}
       {isOffline && (
-        <div className="bg-orange-500 text-white p-3 rounded-2xl flex items-center justify-center gap-2 text-[10px] font-black animate-pulse shadow-lg shadow-orange-200">
+        <motion.div 
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="bg-orange-500 text-white p-3 rounded-2xl flex items-center justify-center gap-2 text-[10px] font-black animate-pulse shadow-lg shadow-orange-200"
+        >
           <WifiOff className="w-3 h-3" /> MODE HORS LIGNE ACTIVÉ
-        </div>
+        </motion.div>
       )}
 
       <header className="flex justify-between items-start">
-        <div>
+        <motion.div
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+        >
           <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">{TRANSLATIONS.welcome[uiLang]}</p>
           <h1 className="text-4xl font-black text-slate-900">{user?.username} !</h1>
-        </div>
-        {!isStandalone && (
-           <div className="bg-blue-100 p-2 rounded-2xl">
-             <Sparkles className="w-5 h-5 text-blue-600 animate-pulse" />
-           </div>
-        )}
+        </motion.div>
+        <motion.div 
+          initial={{ opacity: 0, x: 20 }}
+          animate={{ opacity: 1, x: 0 }}
+          className="flex items-center gap-2"
+        >
+          <div className="bg-white p-3 rounded-2xl shadow-sm border border-slate-50 flex items-center gap-2">
+            <Flame className="w-5 h-5 text-orange-500 fill-orange-500 animate-pulse" />
+            <span className="font-black text-slate-700">{user?.dailyStreak || 0}</span>
+          </div>
+          <div className="bg-white p-3 rounded-2xl shadow-sm border border-slate-50 flex items-center gap-2">
+            <Heart className={`w-5 h-5 ${user?.lives === 0 ? 'text-slate-300' : 'text-red-500 fill-red-500'}`} />
+            <span className="font-black text-slate-700">{user?.lives}</span>
+          </div>
+        </motion.div>
       </header>
 
+      {/* Streak Hero Card */}
+      <motion.div 
+        initial={{ opacity: 0, scale: 0.9 }}
+        animate={{ opacity: 1, scale: 1 }}
+        whileHover={{ scale: 1.02 }}
+        className="bg-blue-gradient p-8 rounded-[3rem] text-white shadow-2xl shadow-blue-200 relative overflow-hidden"
+      >
+        <div className="absolute top-0 right-0 p-8 opacity-10">
+          <Calendar className="w-32 h-32" />
+        </div>
+        <div className="relative z-10">
+          <div className="flex items-center gap-2 mb-4">
+            <Zap className="w-6 h-6 text-yellow-300 fill-yellow-300 animate-bounce" />
+            <span className="text-[10px] font-black uppercase tracking-widest opacity-80">Série de jours</span>
+          </div>
+          <h2 className="text-6xl font-black mb-2">{user?.dailyStreak || 0} JOURS</h2>
+          <p className="text-blue-100 font-medium text-sm mb-6">
+            {user?.dailyStreak && user.dailyStreak > 0 
+              ? "Incroyable ! Ne lâchez rien, vous êtes sur une lancée." 
+              : "Commencez votre série aujourd'hui pour débloquer des bonus !"}
+          </p>
+          
+          {user?.dailyStreak && user.dailyStreak > 0 && (
+            <motion.button 
+              whileTap={{ scale: 0.95 }}
+              onClick={handleShareStreak}
+              className="bg-white/20 backdrop-blur-md border border-white/30 px-6 py-3 rounded-2xl font-black text-xs flex items-center gap-2 hover:bg-white/30 transition-colors"
+            >
+              <Share2 className="w-4 h-4" /> PARTAGER MA SÉRIE
+            </motion.button>
+          )}
+        </div>
+      </motion.div>
+
       {/* Test de niveau et Sélection */}
-      <div className="bg-white p-6 rounded-[2.5rem] border border-slate-100 shadow-sm space-y-6">
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.1 }}
+        className="bg-white p-6 rounded-[2.5rem] border border-slate-100 shadow-sm space-y-6"
+      >
         <div>
           <h2 className="text-xl font-black text-slate-800 mb-2">Identifier votre niveau</h2>
           <p className="text-sm text-slate-400 font-bold mb-4">Passez le test global pour débloquer automatiquement les niveaux adaptés.</p>
-          <button 
+          <motion.button 
+            whileTap={{ scale: 0.95 }}
             onClick={onStartPlacement}
-            className="w-full bg-blue-600 text-white py-4 rounded-2xl font-black text-sm shadow-lg shadow-blue-100 flex items-center justify-center gap-2 btn-bounce"
+            className="w-full bg-blue-600 text-white py-4 rounded-2xl font-black text-sm shadow-lg shadow-blue-100 flex items-center justify-center gap-2"
           >
             <Trophy className="w-5 h-5" /> COMMENCER LE TEST GLOBAL
-          </button>
+          </motion.button>
         </div>
 
         <div className="pt-4 border-t border-slate-50">
           <h3 className="text-sm font-black text-slate-800 mb-4 uppercase tracking-widest">Ou choisir un niveau de départ</h3>
           <div className="grid grid-cols-3 gap-2">
-            {Object.values(Level).map((lvl) => (
-              <button
+            {Object.values(Level).map((lvl, idx) => (
+              <motion.button
                 key={lvl}
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.2 + idx * 0.05 }}
+                whileTap={{ scale: 0.9 }}
                 onClick={() => {
-                  // Trigger a skip test for this specific level
-                  // We need a way to tell App.tsx to start a skip test for this level
-                  // I'll use a custom event or a prop if available
                   (window as any).dispatchEvent(new CustomEvent('start-skip-test', { detail: lvl }));
                 }}
                 className={`py-3 rounded-xl font-black text-xs transition-all ${
@@ -151,69 +228,45 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ onStartPlacement, onStartDailyC
                 }`}
               >
                 {lvl}
-              </button>
+              </motion.button>
             ))}
           </div>
-          <p className="text-[10px] text-slate-300 font-bold mt-3 text-center uppercase tracking-tight">
-            Réussissez le test du niveau choisi pour le débloquer ainsi que les niveaux inférieurs.
-          </p>
         </div>
-      </div>
+      </motion.div>
 
       {/* Proposer l'installation PWA */}
       {deferredPrompt && !isStandalone && (
-        <div className="bg-gradient-to-br from-blue-600 to-blue-700 p-6 rounded-[2.5rem] text-white shadow-xl shadow-blue-200 relative overflow-hidden">
+        <motion.div 
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          className="bg-gradient-to-br from-blue-600 to-blue-700 p-6 rounded-[2.5rem] text-white shadow-xl shadow-blue-200 relative overflow-hidden"
+        >
           <div className="absolute top-0 right-0 p-4 opacity-10">
              <Download className="w-24 h-24" />
           </div>
           <div className="relative z-10">
-            <h3 className="font-black text-xl mb-1">Installer My Komposita</h3>
+            <h3 className="font-black text-xl mb-1 text-blue-glow">Installer My Komposita</h3>
             <p className="text-sm text-blue-100 font-medium mb-6 leading-tight">
               Ajoutez l'application à votre écran d'accueil pour apprendre sans connexion internet.
             </p>
-            <button 
+            <motion.button 
+              whileTap={{ scale: 0.95 }}
               onClick={handleInstall}
               disabled={installStatus === 'installing'}
-              className="bg-white text-blue-600 px-8 py-3.5 rounded-2xl font-black text-sm shadow-lg btn-bounce flex items-center gap-2"
+              className="bg-white text-blue-600 px-8 py-3.5 rounded-2xl font-black text-sm shadow-lg flex items-center gap-2"
             >
               {installStatus === 'installing' ? 'Installation...' : installStatus === 'done' ? <><Check className="w-4 h-4" /> INSTALLÉ</> : <><Download className="w-4 h-4" /> INSTALLER MAINTENANT</>}
-            </button>
+            </motion.button>
           </div>
-        </div>
+        </motion.div>
       )}
 
-      <div className="grid grid-cols-3 gap-3">
-        <div className="bg-white p-4 rounded-3xl border border-slate-100 shadow-sm flex flex-col justify-center">
-          <div className="flex items-center gap-2 mb-1">
-            <div className="w-6 h-6 bg-orange-100 rounded-lg flex items-center justify-center">
-              <Flame className="w-3.5 h-3.5 text-orange-500" />
-            </div>
-            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-tight">Série</p>
-          </div>
-          <p className="text-xl font-black text-slate-800">{user?.dailyStreak || 0} J</p>
-        </div>
-        <div className="bg-white p-4 rounded-3xl border border-slate-100 shadow-sm flex flex-col justify-center">
-          <div className="flex items-center gap-2 mb-1">
-            <div className="w-6 h-6 bg-blue-100 rounded-lg flex items-center justify-center">
-              <Trophy className="w-3.5 h-3.5 text-blue-600" />
-            </div>
-            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-tight">Niveau</p>
-          </div>
-          <p className="text-xl font-black text-slate-800">{user?.level}</p>
-        </div>
-        <div className={`p-4 rounded-3xl border shadow-sm flex flex-col justify-center transition-colors ${user?.lives === 0 ? 'bg-red-50 border-red-100' : 'bg-white border-slate-100'}`}>
-          <div className="flex items-center gap-2 mb-1">
-            <div className={`w-6 h-6 rounded-lg flex items-center justify-center ${user?.lives === 0 ? 'bg-red-100' : 'bg-red-50'}`}>
-              <Heart className={`w-3.5 h-3.5 ${user?.lives === 0 ? 'text-red-600 animate-pulse' : 'text-red-500'}`} />
-            </div>
-            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-tight">Vies</p>
-          </div>
-          <p className={`text-xl font-black ${user?.lives === 0 ? 'text-red-600' : 'text-slate-800'}`}>{user?.lives || 0}/5</p>
-        </div>
-      </div>
-
       {user?.lives === 0 && (
-        <div className="bg-red-600 p-6 rounded-[2.5rem] text-white shadow-xl shadow-red-100 relative overflow-hidden animate-slide-up">
+        <motion.div 
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="bg-red-600 p-6 rounded-[2.5rem] text-white shadow-xl shadow-red-100 relative overflow-hidden"
+        >
            <div className="absolute top-0 right-0 p-4 opacity-10">
               <Zap className="w-24 h-24" />
            </div>
@@ -222,10 +275,11 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ onStartPlacement, onStartDailyC
              <p className="text-sm text-red-100 font-medium mb-6 leading-tight">
                Vos vies se rechargent toutes les 24h. En attendant, vous pouvez réviser vos leçons terminées.
              </p>
-             <button 
+             <motion.button 
+               whileTap={{ scale: 0.95 }}
                onClick={onStartLifeChallenge}
                disabled={!canDoLifeChallenge}
-               className={`w-full py-4 rounded-2xl font-black text-sm shadow-lg btn-bounce flex items-center justify-center gap-2 ${
+               className={`w-full py-4 rounded-2xl font-black text-sm shadow-lg flex items-center justify-center gap-2 ${
                  canDoLifeChallenge ? 'bg-white text-red-600' : 'bg-red-500/50 text-red-200 cursor-not-allowed'
                }`}
              >
@@ -234,19 +288,26 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ onStartPlacement, onStartDailyC
                ) : (
                  <><Check className="w-4 h-4" /> DÉFI DISPONIBLE DANS 48H</>
                )}
-             </button>
+             </motion.button>
            </div>
-        </div>
+        </motion.div>
       )}
 
-      <button onClick={handleStartChallenge} className="w-full bg-white p-8 rounded-[2.5rem] border-4 border-blue-50 text-left shadow-sm relative overflow-hidden group btn-bounce">
+      <motion.button 
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.3 }}
+        whileTap={{ scale: 0.98 }}
+        onClick={handleStartChallenge} 
+        className="w-full bg-white p-8 rounded-[3rem] border-4 border-blue-50 text-left shadow-sm relative overflow-hidden group"
+      >
         <div className="absolute top-0 right-0 p-8 opacity-5 transform translate-x-4 -translate-y-4 group-hover:scale-110 transition-transform">
           <BookOpen className="w-32 h-32 text-blue-600" />
         </div>
         <h3 className="text-2xl font-black text-slate-800 mb-1">Défi du jour</h3>
         <p className="text-slate-400 font-bold mb-6">+50 XP • Maîtrisez de nouveaux mots</p>
         <span className="bg-blue-600 text-white px-8 py-4 rounded-2xl font-black text-sm shadow-lg shadow-blue-100">COMMENCER</span>
-      </button>
+      </motion.button>
 
       <div>
           <div className="flex justify-between items-center px-1 mb-4">
@@ -323,6 +384,13 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ onStartPlacement, onStartDailyC
            </div>
         </div>
       )}
+
+      <Toast 
+        isVisible={toast.visible} 
+        message={toast.message} 
+        type={toast.type} 
+        onClose={() => setToast(t => ({ ...t, visible: false }))} 
+      />
     </div>
   );
 };

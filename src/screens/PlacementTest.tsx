@@ -1,5 +1,6 @@
 
 import React, { useState, useMemo } from 'react';
+import { motion } from 'motion/react';
 import { Level, Exercise } from '../types';
 import { Target, CheckCircle2, XCircle } from 'lucide-react';
 import { generatePlacementTest } from '../constants';
@@ -95,20 +96,35 @@ const PlacementTest: React.FC<PlacementTestProps> = ({ onComplete, targetLevel }
 
   if (step === 'welcome') {
     return (
-      <div className="h-screen bg-blue-600 flex flex-col items-center justify-center p-8 text-white text-center">
-        <div className="w-24 h-24 bg-white/20 rounded-full flex items-center justify-center mb-8">
+      <motion.div 
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        className="h-screen bg-blue-600 flex flex-col items-center justify-center p-8 text-white text-center"
+      >
+        <motion.div 
+          initial={{ scale: 0, rotate: -20 }}
+          animate={{ scale: 1, rotate: 0 }}
+          transition={{ type: 'spring' }}
+          className="w-24 h-24 bg-white/20 rounded-full flex items-center justify-center mb-8"
+        >
           <Target className="w-12 h-12 text-white" />
-        </div>
+        </motion.div>
         <h1 className="text-4xl font-black mb-4">{targetLevel ? `Sauter vers ${targetLevel}` : "Test d'Évaluation"}</h1>
         <p className="text-blue-100 mb-12 text-lg font-medium">
           {targetLevel 
             ? `Réussissez ce test (min. 75%) pour débloquer directement le niveau ${targetLevel}.`
             : "Déterminons votre niveau actuel. Vous pouvez sauter des niveaux si vous obtenez un score suffisant (75% par niveau)."}
         </p>
-        <button onClick={() => setStep('testing')} className="w-full max-w-xs bg-white text-blue-600 py-5 rounded-[2rem] font-black text-xl shadow-2xl transform transition active:scale-95">COMMENCER</button>
+        <motion.button 
+          whileTap={{ scale: 0.95 }}
+          onClick={() => setStep('testing')} 
+          className="w-full max-w-xs bg-white text-blue-600 py-5 rounded-[2rem] font-black text-xl shadow-2xl"
+        >
+          COMMENCER
+        </motion.button>
         {!targetLevel && <button onClick={() => onComplete(Level.A1)} className="mt-8 text-blue-200 underline font-bold">Passer le test (Niveau A1)</button>}
         {targetLevel && <button onClick={() => onComplete(Level.A1)} className="mt-8 text-blue-200 underline font-bold">Annuler</button>}
-      </div>
+      </motion.div>
     );
   }
 
@@ -117,41 +133,62 @@ const PlacementTest: React.FC<PlacementTestProps> = ({ onComplete, targetLevel }
     const isSuccess = targetLevel ? finalLvl !== null : true;
 
     return (
-      <div className="h-screen bg-blue-600 flex flex-col items-center justify-center p-8 text-white text-center overflow-y-auto">
-        <div className={`w-24 h-24 rounded-full flex items-center justify-center mb-8 ${isSuccess ? 'bg-green-400' : 'bg-red-400'}`}>
+      <motion.div 
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        className="h-screen bg-blue-600 flex flex-col items-center justify-center p-8 text-white text-center overflow-y-auto"
+      >
+        <motion.div 
+          initial={{ scale: 0 }}
+          animate={{ scale: 1 }}
+          transition={{ type: 'spring' }}
+          className={`w-24 h-24 rounded-full flex items-center justify-center mb-8 ${isSuccess ? 'bg-green-400' : 'bg-red-400'}`}
+        >
           {isSuccess ? <CheckCircle2 className="w-12 h-12 text-white" /> : <XCircle className="w-12 h-12 text-white" />}
-        </div>
+        </motion.div>
         <h1 className="text-4xl font-black mb-2">{isSuccess ? "Félicitations !" : "Pas encore..."}</h1>
         <p className="text-blue-100 mb-8 text-xl font-bold">Votre score : {correctCount}/{testQuestions.length}</p>
         
         {!targetLevel && (
           <div className="grid grid-cols-1 gap-3 w-full max-w-sm mb-8">
-            {Object.entries(levelScores).map(([lvl, score]) => (
-              <div key={lvl} className="bg-white/10 p-4 rounded-2xl flex justify-between items-center">
+            {Object.entries(levelScores).map(([lvl, score], idx) => (
+              <motion.div 
+                key={lvl}
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: idx * 0.1 }}
+                className="bg-white/10 p-4 rounded-2xl flex justify-between items-center"
+              >
                 <span className="font-black text-blue-100">{lvl}</span>
                 <div className="flex items-center gap-2">
                   <span className={`font-black ${score >= 3 ? 'text-green-400' : 'text-blue-200'}`}>{score}/4</span>
                   {score >= 3 && <CheckCircle2 className="w-4 h-4 text-green-400" />}
                 </div>
-              </div>
+              </motion.div>
             ))}
           </div>
         )}
 
-        <div className="bg-white/10 p-8 rounded-[3rem] mb-12 w-full max-w-sm">
+        <motion.div 
+          initial={{ y: 20, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ delay: 0.5 }}
+          className="bg-white/10 p-8 rounded-[3rem] mb-12 w-full max-w-sm"
+        >
           <p className="text-blue-200 uppercase tracking-widest font-black text-sm mb-2">
             {targetLevel ? (isSuccess ? "Niveau débloqué" : "Niveau actuel conservé") : "Niveau suggéré"}
           </p>
           <p className="text-6xl font-black">{finalLvl || Level.A1}</p>
-        </div>
+        </motion.div>
 
-        <button 
+        <motion.button 
+          whileTap={{ scale: 0.95 }}
           onClick={() => onComplete(finalLvl || Level.A1)} 
-          className="w-full max-w-xs bg-white text-blue-600 py-5 rounded-[2rem] font-black text-xl shadow-2xl transform transition active:scale-95"
+          className="w-full max-w-xs bg-white text-blue-600 py-5 rounded-[2rem] font-black text-xl shadow-2xl"
         >
           {isSuccess ? "DÉMARRER L'AVENTURE" : "RETOUR"}
-        </button>
-      </div>
+        </motion.button>
+      </motion.div>
     );
   }
 

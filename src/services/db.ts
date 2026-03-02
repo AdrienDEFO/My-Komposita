@@ -76,6 +76,25 @@ export const updateUserProgress = (points: number, livesChange: number = 0, less
         state.user?.learnedWords.push(id);
       }
     });
+
+    // Streak logic
+    const now = Date.now();
+    const lastActivity = state.user.lastActivityTimestamp || 0;
+    const oneDay = 24 * 60 * 60 * 1000;
+    const lastActivityDate = new Date(lastActivity).setHours(0, 0, 0, 0);
+    const todayDate = new Date(now).setHours(0, 0, 0, 0);
+
+    if (todayDate > lastActivityDate) {
+      if (todayDate - lastActivityDate === oneDay) {
+        state.user.dailyStreak += 1;
+      } else {
+        state.user.dailyStreak = 1;
+      }
+      state.user.lastActivityTimestamp = now;
+    } else if (lastActivity === 0) {
+      state.user.dailyStreak = 1;
+      state.user.lastActivityTimestamp = now;
+    }
     
     const unlocked = Math.floor(state.user.points / 100) + 1;
     state.user.unlockedBatches = Math.max(state.user.unlockedBatches, unlocked);

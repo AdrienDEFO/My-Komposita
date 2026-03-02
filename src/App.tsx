@@ -1,5 +1,6 @@
 
 import { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'motion/react';
 import { Level, User, Lesson } from './types';
 import { getDB, saveDB, clearDB } from './services/db';
 import { generateLessons } from './constants';
@@ -42,6 +43,13 @@ export default function App() {
     clearDB();
     setUser(null);
     setActiveTab('home');
+  };
+
+  const handleUserUpdate = (updatedUser: User) => {
+    const db = getDB();
+    db.user = updatedUser;
+    saveDB(db);
+    setUser(updatedUser);
   };
 
   useEffect(() => {
@@ -140,7 +148,7 @@ export default function App() {
       case 'dashboard':
         return <DashboardScreen user={user} />;
       case 'profile':
-        return <ProfileScreen onLogout={handleLogout} onLevelChange={handleLevelSelected} user={user} />;
+        return <ProfileScreen onLogout={handleLogout} onLevelChange={handleLevelSelected} onUserUpdate={handleUserUpdate} user={user} />;
       default:
         return (
           <HomeScreen 
@@ -155,7 +163,18 @@ export default function App() {
 
   return (
     <Layout activeTab={activeTab} onTabChange={setActiveTab}>
-      {renderContent()}
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={activeTab}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -20 }}
+          transition={{ duration: 0.3 }}
+          className="h-full"
+        >
+          {renderContent()}
+        </motion.div>
+      </AnimatePresence>
     </Layout>
   );
 }

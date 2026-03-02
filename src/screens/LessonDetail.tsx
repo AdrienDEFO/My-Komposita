@@ -1,8 +1,11 @@
 
 import React, { useState, useEffect, useRef } from 'react';
-import { X, Star, Volume2, VolumeX, CheckCircle2, XCircle } from 'lucide-react';
+import { motion, AnimatePresence } from 'motion/react';
+import { X, Star, Volume2, VolumeX, CheckCircle2, XCircle, Share2 } from 'lucide-react';
 import { Lesson, User, Language } from '../types';
 import { updateUserProgress } from '../services/db';
+import { triggerConfetti, shareProgress } from '../services/feedback';
+import Toast, { ToastType } from '../components/Toast';
 
 interface LessonDetailProps {
   lesson: Lesson;
@@ -20,6 +23,11 @@ const LessonDetail: React.FC<LessonDetailProps> = ({ lesson, onFinish, user }) =
   const [pointsEarned, setPointsEarned] = useState(0);
   const [lives, setLives] = useState(user?.lives || 5);
   const [isMuted, setIsMuted] = useState(false);
+  const [toast, setToast] = useState<{ message: string; type: ToastType; visible: boolean }>({
+    message: '',
+    type: 'info',
+    visible: false
+  });
 
   const bgMusicRef = useRef<HTMLAudioElement | null>(null);
   const correctSound = useRef(new Audio('https://assets.mixkit.co/active_storage/sfx/2013/2013-preview.mp3'));
@@ -99,6 +107,20 @@ const LessonDetail: React.FC<LessonDetailProps> = ({ lesson, onFinish, user }) =
       setExerciseIdx(prev => prev + 1);
     } else {
       setStep('summary');
+      if (lives > 0 || exerciseIdx === lesson.exercises.length - 1) {
+        triggerConfetti();
+      }
+    }
+  };
+
+  const handleShare = async () => {
+    const title = 'My Komposita - Progrès';
+    const text = `Je viens de terminer la leçon "${lesson.title}" sur My Komposita ! J'ai gagné ${pointsEarned} XP. Rejoins-moi pour apprendre l'allemand !`;
+    const url = window.location.href;
+    
+    const result = await shareProgress(title, text, url);
+    if (result === 'copied') {
+      setToast({ message: 'Lien copié dans le presse-papier !', type: 'success', visible: true });
     }
   };
 
@@ -111,18 +133,59 @@ const LessonDetail: React.FC<LessonDetailProps> = ({ lesson, onFinish, user }) =
   if (step === 'summary') {
     const isSuccess = lives > 0 || exerciseIdx === lesson.exercises.length - 1;
     return (
-      <div className={`h-full flex flex-col items-center justify-center p-8 text-center ${isSuccess ? 'bg-blue-600' : 'bg-red-600'}`}>
+      <motion.div 
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        className={`h-full flex flex-col items-center justify-center p-8 text-center ${isSuccess ? 'bg-blue-600' : 'bg-red-600'}`}
+      >
         {isSuccess ? (
-          <Star className="w-24 h-24 text-yellow-300 fill-yellow-300 mb-6 animate-bounce" />
+          <motion.div
+            initial={{ scale: 0, rotate: -180 }}
+            animate={{ scale: 1, rotate: 0 }}
+            transition={{ type: 'spring', damping: 10 }}
+          >
+            <Star className="w-24 h-24 text-yellow-300 fill-yellow-300 mb-6 animate-bounce" />
+          </motion.div>
         ) : (
-          <XCircle className="w-24 h-24 text-white mb-6 animate-pulse" />
+          <motion.div
+            initial={{ scale: 0 }}
+            animate={{ scale: 1 }}
+          >
+            <XCircle className="w-24 h-24 text-white mb-6 animate-pulse" />
+          </motion.div>
         )}
         <h2 className="text-5xl font-black text-white mb-2">{isSuccess ? 'GÉNIAL !' : 'OUPS...'}</h2>
         <p className="text-blue-100 font-bold text-xl mb-12">
           {isSuccess ? `Leçon terminée avec succès • +${pointsEarned} XP` : 'Vous n\'avez plus de vies. Revenez plus tard ou relevez un défi !'}
         </p>
-        <button onClick={finishLesson} className="w-full max-w-sm bg-white py-5 rounded-[2rem] text-blue-600 font-black text-xl shadow-2xl transform transition active:scale-95">CONTINUER</button>
-      </div>
+        
+        <div className="w-full max-w-sm space-y-4">
+          <motion.button 
+            whileTap={{ scale: 0.95 }}
+            onClick={finishLesson} 
+            className="w-full bg-white py-5 rounded-[2rem] text-blue-600 font-black text-xl shadow-2xl"
+          >
+            CONTINUER
+          </motion.button>
+
+          {isSuccess && (
+            <motion.button 
+              whileTap={{ scale: 0.95 }}
+              onClick={handleShare}
+              className="w-full bg-blue-500/30 backdrop-blur-md border border-white/20 py-4 rounded-[2rem] text-white font-black text-lg flex items-center justify-center gap-3"
+            >
+              <Share2 className="w-5 h-5" /> PARTAGER MON SCORE
+            </motion.button>
+          )}
+        </div>
+
+        <Toast 
+          isVisible={toast.visible} 
+          message={toast.message} 
+          type={toast.type} 
+          onClose={() => setToast(t => ({ ...t, visible: false }))} 
+        />
+      </motion.div>
     );
   }
 
@@ -130,7 +193,12 @@ const LessonDetail: React.FC<LessonDetailProps> = ({ lesson, onFinish, user }) =
     const wordIndex = step === 'intro1' ? 0 : step === 'intro2' ? 1 : 2;
     const word = lesson.targetWords[wordIndex];
     return (
-      <div className="h-screen flex flex-col bg-white p-8">
+      <motion.div 
+        initial={{ opacity: 0, x: 100 }}
+        animate={{ opacity: 1, x: 0 }}
+        exit={{ opacity: 0, x: -100 }}
+        className="h-screen flex flex-col bg-white p-8"
+      >
         <header className="flex justify-between items-center mb-12">
           <button onClick={onFinish} className="p-2"><X className="w-6 h-6 text-slate-300" /></button>
           <div className="flex items-center gap-4">
@@ -141,42 +209,63 @@ const LessonDetail: React.FC<LessonDetailProps> = ({ lesson, onFinish, user }) =
           </div>
         </header>
         <div className="flex-1 flex flex-col items-center justify-center text-center">
-          <div className="w-48 h-48 bg-blue-50 rounded-[3rem] flex items-center justify-center mb-8 shadow-inner">
+          <motion.div 
+            initial={{ scale: 0 }}
+            animate={{ scale: 1 }}
+            transition={{ type: 'spring', delay: 0.2 }}
+            className="w-48 h-48 bg-blue-50 rounded-[3rem] flex items-center justify-center mb-8 shadow-inner"
+          >
             <span className="text-7xl font-black text-blue-600">{word.word[0].toUpperCase()}</span>
-          </div>
+          </motion.div>
           <p className="text-blue-400 font-black text-xl uppercase mb-2">{word.article || word.type}</p>
           <h2 className="text-6xl font-black text-slate-900 mb-4">{word.word}</h2>
           <p className="text-3xl text-slate-400 font-bold italic">"{word.translation[Language.FR]}"</p>
           <p className="text-xl text-slate-300 font-bold italic">"{word.translation[Language.EN]}"</p>
           
           <div className="mt-12 flex gap-4">
-            <div className="bg-slate-50 px-8 py-4 rounded-3xl border border-slate-100">
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.4 }}
+              className="bg-slate-50 px-8 py-4 rounded-3xl border border-slate-100"
+            >
               <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Partie 1</p>
               <p className="text-xl font-black text-slate-700">{word.components.word1}</p>
-            </div>
+            </motion.div>
             {word.components.linkingElement && (
-              <div className="bg-blue-50 px-4 py-4 rounded-3xl border border-blue-100">
+              <motion.div 
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.5 }}
+                className="bg-blue-50 px-4 py-4 rounded-3xl border border-blue-100"
+              >
                 <p className="text-[10px] font-black text-blue-400 uppercase tracking-widest mb-1">Lien</p>
                 <p className="text-xl font-black text-blue-700">-{word.components.linkingElement}-</p>
-              </div>
+              </motion.div>
             )}
-            <div className="bg-slate-50 px-8 py-4 rounded-3xl border border-slate-100">
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.6 }}
+              className="bg-slate-50 px-8 py-4 rounded-3xl border border-slate-100"
+            >
               <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Partie 2</p>
               <p className="text-xl font-black text-slate-700">{word.components.word2}</p>
-            </div>
+            </motion.div>
           </div>
         </div>
-        <button 
+        <motion.button 
+          whileTap={{ scale: 0.95 }}
           onClick={() => {
             if (step === 'intro1') setStep('intro2');
             else if (step === 'intro2') setStep('intro3');
             else setStep('exercises');
           }} 
-          className="w-full bg-blue-600 py-5 rounded-[2rem] text-white font-black text-xl shadow-xl shadow-blue-100 transform transition active:scale-95"
+          className="w-full bg-blue-600 py-5 rounded-[2rem] text-white font-black text-xl shadow-xl shadow-blue-100"
         >
           {step === 'intro3' ? "C'EST PARTI !" : "SUIVANT"}
-        </button>
-      </div>
+        </motion.button>
+      </motion.div>
     );
   }
 
@@ -217,10 +306,14 @@ const LessonDetail: React.FC<LessonDetailProps> = ({ lesson, onFinish, user }) =
           ) : (
             <div className="grid grid-cols-1 gap-3">
               {currentExercise.options?.map((opt, i) => (
-                <button
+                <motion.button
                   key={i}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: i * 0.1 }}
+                  whileTap={{ scale: 0.98 }}
                   onClick={() => !showResult && setSelectedAnswer(opt)}
-                  className={`w-full p-5 rounded-2xl border-b-4 font-bold text-left text-lg transition-all transform active:scale-[0.98] ${
+                  className={`w-full p-5 rounded-2xl border-b-4 font-bold text-left text-lg transition-all ${
                     selectedAnswer === opt 
                       ? 'border-blue-600 bg-blue-50 text-blue-700 translate-y-1' 
                       : 'border-slate-200 bg-white text-slate-700 hover:bg-slate-50'
@@ -231,7 +324,7 @@ const LessonDetail: React.FC<LessonDetailProps> = ({ lesson, onFinish, user }) =
                   }`}
                 >
                   {opt}
-                </button>
+                </motion.button>
               ))}
             </div>
           )}
@@ -239,26 +332,37 @@ const LessonDetail: React.FC<LessonDetailProps> = ({ lesson, onFinish, user }) =
       </div>
 
       {/* Result Banner */}
-      {showResult && (
-        <div className={`p-6 animate-in slide-in-from-bottom duration-300 ${isCorrect ? 'bg-green-100' : 'bg-red-100'}`}>
-          <div className="flex items-center gap-4 mb-4">
-            {isCorrect ? (
-              <CheckCircle2 className="w-10 h-10 text-green-600" />
-            ) : (
-              <XCircle className="w-10 h-10 text-red-600" />
-            )}
-            <div>
-              <h3 className={`text-xl font-black ${isCorrect ? 'text-green-800' : 'text-red-800'}`}>
-                {isCorrect ? 'Excellent !' : 'Dommage...'}
-              </h3>
-              {!isCorrect && <p className="text-red-700 font-bold">Solution : {currentExercise.correctAnswer}</p>}
+      <AnimatePresence>
+        {showResult && (
+          <motion.div 
+            initial={{ y: 100 }}
+            animate={{ y: 0 }}
+            exit={{ y: 100 }}
+            className={`p-6 border-t ${isCorrect ? 'bg-green-100' : 'bg-red-100'}`}
+          >
+            <div className="flex items-center gap-4 mb-4">
+              {isCorrect ? (
+                <CheckCircle2 className="w-10 h-10 text-green-600" />
+              ) : (
+                <XCircle className="w-10 h-10 text-red-600" />
+              )}
+              <div>
+                <h3 className={`text-xl font-black ${isCorrect ? 'text-green-800' : 'text-red-800'}`}>
+                  {isCorrect ? 'Excellent !' : 'Dommage...'}
+                </h3>
+                {!isCorrect && <p className="text-red-700 font-bold">Solution : {currentExercise.correctAnswer}</p>}
+              </div>
             </div>
-          </div>
-          <button onClick={handleNext} className={`w-full py-4 rounded-2xl text-white font-black text-lg shadow-lg ${isCorrect ? 'bg-green-600' : 'bg-red-600'}`}>
-            CONTINUER
-          </button>
-        </div>
-      )}
+            <motion.button 
+              whileTap={{ scale: 0.95 }}
+              onClick={handleNext} 
+              className={`w-full py-4 rounded-2xl text-white font-black text-lg shadow-lg ${isCorrect ? 'bg-green-600' : 'bg-red-600'}`}
+            >
+              CONTINUER
+            </motion.button>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {!showResult && (
         <div className="p-6 border-t bg-white">
