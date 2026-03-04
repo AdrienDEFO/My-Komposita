@@ -10,53 +10,78 @@ interface LayoutProps {
 }
 
 const Layout: React.FC<LayoutProps> = ({ children, activeTab, onTabChange }) => {
+  const navItems = [
+    { id: 'home', label: 'Accueil', icon: Home },
+    { id: 'lessons', label: 'Leçons', icon: BookOpen },
+    { id: 'dictionary', label: 'Lexique', icon: Book },
+    { id: 'dashboard', label: 'Stats', icon: BarChart3 },
+    { id: 'profile', label: 'Profil', icon: UserIcon },
+  ];
+
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col max-w-md mx-auto relative shadow-2xl overflow-hidden">
-      <main className="flex-1 overflow-y-auto hide-scrollbar pb-24">
-        {children}
+    <div className="min-h-screen bg-slate-50 flex flex-col md:flex-row relative overflow-hidden">
+      {/* Desktop Sidebar */}
+      <aside className="hidden md:flex flex-col w-64 bg-white border-r border-slate-100 p-6 fixed h-full z-50">
+        <div className="flex items-center gap-3 mb-12 px-2">
+          <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center text-white shadow-lg shadow-blue-200">
+            <BookOpen className="w-6 h-6" />
+          </div>
+          <span className="text-xl font-black text-slate-900 tracking-tight">My Komposita</span>
+        </div>
+
+        <nav className="flex-1 space-y-2">
+          {navItems.map((item) => {
+            const Icon = item.icon;
+            const isActive = activeTab === item.id;
+            return (
+              <motion.button
+                key={item.id}
+                whileHover={{ x: 5 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => onTabChange(item.id)}
+                className={`w-full flex items-center gap-4 px-4 py-4 rounded-2xl transition-all ${
+                  isActive 
+                    ? 'bg-blue-600 text-white shadow-lg shadow-blue-100' 
+                    : 'text-slate-400 hover:bg-slate-50 hover:text-slate-600'
+                }`}
+              >
+                <Icon className={`w-6 h-6 ${isActive ? 'fill-white/10' : ''}`} />
+                <span className="font-black text-sm uppercase tracking-widest">{item.label}</span>
+              </motion.button>
+            );
+          })}
+        </nav>
+
+        <div className="mt-auto p-4 bg-slate-50 rounded-3xl border border-slate-100">
+          <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Version</p>
+          <p className="text-xs font-black text-slate-900">1.2.1</p>
+        </div>
+      </aside>
+
+      {/* Main Content Area */}
+      <main className="flex-1 md:ml-64 overflow-y-auto hide-scrollbar pb-24 md:pb-0">
+        <div className="max-w-5xl mx-auto w-full">
+          {children}
+        </div>
       </main>
 
-      <nav className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-md bg-white/80 backdrop-blur-lg border-t border-slate-100 px-6 py-4 flex justify-between items-center z-50">
-        <motion.button 
-          whileTap={{ scale: 0.9 }}
-          onClick={() => onTabChange('home')}
-          className={`flex flex-col items-center gap-1 transition-all ${activeTab === 'home' ? 'text-blue-600 scale-110' : 'text-slate-300'}`}
-        >
-          <Home className={`w-6 h-6 ${activeTab === 'home' ? 'fill-blue-600/10' : ''}`} />
-          <span className="text-[10px] font-black uppercase tracking-widest">Accueil</span>
-        </motion.button>
-        <motion.button 
-          whileTap={{ scale: 0.9 }}
-          onClick={() => onTabChange('lessons')}
-          className={`flex flex-col items-center gap-1 transition-all ${activeTab === 'lessons' ? 'text-blue-600 scale-110' : 'text-slate-300'}`}
-        >
-          <BookOpen className={`w-6 h-6 ${activeTab === 'lessons' ? 'fill-blue-600/10' : ''}`} />
-          <span className="text-[10px] font-black uppercase tracking-widest">Leçons</span>
-        </motion.button>
-        <motion.button 
-          whileTap={{ scale: 0.9 }}
-          onClick={() => onTabChange('dictionary')}
-          className={`flex flex-col items-center gap-1 transition-all ${activeTab === 'dictionary' ? 'text-blue-600 scale-110' : 'text-slate-300'}`}
-        >
-          <Book className={`w-6 h-6 ${activeTab === 'dictionary' ? 'fill-blue-600/10' : ''}`} />
-          <span className="text-[10px] font-black uppercase tracking-widest">Lexique</span>
-        </motion.button>
-        <motion.button 
-          whileTap={{ scale: 0.9 }}
-          onClick={() => onTabChange('dashboard')}
-          className={`flex flex-col items-center gap-1 transition-all ${activeTab === 'dashboard' ? 'text-blue-600 scale-110' : 'text-slate-300'}`}
-        >
-          <BarChart3 className={`w-6 h-6 ${activeTab === 'dashboard' ? 'fill-blue-600/10' : ''}`} />
-          <span className="text-[10px] font-black uppercase tracking-widest">Stats</span>
-        </motion.button>
-        <motion.button 
-          whileTap={{ scale: 0.9 }}
-          onClick={() => onTabChange('profile')}
-          className={`flex flex-col items-center gap-1 transition-all ${activeTab === 'profile' ? 'text-blue-600 scale-110' : 'text-slate-300'}`}
-        >
-          <UserIcon className={`w-6 h-6 ${activeTab === 'profile' ? 'fill-blue-600/10' : ''}`} />
-          <span className="text-[10px] font-black uppercase tracking-widest">Profil</span>
-        </motion.button>
+      {/* Mobile Bottom Nav */}
+      <nav className="md:hidden fixed bottom-0 left-0 w-full bg-white/80 backdrop-blur-lg border-t border-slate-100 px-6 py-4 flex justify-between items-center z-50">
+        {navItems.map((item) => {
+          const Icon = item.icon;
+          const isActive = activeTab === item.id;
+          return (
+            <motion.button 
+              key={item.id}
+              whileTap={{ scale: 0.9 }}
+              onClick={() => onTabChange(item.id)}
+              className={`flex flex-col items-center gap-1 transition-all ${isActive ? 'text-blue-600 scale-110' : 'text-slate-300'}`}
+            >
+              <Icon className={`w-6 h-6 ${isActive ? 'fill-blue-600/10' : ''}`} />
+              <span className="text-[10px] font-black uppercase tracking-widest">{item.label}</span>
+            </motion.button>
+          );
+        })}
       </nav>
     </div>
   );

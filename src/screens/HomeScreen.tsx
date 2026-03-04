@@ -119,7 +119,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ onStartPlacement, onStartDailyC
   };
 
   return (
-    <div className="p-6 space-y-8 pb-32">
+    <div className="p-6 space-y-8 pb-32 md:pb-12">
       {/* Badge Offline */}
       {isOffline && (
         <motion.div 
@@ -155,196 +155,208 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ onStartPlacement, onStartDailyC
         </motion.div>
       </header>
 
-      {/* Streak Hero Card */}
-      <motion.div 
-        initial={{ opacity: 0, scale: 0.9 }}
-        animate={{ opacity: 1, scale: 1 }}
-        whileHover={{ scale: 1.02 }}
-        className="bg-blue-gradient p-8 rounded-[3rem] text-white shadow-2xl shadow-blue-200 relative overflow-hidden"
-      >
-        <div className="absolute top-0 right-0 p-8 opacity-10">
-          <Calendar className="w-32 h-32" />
-        </div>
-        <div className="relative z-10">
-          <div className="flex items-center gap-2 mb-4">
-            <Zap className="w-6 h-6 text-yellow-300 fill-yellow-300 animate-bounce" />
-            <span className="text-[10px] font-black uppercase tracking-widest opacity-80">Série de jours</span>
-          </div>
-          <h2 className="text-6xl font-black mb-2">{user?.dailyStreak || 0} JOURS</h2>
-          <p className="text-blue-100 font-medium text-sm mb-6">
-            {user?.dailyStreak && user.dailyStreak > 0 
-              ? "Incroyable ! Ne lâchez rien, vous êtes sur une lancée." 
-              : "Commencez votre série aujourd'hui pour débloquer des bonus !"}
-          </p>
-          
-          {user?.dailyStreak && user.dailyStreak > 0 && (
-            <motion.button 
-              whileTap={{ scale: 0.95 }}
-              onClick={handleShareStreak}
-              className="bg-white/20 backdrop-blur-md border border-white/30 px-6 py-3 rounded-2xl font-black text-xs flex items-center gap-2 hover:bg-white/30 transition-colors"
-            >
-              <Share2 className="w-4 h-4" /> PARTAGER MA SÉRIE
-            </motion.button>
-          )}
-        </div>
-      </motion.div>
-
-      {/* Test de niveau et Sélection */}
-      <motion.div 
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.1 }}
-        className="bg-white p-6 rounded-[2.5rem] border border-slate-100 shadow-sm space-y-6"
-      >
-        <div>
-          <h2 className="text-xl font-black text-slate-800 mb-2">Identifier votre niveau</h2>
-          <p className="text-sm text-slate-400 font-bold mb-4">Passez le test global pour débloquer automatiquement les niveaux adaptés.</p>
-          <motion.button 
-            whileTap={{ scale: 0.95 }}
-            onClick={onStartPlacement}
-            className="w-full bg-blue-600 text-white py-4 rounded-2xl font-black text-sm shadow-lg shadow-blue-100 flex items-center justify-center gap-2"
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div className="space-y-8">
+          {/* Streak Hero Card */}
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            whileHover={{ scale: 1.01 }}
+            className="bg-blue-gradient p-8 rounded-[3rem] text-white shadow-2xl shadow-blue-200 relative overflow-hidden h-full flex flex-col justify-center"
           >
-            <Trophy className="w-5 h-5" /> COMMENCER LE TEST GLOBAL
+            <div className="absolute top-0 right-0 p-8 opacity-10">
+              <Calendar className="w-32 h-32" />
+            </div>
+            <div className="relative z-10">
+              <div className="flex items-center gap-2 mb-4">
+                <Zap className="w-6 h-6 text-yellow-300 fill-yellow-300 animate-bounce" />
+                <span className="text-[10px] font-black uppercase tracking-widest opacity-80">Série de jours</span>
+              </div>
+              <h2 className="text-6xl font-black mb-2">{user?.dailyStreak || 0} JOURS</h2>
+              <p className="text-blue-100 font-medium text-sm mb-6">
+                {user?.dailyStreak && user.dailyStreak > 0 
+                  ? "Incroyable ! Ne lâchez rien, vous êtes sur une lancée." 
+                  : "Commencez votre série aujourd'hui pour débloquer des bonus !"}
+              </p>
+              
+              {user?.dailyStreak && user.dailyStreak > 0 && (
+                <motion.button 
+                  whileTap={{ scale: 0.95 }}
+                  onClick={handleShareStreak}
+                  className="bg-white/20 backdrop-blur-md border border-white/30 px-6 py-3 rounded-2xl font-black text-xs flex items-center gap-2 hover:bg-white/30 transition-colors"
+                >
+                  <Share2 className="w-4 h-4" /> PARTAGER MA SÉRIE
+                </motion.button>
+              )}
+            </div>
+          </motion.div>
+        </div>
+
+        <div className="space-y-8">
+          {/* Test de niveau et Sélection */}
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 }}
+            className="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-sm space-y-6 h-full flex flex-col justify-center"
+          >
+            <div>
+              <h2 className="text-xl font-black text-slate-800 mb-2">Identifier votre niveau</h2>
+              <p className="text-sm text-slate-400 font-bold mb-4">Passez le test global pour débloquer automatiquement les niveaux adaptés.</p>
+              <motion.button 
+                whileTap={{ scale: 0.95 }}
+                onClick={onStartPlacement}
+                className="w-full bg-blue-600 text-white py-4 rounded-2xl font-black text-sm shadow-lg shadow-blue-100 flex items-center justify-center gap-2"
+              >
+                <Trophy className="w-5 h-5" /> COMMENCER LE TEST GLOBAL
+              </motion.button>
+            </div>
+
+            <div className="pt-4 border-t border-slate-50">
+              <h3 className="text-sm font-black text-slate-800 mb-4 uppercase tracking-widest">Ou choisir un niveau de départ</h3>
+              <div className="grid grid-cols-3 gap-2">
+                {Object.values(Level).map((lvl, idx) => (
+                  <motion.button
+                    key={lvl}
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ delay: 0.2 + idx * 0.05 }}
+                    whileTap={{ scale: 0.9 }}
+                    onClick={() => {
+                      (window as any).dispatchEvent(new CustomEvent('start-skip-test', { detail: lvl }));
+                    }}
+                    className={`py-3 rounded-xl font-black text-xs transition-all ${
+                      user?.level === lvl 
+                        ? 'bg-blue-600 text-white shadow-md' 
+                        : 'bg-slate-50 text-slate-400 hover:bg-slate-100'
+                    }`}
+                  >
+                    {lvl}
+                  </motion.button>
+                ))}
+              </div>
+            </div>
+          </motion.div>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        {/* Proposer l'installation PWA */}
+        {deferredPrompt && !isStandalone && (
+          <motion.div 
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            className="bg-gradient-to-br from-blue-600 to-blue-700 p-8 rounded-[2.5rem] text-white shadow-xl shadow-blue-200 relative overflow-hidden"
+          >
+            <div className="absolute top-0 right-0 p-4 opacity-10">
+               <Download className="w-24 h-24" />
+            </div>
+            <div className="relative z-10">
+              <h3 className="font-black text-xl mb-1 text-blue-glow">Installer My Komposita</h3>
+              <p className="text-sm text-blue-100 font-medium mb-6 leading-tight">
+                Ajoutez l'application à votre écran d'accueil pour apprendre sans connexion internet.
+              </p>
+              <motion.button 
+                whileTap={{ scale: 0.95 }}
+                onClick={handleInstall}
+                disabled={installStatus === 'installing'}
+                className="bg-white text-blue-600 px-8 py-3.5 rounded-2xl font-black text-sm shadow-lg flex items-center gap-2"
+              >
+                {installStatus === 'installing' ? 'Installation...' : installStatus === 'done' ? <><Check className="w-4 h-4" /> INSTALLÉ</> : <><Download className="w-4 h-4" /> INSTALLER MAINTENANT</>}
+              </motion.button>
+            </div>
+          </motion.div>
+        )}
+
+        {user?.lives === 0 && (
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="bg-red-600 p-8 rounded-[2.5rem] text-white shadow-xl shadow-red-100 relative overflow-hidden"
+          >
+             <div className="absolute top-0 right-0 p-4 opacity-10">
+                <Zap className="w-24 h-24" />
+             </div>
+             <div className="relative z-10">
+               <h3 className="font-black text-xl mb-1">Plus de vies !</h3>
+               <p className="text-sm text-red-100 font-medium mb-6 leading-tight">
+                 Vos vies se rechargent toutes les 24h. En attendant, vous pouvez réviser vos leçons terminées.
+               </p>
+               <motion.button 
+                 whileTap={{ scale: 0.95 }}
+                 onClick={onStartLifeChallenge}
+                 disabled={!canDoLifeChallenge}
+                 className={`w-full py-4 rounded-2xl font-black text-sm shadow-lg flex items-center justify-center gap-2 ${
+                   canDoLifeChallenge ? 'bg-white text-red-600' : 'bg-red-500/50 text-red-200 cursor-not-allowed'
+                 }`}
+               >
+                 {canDoLifeChallenge ? (
+                   <><Zap className="w-4 h-4" /> RELEVER LE DÉFI (+5 VIES)</>
+                 ) : (
+                   <><Check className="w-4 h-4" /> DÉFI DISPONIBLE DANS 48H</>
+                 )}
+               </motion.button>
+             </div>
+          </motion.div>
+        )}
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="lg:col-span-2">
+          <motion.button 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3 }}
+            whileTap={{ scale: 0.98 }}
+            onClick={handleStartChallenge} 
+            className="w-full bg-white p-10 rounded-[3rem] border-4 border-blue-50 text-left shadow-sm relative overflow-hidden group h-full"
+          >
+            <div className="absolute top-0 right-0 p-8 opacity-5 transform translate-x-4 -translate-y-4 group-hover:scale-110 transition-transform">
+              <BookOpen className="w-48 h-48 text-blue-600" />
+            </div>
+            <h3 className="text-3xl font-black text-slate-800 mb-1">Défi du jour</h3>
+            <p className="text-slate-400 font-bold mb-8 text-lg">+50 XP • Maîtrisez de nouveaux mots</p>
+            <span className="bg-blue-600 text-white px-10 py-5 rounded-2xl font-black text-lg shadow-lg shadow-blue-100">COMMENCER</span>
           </motion.button>
         </div>
 
-        <div className="pt-4 border-t border-slate-50">
-          <h3 className="text-sm font-black text-slate-800 mb-4 uppercase tracking-widest">Ou choisir un niveau de départ</h3>
-          <div className="grid grid-cols-3 gap-2">
-            {Object.values(Level).map((lvl, idx) => (
-              <motion.button
-                key={lvl}
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: 0.2 + idx * 0.05 }}
-                whileTap={{ scale: 0.9 }}
-                onClick={() => {
-                  (window as any).dispatchEvent(new CustomEvent('start-skip-test', { detail: lvl }));
-                }}
-                className={`py-3 rounded-xl font-black text-xs transition-all ${
-                  user?.level === lvl 
-                    ? 'bg-blue-600 text-white shadow-md' 
-                    : 'bg-slate-50 text-slate-400 hover:bg-slate-100'
-                }`}
-              >
-                {lvl}
-              </motion.button>
-            ))}
-          </div>
-        </div>
-      </motion.div>
-
-      {/* Proposer l'installation PWA */}
-      {deferredPrompt && !isStandalone && (
-        <motion.div 
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: 1, x: 0 }}
-          className="bg-gradient-to-br from-blue-600 to-blue-700 p-6 rounded-[2.5rem] text-white shadow-xl shadow-blue-200 relative overflow-hidden"
-        >
-          <div className="absolute top-0 right-0 p-4 opacity-10">
-             <Download className="w-24 h-24" />
-          </div>
-          <div className="relative z-10">
-            <h3 className="font-black text-xl mb-1 text-blue-glow">Installer My Komposita</h3>
-            <p className="text-sm text-blue-100 font-medium mb-6 leading-tight">
-              Ajoutez l'application à votre écran d'accueil pour apprendre sans connexion internet.
-            </p>
-            <motion.button 
-              whileTap={{ scale: 0.95 }}
-              onClick={handleInstall}
-              disabled={installStatus === 'installing'}
-              className="bg-white text-blue-600 px-8 py-3.5 rounded-2xl font-black text-sm shadow-lg flex items-center gap-2"
-            >
-              {installStatus === 'installing' ? 'Installation...' : installStatus === 'done' ? <><Check className="w-4 h-4" /> INSTALLÉ</> : <><Download className="w-4 h-4" /> INSTALLER MAINTENANT</>}
-            </motion.button>
-          </div>
-        </motion.div>
-      )}
-
-      {user?.lives === 0 && (
-        <motion.div 
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          className="bg-red-600 p-6 rounded-[2.5rem] text-white shadow-xl shadow-red-100 relative overflow-hidden"
-        >
-           <div className="absolute top-0 right-0 p-4 opacity-10">
-              <Zap className="w-24 h-24" />
-           </div>
-           <div className="relative z-10">
-             <h3 className="font-black text-xl mb-1">Plus de vies !</h3>
-             <p className="text-sm text-red-100 font-medium mb-6 leading-tight">
-               Vos vies se rechargent toutes les 24h. En attendant, vous pouvez réviser vos leçons terminées.
-             </p>
-             <motion.button 
-               whileTap={{ scale: 0.95 }}
-               onClick={onStartLifeChallenge}
-               disabled={!canDoLifeChallenge}
-               className={`w-full py-4 rounded-2xl font-black text-sm shadow-lg flex items-center justify-center gap-2 ${
-                 canDoLifeChallenge ? 'bg-white text-red-600' : 'bg-red-500/50 text-red-200 cursor-not-allowed'
-               }`}
-             >
-               {canDoLifeChallenge ? (
-                 <><Zap className="w-4 h-4" /> RELEVER LE DÉFI (+5 VIES)</>
-               ) : (
-                 <><Check className="w-4 h-4" /> DÉFI DISPONIBLE DANS 48H</>
-               )}
-             </motion.button>
-           </div>
-        </motion.div>
-      )}
-
-      <motion.button 
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.3 }}
-        whileTap={{ scale: 0.98 }}
-        onClick={handleStartChallenge} 
-        className="w-full bg-white p-8 rounded-[3rem] border-4 border-blue-50 text-left shadow-sm relative overflow-hidden group"
-      >
-        <div className="absolute top-0 right-0 p-8 opacity-5 transform translate-x-4 -translate-y-4 group-hover:scale-110 transition-transform">
-          <BookOpen className="w-32 h-32 text-blue-600" />
-        </div>
-        <h3 className="text-2xl font-black text-slate-800 mb-1">Défi du jour</h3>
-        <p className="text-slate-400 font-bold mb-6">+50 XP • Maîtrisez de nouveaux mots</p>
-        <span className="bg-blue-600 text-white px-8 py-4 rounded-2xl font-black text-sm shadow-lg shadow-blue-100">COMMENCER</span>
-      </motion.button>
-
-      <div>
-          <div className="flex justify-between items-center px-1 mb-4">
-              <h2 className="text-xl font-black text-slate-800">Lexique acquis ({learnedWordsList.length})</h2>
-              <button onClick={() => setShowDict(true)} className="text-blue-600 font-black text-xs uppercase tracking-widest">Tout voir</button>
-          </div>
-          
-          <div className="grid grid-cols-1 gap-3">
-            {learnedWordsList.slice(0, 3).map(word => (
-              <div key={word.id} className="bg-white p-4 rounded-2xl flex justify-between items-center border border-slate-50 shadow-sm hover:border-blue-100 transition-colors">
-                <div>
-                  <div className="flex items-center gap-2">
-                    <span className="text-[10px] font-black text-blue-400 uppercase">{word.article || word.type}</span>
-                    <p className="font-black text-slate-800 text-lg">{word.word}</p>
+        <div>
+            <div className="flex justify-between items-center px-1 mb-4">
+                <h2 className="text-xl font-black text-slate-800">Lexique acquis ({learnedWordsList.length})</h2>
+                <button onClick={() => setShowDict(true)} className="text-blue-600 font-black text-xs uppercase tracking-widest">Tout voir</button>
+            </div>
+            
+            <div className="grid grid-cols-1 gap-3">
+              {learnedWordsList.slice(0, 4).map(word => (
+                <div key={word.id} className="bg-white p-4 rounded-2xl flex justify-between items-center border border-slate-50 shadow-sm hover:border-blue-100 transition-colors">
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <span className="text-[10px] font-black text-blue-400 uppercase">{word.article || word.type}</span>
+                      <p className="font-black text-slate-800 text-lg">{word.word}</p>
+                    </div>
+                    <div className="flex flex-col">
+                      <p className="text-[11px] text-slate-400 font-bold uppercase tracking-tight">{word.translation[Language.FR]}</p>
+                      <p className="text-[10px] text-slate-300 font-bold uppercase tracking-tight">{word.translation[Language.EN]}</p>
+                    </div>
                   </div>
-                  <div className="flex flex-col">
-                    <p className="text-[11px] text-slate-400 font-bold uppercase tracking-tight">{word.translation[Language.FR]}</p>
-                    <p className="text-[10px] text-slate-300 font-bold uppercase tracking-tight">{word.translation[Language.EN]}</p>
+                  <button 
+                    onClick={() => speak(word.word)} 
+                    className="p-4 bg-slate-50 rounded-2xl text-slate-400 hover:bg-blue-600 hover:text-white transition-all btn-bounce"
+                  >
+                    <Volume2 className="w-5 h-5" />
+                  </button>
+                </div>
+              ))}
+              {learnedWordsList.length === 0 && (
+                <div className="text-center py-16 bg-white rounded-[2.5rem] border-2 border-dashed border-slate-100">
+                  <div className="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <Sparkles className="w-6 h-6 text-slate-200" />
                   </div>
+                  <p className="text-slate-300 font-black italic">Commencez une leçon pour enrichir votre lexique !</p>
                 </div>
-                <button 
-                  onClick={() => speak(word.word)} 
-                  className="p-4 bg-slate-50 rounded-2xl text-slate-400 hover:bg-blue-600 hover:text-white transition-all btn-bounce"
-                >
-                  <Volume2 className="w-5 h-5" />
-                </button>
-              </div>
-            ))}
-            {learnedWordsList.length === 0 && (
-              <div className="text-center py-16 bg-white rounded-[2.5rem] border-2 border-dashed border-slate-100">
-                <div className="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <Sparkles className="w-6 h-6 text-slate-200" />
-                </div>
-                <p className="text-slate-300 font-black italic">Commencez une leçon pour enrichir votre lexique !</p>
-              </div>
-            )}
-          </div>
+              )}
+            </div>
+        </div>
       </div>
 
       {showDict && (
@@ -354,7 +366,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ onStartPlacement, onStartDailyC
               <button onClick={() => setShowDict(false)} className="p-3 bg-slate-100 rounded-2xl text-slate-500 btn-bounce"><X className="w-6 h-6" /></button>
            </header>
            <div className="p-4 border-b bg-white">
-              <div className="relative">
+              <div className="relative max-w-2xl mx-auto">
                 <Search className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-300 w-5 h-5" />
                 <input 
                   type="text" 
@@ -365,22 +377,24 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ onStartPlacement, onStartDailyC
                 />
               </div>
            </div>
-           <div className="flex-1 overflow-y-auto p-6 space-y-3 hide-scrollbar">
-              {learnedWordsList.filter(w => w.word.toLowerCase().includes(searchTerm.toLowerCase())).map(word => (
-                <div key={word.id} className="bg-white p-5 rounded-2xl flex justify-between items-center border border-slate-100 shadow-sm">
-                  <div>
-                    <div className="flex items-center gap-2">
-                       <span className="text-[10px] font-black text-blue-400 uppercase">{word.article || word.type}</span>
-                       <p className="font-black text-slate-800 text-lg">{word.word}</p>
+           <div className="flex-1 overflow-y-auto p-6 space-y-3 hide-scrollbar max-w-4xl mx-auto w-full">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {learnedWordsList.filter(w => w.word.toLowerCase().includes(searchTerm.toLowerCase())).map(word => (
+                  <div key={word.id} className="bg-white p-5 rounded-2xl flex justify-between items-center border border-slate-100 shadow-sm">
+                    <div>
+                      <div className="flex items-center gap-2">
+                         <span className="text-[10px] font-black text-blue-400 uppercase">{word.article || word.type}</span>
+                         <p className="font-black text-slate-800 text-lg">{word.word}</p>
+                      </div>
+                      <div className="flex flex-col">
+                        <p className="text-xs text-slate-400 font-black uppercase tracking-tight">{word.translation[Language.FR]}</p>
+                        <p className="text-[10px] text-slate-300 font-black uppercase tracking-tight">{word.translation[Language.EN]}</p>
+                      </div>
                     </div>
-                    <div className="flex flex-col">
-                      <p className="text-xs text-slate-400 font-black uppercase tracking-tight">{word.translation[Language.FR]}</p>
-                      <p className="text-[10px] text-slate-300 font-black uppercase tracking-tight">{word.translation[Language.EN]}</p>
-                    </div>
+                    <button onClick={() => speak(word.word)} className="p-4 bg-blue-50 rounded-2xl text-blue-600 btn-bounce"><Volume2 className="w-5 h-5" /></button>
                   </div>
-                  <button onClick={() => speak(word.word)} className="p-4 bg-blue-50 rounded-2xl text-blue-600 btn-bounce"><Volume2 className="w-5 h-5" /></button>
-                </div>
-              ))}
+                ))}
+              </div>
            </div>
         </div>
       )}

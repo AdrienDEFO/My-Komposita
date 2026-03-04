@@ -208,7 +208,7 @@ const LessonDetail: React.FC<LessonDetailProps> = ({ lesson, onFinish, user }) =
             <span className="text-blue-600 font-black text-sm uppercase tracking-widest">Nouveau mot {wordIndex + 1}/3</span>
           </div>
         </header>
-        <div className="flex-1 flex flex-col items-center justify-center text-center">
+        <div className="flex-1 flex flex-col items-center justify-center text-center max-w-2xl mx-auto w-full">
           <motion.div 
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
@@ -222,7 +222,7 @@ const LessonDetail: React.FC<LessonDetailProps> = ({ lesson, onFinish, user }) =
           <p className="text-3xl text-slate-400 font-bold italic">"{word.translation[Language.FR]}"</p>
           <p className="text-xl text-slate-300 font-bold italic">"{word.translation[Language.EN]}"</p>
           
-          <div className="mt-12 flex gap-4">
+          <div className="mt-12 flex flex-wrap justify-center gap-4">
             <motion.div 
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -254,17 +254,19 @@ const LessonDetail: React.FC<LessonDetailProps> = ({ lesson, onFinish, user }) =
             </motion.div>
           </div>
         </div>
-        <motion.button 
-          whileTap={{ scale: 0.95 }}
-          onClick={() => {
-            if (step === 'intro1') setStep('intro2');
-            else if (step === 'intro2') setStep('intro3');
-            else setStep('exercises');
-          }} 
-          className="w-full bg-blue-600 py-5 rounded-[2rem] text-white font-black text-xl shadow-xl shadow-blue-100"
-        >
-          {step === 'intro3' ? "C'EST PARTI !" : "SUIVANT"}
-        </motion.button>
+        <div className="max-w-md mx-auto w-full">
+          <motion.button 
+            whileTap={{ scale: 0.95 }}
+            onClick={() => {
+              if (step === 'intro1') setStep('intro2');
+              else if (step === 'intro2') setStep('intro3');
+              else setStep('exercises');
+            }} 
+            className="w-full bg-blue-600 py-5 rounded-[2rem] text-white font-black text-xl shadow-xl shadow-blue-100"
+          >
+            {step === 'intro3' ? "C'EST PARTI !" : "SUIVANT"}
+          </motion.button>
+        </div>
       </motion.div>
     );
   }
@@ -281,7 +283,7 @@ const LessonDetail: React.FC<LessonDetailProps> = ({ lesson, onFinish, user }) =
         </button>
       </header>
 
-      <div className="flex-1 p-6 flex flex-col">
+      <div className="flex-1 p-6 flex flex-col max-w-3xl mx-auto w-full">
         <div className="flex-1">
           <h2 className="text-2xl font-black text-slate-800 mb-8 leading-tight">{currentExercise.question}</h2>
           
@@ -304,7 +306,7 @@ const LessonDetail: React.FC<LessonDetailProps> = ({ lesson, onFinish, user }) =
               )}
             </div>
           ) : (
-            <div className="grid grid-cols-1 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {currentExercise.options?.map((opt, i) => (
                 <motion.button
                   key={i}
@@ -340,39 +342,43 @@ const LessonDetail: React.FC<LessonDetailProps> = ({ lesson, onFinish, user }) =
             exit={{ y: 100 }}
             className={`p-6 border-t ${isCorrect ? 'bg-green-100' : 'bg-red-100'}`}
           >
-            <div className="flex items-center gap-4 mb-4">
-              {isCorrect ? (
-                <CheckCircle2 className="w-10 h-10 text-green-600" />
-              ) : (
-                <XCircle className="w-10 h-10 text-red-600" />
-              )}
-              <div>
-                <h3 className={`text-xl font-black ${isCorrect ? 'text-green-800' : 'text-red-800'}`}>
-                  {isCorrect ? 'Excellent !' : 'Dommage...'}
-                </h3>
-                {!isCorrect && <p className="text-red-700 font-bold">Solution : {currentExercise.correctAnswer}</p>}
+            <div className="max-w-3xl mx-auto w-full">
+              <div className="flex items-center gap-4 mb-4">
+                {isCorrect ? (
+                  <CheckCircle2 className="w-10 h-10 text-green-600" />
+                ) : (
+                  <XCircle className="w-10 h-10 text-red-600" />
+                )}
+                <div>
+                  <h3 className={`text-xl font-black ${isCorrect ? 'text-green-800' : 'text-red-800'}`}>
+                    {isCorrect ? 'Excellent !' : 'Dommage...'}
+                  </h3>
+                  {!isCorrect && <p className="text-red-700 font-bold">Solution : {currentExercise.correctAnswer}</p>}
+                </div>
               </div>
+              <motion.button 
+                whileTap={{ scale: 0.95 }}
+                onClick={handleNext} 
+                className={`w-full py-4 rounded-2xl text-white font-black text-lg shadow-lg ${isCorrect ? 'bg-green-600' : 'bg-red-600'}`}
+              >
+                CONTINUER
+              </motion.button>
             </div>
-            <motion.button 
-              whileTap={{ scale: 0.95 }}
-              onClick={handleNext} 
-              className={`w-full py-4 rounded-2xl text-white font-black text-lg shadow-lg ${isCorrect ? 'bg-green-600' : 'bg-red-600'}`}
-            >
-              CONTINUER
-            </motion.button>
           </motion.div>
         )}
       </AnimatePresence>
 
       {!showResult && (
         <div className="p-6 border-t bg-white">
-          <button 
-            disabled={currentExercise.isQRO ? !qroValue : !selectedAnswer} 
-            onClick={handleCheckAnswer} 
-            className="w-full bg-blue-600 py-5 rounded-2xl text-white font-black text-xl shadow-xl shadow-blue-100 disabled:opacity-30 transform transition active:scale-95"
-          >
-            VÉRIFIER
-          </button>
+          <div className="max-w-3xl mx-auto w-full">
+            <button 
+              disabled={currentExercise.isQRO ? !qroValue : !selectedAnswer} 
+              onClick={handleCheckAnswer} 
+              className="w-full bg-blue-600 py-5 rounded-2xl text-white font-black text-xl shadow-xl shadow-blue-100 disabled:opacity-30 transform transition active:scale-95"
+            >
+              VÉRIFIER
+            </button>
+          </div>
         </div>
       )}
     </div>

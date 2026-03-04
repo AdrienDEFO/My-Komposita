@@ -223,88 +223,88 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ onLogout, onLevelChange, 
   }
 
   return (
-    <div className="p-6 space-y-8 animate-slide-up">
-      <div className="text-center pt-8 relative">
+    <div className="p-6 space-y-8 animate-slide-up max-w-4xl mx-auto">
+      <div className="text-center pt-12 relative">
         <button 
           onClick={() => setShowEdit(true)}
-          className="absolute top-8 right-0 p-3 bg-white rounded-2xl border border-slate-100 shadow-sm text-blue-600"
+          className="absolute top-12 right-0 p-4 bg-white rounded-2xl border border-slate-100 shadow-sm text-blue-600 hover:bg-slate-50 transition-colors"
         >
-          <Edit2 className="w-5 h-5" />
+          <Edit2 className="w-6 h-6" />
         </button>
-        <div className="w-32 h-32 bg-white rounded-full flex items-center justify-center mx-auto mb-4 shadow-xl border-4 border-white overflow-hidden">
+        <div className="w-40 h-40 bg-white rounded-full flex items-center justify-center mx-auto mb-6 shadow-2xl border-4 border-white overflow-hidden">
           {user?.avatar ? (
             <img src={user.avatar} alt="Profile" className="w-full h-full object-cover" referrerPolicy="no-referrer" />
           ) : (
-            <UserCircle className="w-24 h-24 text-blue-600" />
+            <UserCircle className="w-32 h-32 text-blue-600" />
           )}
         </div>
-        <h2 className="text-3xl font-black text-slate-900">{user?.username}</h2>
-        <p className="text-slate-400 font-bold mb-4">{user?.email}</p>
-        <div className="inline-block bg-blue-100 px-4 py-1.5 rounded-full">
-          <span className="text-blue-700 font-black text-[10px] uppercase tracking-widest">Niveau {user?.level}</span>
+        <h2 className="text-4xl font-black text-slate-900 mb-2">{user?.username}</h2>
+        <p className="text-slate-400 font-bold mb-6 text-lg">{user?.email}</p>
+        <div className="inline-block bg-blue-100 px-6 py-2 rounded-full shadow-sm">
+          <span className="text-blue-700 font-black text-xs uppercase tracking-widest">Niveau {user?.level}</span>
         </div>
       </div>
 
-      <div className="space-y-3">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <button 
           onClick={() => setShowLevel(true)}
-          className="w-full flex items-center p-5 bg-white rounded-3xl border border-slate-100 shadow-sm btn-bounce group"
+          className="w-full flex items-center p-6 bg-white rounded-[2.5rem] border border-slate-100 shadow-sm btn-bounce group hover:border-orange-200 transition-all"
         >
-          <div className="w-12 h-12 bg-orange-50 rounded-2xl flex items-center justify-center text-orange-600 group-hover:bg-orange-600 group-hover:text-white transition-colors">
-            <Target className="w-6 h-6" />
+          <div className="w-14 h-14 bg-orange-50 rounded-2xl flex items-center justify-center text-orange-600 group-hover:bg-orange-600 group-hover:text-white transition-colors">
+            <Target className="w-7 h-7" />
           </div>
-          <div className="flex-1 text-left ml-4">
-            <p className="font-black text-slate-700 leading-none">Niveau</p>
-            <p className="text-[10px] font-bold text-slate-400 uppercase mt-1 tracking-tight">{user?.level}</p>
+          <div className="flex-1 text-left ml-5">
+            <p className="font-black text-slate-800 text-lg leading-none">Niveau</p>
+            <p className="text-xs font-bold text-slate-400 uppercase mt-2 tracking-widest">{user?.level}</p>
           </div>
-          <ChevronRight className="w-5 h-5 text-slate-300" />
+          <ChevronRight className="w-6 h-6 text-slate-300 group-hover:text-orange-600 transition-colors" />
         </button>
 
         <button 
           onClick={() => setShowLang(true)}
-          className="w-full flex items-center p-5 bg-white rounded-3xl border border-slate-100 shadow-sm btn-bounce group"
+          className="w-full flex items-center p-6 bg-white rounded-[2.5rem] border border-slate-100 shadow-sm btn-bounce group hover:border-blue-200 transition-all"
         >
-          <div className="w-12 h-12 bg-blue-50 rounded-2xl flex items-center justify-center text-blue-600 group-hover:bg-blue-600 group-hover:text-white transition-colors">
-            <Languages className="w-6 h-6" />
+          <div className="w-14 h-14 bg-blue-50 rounded-2xl flex items-center justify-center text-blue-600 group-hover:bg-blue-600 group-hover:text-white transition-colors">
+            <Languages className="w-7 h-7" />
           </div>
-          <div className="flex-1 text-left ml-4">
-            <p className="font-black text-slate-700 leading-none">Langue</p>
-            <p className="text-[10px] font-bold text-slate-400 uppercase mt-1 tracking-tight">{user?.language}</p>
+          <div className="flex-1 text-left ml-5">
+            <p className="font-black text-slate-800 text-lg leading-none">Langue</p>
+            <p className="text-xs font-bold text-slate-400 uppercase mt-2 tracking-widest">{user?.language}</p>
           </div>
-          <ChevronRight className="w-5 h-5 text-slate-300" />
+          <ChevronRight className="w-6 h-6 text-slate-300 group-hover:text-blue-600 transition-colors" />
         </button>
 
         <button 
           onClick={() => setShowAbout(true)}
-          className="w-full flex items-center p-5 bg-white rounded-3xl border border-slate-100 shadow-sm btn-bounce group"
+          className="w-full flex items-center p-6 bg-white rounded-[2.5rem] border border-slate-100 shadow-sm btn-bounce group hover:border-slate-300 transition-all"
         >
-          <div className="w-12 h-12 bg-slate-50 rounded-2xl flex items-center justify-center text-slate-400 group-hover:bg-slate-800 group-hover:text-white transition-colors">
-            <Info className="w-6 h-6" />
+          <div className="w-14 h-14 bg-slate-50 rounded-2xl flex items-center justify-center text-slate-400 group-hover:bg-slate-800 group-hover:text-white transition-colors">
+            <Info className="w-7 h-7" />
           </div>
-          <div className="flex-1 text-left ml-4">
-            <p className="font-black text-slate-700">À propos</p>
+          <div className="flex-1 text-left ml-5">
+            <p className="font-black text-slate-800 text-lg">À propos</p>
           </div>
-          <ChevronRight className="w-5 h-5 text-slate-300" />
-        </button>
-
-        <button 
-          onClick={onLogout}
-          className="w-full flex items-center p-5 bg-red-50 rounded-3xl border border-red-100 mt-8 btn-bounce"
-        >
-          <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center text-red-500 shadow-sm shadow-red-100">
-            <LogOut className="w-6 h-6" />
-          </div>
-          <p className="font-black text-red-700 ml-4 flex-1 text-left">Se déconnecter</p>
+          <ChevronRight className="w-6 h-6 text-slate-300 group-hover:text-slate-800 transition-colors" />
         </button>
 
         <button 
           onClick={handleShare}
-          className="w-full flex items-center p-5 bg-blue-600 rounded-3xl border border-blue-700 mt-4 shadow-lg shadow-blue-200 btn-bounce"
+          className="w-full flex items-center p-6 bg-blue-600 rounded-[2.5rem] border border-blue-700 shadow-xl shadow-blue-100 btn-bounce hover:bg-blue-700 transition-all"
         >
-          <div className="w-12 h-12 bg-white/20 rounded-2xl flex items-center justify-center text-white">
-            <Share2 className="w-6 h-6" />
+          <div className="w-14 h-14 bg-white/20 rounded-2xl flex items-center justify-center text-white">
+            <Share2 className="w-7 h-7" />
           </div>
-          <p className="font-black text-white ml-4 flex-1 text-left">Partager mon profil</p>
+          <p className="font-black text-white ml-5 flex-1 text-left text-lg">Partager mon profil</p>
+        </button>
+
+        <button 
+          onClick={onLogout}
+          className="w-full flex items-center p-6 bg-red-50 rounded-[2.5rem] border border-red-100 btn-bounce md:col-span-2 hover:bg-red-100 transition-all"
+        >
+          <div className="w-14 h-14 bg-white rounded-2xl flex items-center justify-center text-red-500 shadow-sm shadow-red-100">
+            <LogOut className="w-7 h-7" />
+          </div>
+          <p className="font-black text-red-700 ml-5 flex-1 text-left text-lg">Se déconnecter</p>
         </button>
       </div>
 
