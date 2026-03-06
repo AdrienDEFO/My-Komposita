@@ -36,35 +36,45 @@ export const MOCK_KOMPOSITA: Kompositum[] = [
     translation: { [Language.FR]: 'Porte d\'entrée', [Language.EN]: 'Front door', [Language.DE]: 'Haustür' },
     components: { word1: 'Haus', word2: 'Tür' },
     declensions: { nominative: 'die Haustür', genitive: 'der Haustür', dative: 'der Haustür', accusative: 'die Haustür' },
-    category: 'Maison'
+    category: 'Maison',
+    exampleSentence: 'Ich schließe die Haustür ab.',
+    exampleTranslation: { [Language.FR]: 'Je ferme la porte d\'entrée à clé.', [Language.EN]: 'I am locking the front door.' }
   },
   {
     id: '2', word: 'Apfelsaft', type: WordType.NOUN, article: 'der', level: Level.A1,
     translation: { [Language.FR]: 'Jus de pomme', [Language.EN]: 'Apple juice', [Language.DE]: 'Apfelsaft' },
     components: { word1: 'Apfel', word2: 'Saft' },
     declensions: { nominative: 'der Apfelsaft', genitive: 'des Apfelsaftes', dative: 'dem Apfelsaft', accusative: 'den Apfelsaft' },
-    category: 'Aliments'
+    category: 'Aliments',
+    exampleSentence: 'Ich trinke morgens gerne Apfelsaft.',
+    exampleTranslation: { [Language.FR]: 'J\'aime boire du jus de pomme le matin.', [Language.EN]: 'I like to drink apple juice in the morning.' }
   },
   {
     id: '3', word: 'Bahnhof', type: WordType.NOUN, article: 'der', level: Level.A1,
     translation: { [Language.FR]: 'Gare', [Language.EN]: 'Station', [Language.DE]: 'Bahnhof' },
     components: { word1: 'Bahn', word2: 'Hof' },
     declensions: { nominative: 'der Bahnhof', genitive: 'des Bahnhofs', dative: 'dem Bahnhof', accusative: 'den Bahnhof' },
-    category: 'Transport'
+    category: 'Transport',
+    exampleSentence: 'Der Zug kommt am Bahnhof an.',
+    exampleTranslation: { [Language.FR]: 'Le train arrive à la gare.', [Language.EN]: 'The train arrives at the station.' }
   },
   {
     id: '4', word: 'Kühlschrank', type: WordType.NOUN, article: 'der', level: Level.A1,
     translation: { [Language.FR]: 'Réfrigérateur', [Language.EN]: 'Fridge', [Language.DE]: 'Kühlschrank' },
     components: { word1: 'kühl', word2: 'Schrank' },
     declensions: { nominative: 'der Kühlschrank', genitive: 'des Kühlschranks', dative: 'dem Kühlschrank', accusative: 'den Kühlschrank' },
-    category: 'Maison'
+    category: 'Maison',
+    exampleSentence: 'Die Milch steht im Kühlschrank.',
+    exampleTranslation: { [Language.FR]: 'Le lait est dans le réfrigérateur.', [Language.EN]: 'The milk is in the fridge.' }
   },
   {
     id: '5', word: 'Handschuh', type: WordType.NOUN, article: 'der', level: Level.A1,
     translation: { [Language.FR]: 'Gant', [Language.EN]: 'Glove', [Language.DE]: 'Handschuh' },
     components: { word1: 'Hand', word2: 'Schuh' },
     declensions: { nominative: 'der Handschuh', genitive: 'des Handschuhs', dative: 'dem Handschuh', accusative: 'den Handschuh' },
-    category: 'Vêtements'
+    category: 'Vêtements',
+    exampleSentence: 'Ich habe einen Handschuh verloren.',
+    exampleTranslation: { [Language.FR]: 'J\'ai perdu un gant.', [Language.EN]: 'I lost a glove.' }
   },
   {
     id: 'a1-6', word: 'Schulbuch', type: WordType.NOUN, article: 'das', level: Level.A1,
@@ -126,7 +136,9 @@ export const MOCK_KOMPOSITA: Kompositum[] = [
     translation: { [Language.FR]: 'Lunettes de soleil', [Language.EN]: 'Sunglasses', [Language.DE]: 'Sonnenbrille' },
     components: { word1: 'Sonnen', word2: 'Brille' },
     declensions: { nominative: 'die Sonnenbrille', genitive: 'der Sonnenbrille', dative: 'der Sonnenbrille', accusative: 'die Sonnenbrille' },
-    category: 'Vêtements'
+    category: 'Vêtements',
+    exampleSentence: 'Im Sommer trage ich eine Sonnenbrille.',
+    exampleTranslation: { [Language.FR]: 'En été, je porte des lunettes de soleil.', [Language.EN]: 'In summer, I wear sunglasses.' }
   },
   {
     id: '8', word: 'Kindergarten', type: WordType.NOUN, article: 'der', level: Level.A2,
@@ -285,7 +297,9 @@ export const MOCK_KOMPOSITA: Kompositum[] = [
     translation: { [Language.FR]: 'Défi', [Language.EN]: 'Challenge', [Language.DE]: 'Herausforderung' },
     components: { word1: 'heraus', word2: 'Forderung' },
     declensions: { nominative: 'die Herausforderung', genitive: 'der Herausforderung', dative: 'der Herausforderung', accusative: 'die Herausforderung' },
-    category: 'Abstrait'
+    category: 'Abstrait',
+    exampleSentence: 'Das neue Projekt ist eine große Herausforderung.',
+    exampleTranslation: { [Language.FR]: 'Le nouveau projet est un grand défi.', [Language.EN]: 'The new project is a big challenge.' }
   },
   {
     id: '17', word: 'Verantwortung', type: WordType.NOUN, article: 'die', level: Level.B2,

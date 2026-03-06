@@ -222,6 +222,22 @@ const LessonDetail: React.FC<LessonDetailProps> = ({ lesson, onFinish, user }) =
           <p className="text-3xl text-slate-400 font-bold italic">"{word.translation[Language.FR]}"</p>
           <p className="text-xl text-slate-300 font-bold italic">"{word.translation[Language.EN]}"</p>
           
+          {word.exampleSentence && (
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.3 }}
+              className="mt-8 p-6 bg-blue-50/50 rounded-3xl border border-blue-100 max-w-lg w-full"
+            >
+              <p className="text-blue-600 font-black text-lg mb-2">"{word.exampleSentence}"</p>
+              {word.exampleTranslation && (
+                <p className="text-slate-500 font-bold italic text-sm">
+                  {word.exampleTranslation[user?.language || Language.FR]}
+                </p>
+              )}
+            </motion.div>
+          )}
+
           <div className="mt-12 flex flex-wrap justify-center gap-4">
             <motion.div 
               initial={{ opacity: 0, y: 20 }}

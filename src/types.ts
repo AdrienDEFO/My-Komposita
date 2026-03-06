@@ -61,6 +61,8 @@ export interface Kompositum {
   category: string;
   level: Level;
   synonyms?: string[];
+  exampleSentence?: string;
+  exampleTranslation?: { [key: string]: string };
 }
 
 export interface Lesson {
