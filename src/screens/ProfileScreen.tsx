@@ -1,11 +1,12 @@
 
 import React, { useState, useRef } from 'react';
 import { motion } from 'motion/react';
-import { LogOut, Info, ChevronRight, UserCircle, Globe, Languages, Mail, ChevronLeft, Puzzle, Target, Edit2, Camera, Check, Share2 } from 'lucide-react';
+import { LogOut, Info, ChevronRight, UserCircle, Globe, Languages, Mail, ChevronLeft, Puzzle, Target, Edit2, Camera, Check, Share2, Bell, BellOff } from 'lucide-react';
 import { getDB, saveDB } from '../services/db.ts';
 import { CONTACT } from '../constants.tsx';
 import { Language, User, Level } from '../types.ts';
 import { shareProgress } from '../services/feedback';
+import { notificationService } from '../services/notificationService';
 import Toast, { ToastType } from '../components/Toast';
 
 interface ProfileScreenProps {
@@ -20,6 +21,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ onLogout, onLevelChange, 
   const [showLang, setShowLang] = useState(false);
   const [showLevel, setShowLevel] = useState(false);
   const [showEdit, setShowEdit] = useState(false);
+  const [showNotifications, setShowNotifications] = useState(false);
   const [toast, setToast] = useState<{ message: string; type: ToastType; visible: boolean }>({
     message: '',
     type: 'info',
@@ -68,6 +70,92 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ onLogout, onLevelChange, 
       window.location.reload();
     }
   };
+
+  const toggleNotifications = async () => {
+    if (!user) return;
+    
+    const isEnabled = !user.notificationsEnabled;
+    
+    if (isEnabled) {
+      const granted = await notificationService.requestPermission();
+      if (!granted) {
+        setToast({ message: 'Permission de notification refusée.', type: 'error', visible: true });
+        return;
+      }
+    }
+
+    const updatedUser: User = { 
+      ...user, 
+      notificationsEnabled: isEnabled,
+      reminderFrequency: isEnabled ? 'daily' : 'none'
+    };
+    onUserUpdate(updatedUser);
+    setToast({ 
+      message: isEnabled ? 'Notifications activées !' : 'Notifications désactivées.', 
+      type: 'success', 
+      visible: true 
+    });
+  };
+
+  const changeFrequency = (freq: 'daily' | 'weekly' | 'none') => {
+    if (!user) return;
+    const updatedUser = { ...user, reminderFrequency: freq };
+    onUserUpdate(updatedUser);
+  };
+
+  if (showNotifications) {
+    return (
+      <div className="p-6 h-full bg-slate-50 animate-slide-up">
+        <button onClick={() => setShowNotifications(false)} className="flex items-center gap-2 text-blue-600 font-black uppercase text-xs mb-8">
+          <ChevronLeft className="w-5 h-5" /> Retour
+        </button>
+        <h2 className="text-3xl font-black text-slate-900 mb-8">Rappels & Notifications</h2>
+        
+        <div className="bg-white p-6 rounded-[2.5rem] border border-slate-100 mb-6">
+          <div className="flex items-center justify-between mb-8">
+            <div>
+              <p className="font-black text-slate-800 text-lg">Activer les rappels</p>
+              <p className="text-xs font-bold text-slate-400">Recevez des notifications pour pratiquer</p>
+            </div>
+            <button 
+              onClick={toggleNotifications}
+              className={`w-16 h-8 rounded-full transition-all relative ${user?.notificationsEnabled ? 'bg-blue-600' : 'bg-slate-200'}`}
+            >
+              <motion.div 
+                animate={{ x: user?.notificationsEnabled ? 32 : 4 }}
+                className="absolute top-1 w-6 h-6 bg-white rounded-full shadow-sm"
+              />
+            </button>
+          </div>
+
+          {user?.notificationsEnabled && (
+            <div className="space-y-4">
+              <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-2">Fréquence des rappels</p>
+              <div className="grid grid-cols-2 gap-3">
+                {(['daily', 'weekly'] as const).map((freq) => (
+                  <button
+                    key={freq}
+                    onClick={() => changeFrequency(freq)}
+                    className={`p-4 rounded-2xl border-2 font-black text-xs uppercase tracking-widest transition-all ${
+                      user.reminderFrequency === freq ? 'border-blue-600 bg-blue-50 text-blue-700' : 'border-slate-50 bg-slate-50 text-slate-400'
+                    }`}
+                  >
+                    {freq === 'daily' ? 'Quotidien' : 'Hebdomadaire'}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+
+        <div className="p-6 bg-blue-50 rounded-[2rem] border border-blue-100">
+          <p className="text-xs font-bold text-blue-600 leading-relaxed">
+            Note : Pour recevoir des rappels même lorsque l'application est fermée, assurez-vous de l'installer sur votre écran d'accueil (PWA).
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   if (showLevel) {
     return (
@@ -272,6 +360,22 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ onLogout, onLevelChange, 
             <p className="text-xs font-bold text-slate-400 uppercase mt-2 tracking-widest">{user?.language}</p>
           </div>
           <ChevronRight className="w-6 h-6 text-slate-300 group-hover:text-blue-600 transition-colors" />
+        </button>
+
+        <button 
+          onClick={() => setShowNotifications(true)}
+          className="w-full flex items-center p-6 bg-white rounded-[2.5rem] border border-slate-100 shadow-sm btn-bounce group hover:border-indigo-200 transition-all"
+        >
+          <div className="w-14 h-14 bg-indigo-50 rounded-2xl flex items-center justify-center text-indigo-600 group-hover:bg-indigo-600 group-hover:text-white transition-colors">
+            {user?.notificationsEnabled ? <Bell className="w-7 h-7" /> : <BellOff className="w-7 h-7" />}
+          </div>
+          <div className="flex-1 text-left ml-5">
+            <p className="font-black text-slate-800 text-lg leading-none">Notifications</p>
+            <p className="text-xs font-bold text-slate-400 uppercase mt-2 tracking-widest">
+              {user?.notificationsEnabled ? 'Activées' : 'Désactivées'}
+            </p>
+          </div>
+          <ChevronRight className="w-6 h-6 text-slate-300 group-hover:text-indigo-600 transition-colors" />
         </button>
 
         <button 

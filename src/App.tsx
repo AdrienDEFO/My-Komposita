@@ -14,6 +14,7 @@ import PlacementTest from './screens/PlacementTest';
 import LifeChallenge from './screens/LifeChallenge';
 import DictionaryScreen from './screens/DictionaryScreen';
 import Layout from './components/Layout';
+import { notificationService } from './services/notificationService';
 
 export default function App() {
   const [activeTab, setActiveTab] = useState('home');
@@ -30,7 +31,16 @@ export default function App() {
       splash.style.opacity = '0';
       setTimeout(() => splash.remove(), 500);
     }
+
+    // Initialize notification service
+    notificationService.init();
   }, []);
+
+  useEffect(() => {
+    if (user) {
+      notificationService.scheduleReminders(user);
+    }
+  }, [user]);
 
   const handleLogin = (userData: User) => {
     const db = getDB();

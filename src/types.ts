@@ -91,6 +91,8 @@ export interface User {
   lastDailyChallenge: number;
   lastActivityTimestamp: number;
   learnedWords: string[];
+  notificationsEnabled?: boolean;
+  reminderFrequency?: 'daily' | 'weekly' | 'none';
 }
 
 export interface AppState {
