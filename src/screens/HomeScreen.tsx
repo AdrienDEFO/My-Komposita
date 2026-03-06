@@ -338,6 +338,18 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ onStartPlacement, onStartDailyC
                       <p className="text-[11px] text-slate-400 font-bold uppercase tracking-tight">{word.translation[Language.FR]}</p>
                       <p className="text-[10px] text-slate-300 font-bold uppercase tracking-tight">{word.translation[Language.EN]}</p>
                     </div>
+
+                    {word.exampleSentence && (
+                      <div className="mt-2 p-2 bg-blue-50/50 rounded-xl border border-blue-50 relative group/example">
+                        <button 
+                          onClick={() => speak(word.exampleSentence!)}
+                          className="absolute top-1.5 right-1.5 p-1 bg-white rounded-lg text-blue-600 shadow-sm opacity-0 group-hover/example:opacity-100 transition-opacity"
+                        >
+                          <Volume2 className="w-3 h-3" />
+                        </button>
+                        <p className="text-blue-600 font-black text-[10px] pr-5 leading-tight">"{word.exampleSentence}"</p>
+                      </div>
+                    )}
                   </div>
                   <button 
                     onClick={() => speak(word.word)} 
@@ -390,6 +402,18 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ onStartPlacement, onStartDailyC
                         <p className="text-xs text-slate-400 font-black uppercase tracking-tight">{word.translation[Language.FR]}</p>
                         <p className="text-[10px] text-slate-300 font-black uppercase tracking-tight">{word.translation[Language.EN]}</p>
                       </div>
+
+                      {word.exampleSentence && (
+                        <div className="mt-2 p-2 bg-blue-50/50 rounded-xl border border-blue-50 relative group/example">
+                          <button 
+                            onClick={() => speak(word.exampleSentence!)}
+                            className="absolute top-1.5 right-1.5 p-1 bg-white rounded-lg text-blue-600 shadow-sm opacity-0 group-hover/example:opacity-100 transition-opacity"
+                          >
+                            <Volume2 className="w-3 h-3" />
+                          </button>
+                          <p className="text-blue-600 font-black text-[10px] pr-5 leading-tight">"{word.exampleSentence}"</p>
+                        </div>
+                      )}
                     </div>
                     <button onClick={() => speak(word.word)} className="p-4 bg-blue-50 rounded-2xl text-blue-600 btn-bounce"><Volume2 className="w-5 h-5" /></button>
                   </div>

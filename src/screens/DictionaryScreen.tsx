@@ -76,8 +76,14 @@ const FlashcardModal: React.FC<{
                 <p className="text-slate-400 font-bold italic mb-8">{word.translation[Language.EN]}</p>
                 
                 {word.exampleSentence && (
-                  <div className="bg-blue-50 p-6 rounded-3xl border border-blue-100 w-full">
-                    <p className="text-blue-600 font-black text-lg mb-2">"{word.exampleSentence}"</p>
+                  <div className="bg-blue-50 p-6 rounded-3xl border border-blue-100 w-full relative group/example">
+                    <button 
+                      onClick={(e) => { e.stopPropagation(); speak(word.exampleSentence!); }}
+                      className="absolute top-4 right-4 p-2 bg-white rounded-xl text-blue-600 shadow-sm opacity-0 group-hover/example:opacity-100 transition-opacity"
+                    >
+                      <Volume2 className="w-4 h-4" />
+                    </button>
+                    <p className="text-blue-600 font-black text-lg mb-2 pr-8">"{word.exampleSentence}"</p>
                     {word.exampleTranslation && (
                       <p className="text-slate-400 font-bold italic text-sm">
                         {word.exampleTranslation[uiLang]}
@@ -221,8 +227,14 @@ const DictionaryScreen: React.FC<DictionaryScreenProps> = ({ user }) => {
               </div>
 
               {word.exampleSentence && (
-                <div className="mt-3 p-3 bg-blue-50/30 rounded-2xl border border-blue-50/50">
-                  <p className="text-blue-600 font-black text-xs">"{word.exampleSentence}"</p>
+                <div className="mt-3 p-3 bg-blue-50/30 rounded-2xl border border-blue-50/50 relative group/example">
+                  <button 
+                    onClick={() => speak(word.exampleSentence!)}
+                    className="absolute top-2 right-2 p-1.5 bg-white rounded-lg text-blue-600 shadow-sm opacity-0 group-hover/example:opacity-100 transition-opacity"
+                  >
+                    <Volume2 className="w-3 h-3" />
+                  </button>
+                  <p className="text-blue-600 font-black text-xs pr-6">"{word.exampleSentence}"</p>
                   {word.exampleTranslation && (
                     <p className="text-slate-400 font-bold italic text-[10px] mt-1">
                       {word.exampleTranslation[uiLang]}

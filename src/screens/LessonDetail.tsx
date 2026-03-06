@@ -227,9 +227,15 @@ const LessonDetail: React.FC<LessonDetailProps> = ({ lesson, onFinish, user }) =
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: 0.3 }}
-              className="mt-8 p-6 bg-blue-50/50 rounded-3xl border border-blue-100 max-w-lg w-full"
+              className="mt-8 p-6 bg-blue-50/50 rounded-3xl border border-blue-100 max-w-lg w-full relative group"
             >
-              <p className="text-blue-600 font-black text-lg mb-2">"{word.exampleSentence}"</p>
+              <button 
+                onClick={() => speak(word.exampleSentence!)}
+                className="absolute top-4 right-4 p-2 bg-white rounded-xl text-blue-600 shadow-sm opacity-0 group-hover:opacity-100 transition-opacity"
+              >
+                <Volume2 className="w-4 h-4" />
+              </button>
+              <p className="text-blue-600 font-black text-lg mb-2 pr-8">"{word.exampleSentence}"</p>
               {word.exampleTranslation && (
                 <p className="text-slate-500 font-bold italic text-sm">
                   {word.exampleTranslation[user?.language || Language.FR]}
