@@ -218,7 +218,15 @@ const LessonDetail: React.FC<LessonDetailProps> = ({ lesson, onFinish, user }) =
             <span className="text-7xl font-black text-blue-600">{word.word[0].toUpperCase()}</span>
           </motion.div>
           <p className="text-blue-400 font-black text-xl uppercase mb-2">{word.article || word.type}</p>
-          <h2 className="text-6xl font-black text-slate-900 mb-4">{word.word}</h2>
+          <div className="flex items-center gap-3 mb-4">
+            <h2 className="text-6xl font-black text-slate-900">{word.word}</h2>
+            <button 
+              onClick={() => speak(word.word)}
+              className="p-3 bg-blue-50 rounded-2xl text-blue-600 hover:bg-blue-100 transition-colors"
+            >
+              <Volume2 className="w-6 h-6" />
+            </button>
+          </div>
           <p className="text-3xl text-slate-400 font-bold italic">"{word.translation[Language.FR]}"</p>
           <p className="text-xl text-slate-300 font-bold italic">"{word.translation[Language.EN]}"</p>
           
