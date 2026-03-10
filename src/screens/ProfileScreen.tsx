@@ -77,10 +77,19 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ onLogout, onLevelChange, 
     const isEnabled = !user.notificationsEnabled;
     
     if (isEnabled) {
-      const granted = await notificationService.requestPermission();
-      if (!granted) {
-        setToast({ message: 'Permission de notification refusée.', type: 'error', visible: true });
+      const permission = await notificationService.requestPermission();
+      
+      if (permission === 'denied') {
+        setToast({ 
+          message: 'Les notifications sont bloquées par votre navigateur. Veuillez les autoriser dans les paramètres du site.', 
+          type: 'error', 
+          visible: true 
+        });
         return;
+      }
+      
+      if (permission !== 'granted') {
+        return; // User dismissed or closed the prompt
       }
     }
 
@@ -129,21 +138,34 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ onLogout, onLevelChange, 
           </div>
 
           {user?.notificationsEnabled && (
-            <div className="space-y-4">
-              <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-2">Fréquence des rappels</p>
-              <div className="grid grid-cols-2 gap-3">
-                {(['daily', 'weekly'] as const).map((freq) => (
-                  <button
-                    key={freq}
-                    onClick={() => changeFrequency(freq)}
-                    className={`p-4 rounded-2xl border-2 font-black text-xs uppercase tracking-widest transition-all ${
-                      user.reminderFrequency === freq ? 'border-blue-600 bg-blue-50 text-blue-700' : 'border-slate-50 bg-slate-50 text-slate-400'
-                    }`}
-                  >
-                    {freq === 'daily' ? 'Quotidien' : 'Hebdomadaire'}
-                  </button>
-                ))}
+            <div className="space-y-6">
+              <div className="space-y-4">
+                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-2">Fréquence des rappels</p>
+                <div className="grid grid-cols-2 gap-3">
+                  {(['daily', 'weekly'] as const).map((freq) => (
+                    <button
+                      key={freq}
+                      onClick={() => changeFrequency(freq)}
+                      className={`p-4 rounded-2xl border-2 font-black text-xs uppercase tracking-widest transition-all ${
+                        user.reminderFrequency === freq ? 'border-blue-600 bg-blue-50 text-blue-700' : 'border-slate-50 bg-slate-50 text-slate-400'
+                      }`}
+                    >
+                      {freq === 'daily' ? 'Quotidien' : 'Hebdomadaire'}
+                    </button>
+                  ))}
+                </div>
               </div>
+
+              <motion.button
+                whileTap={{ scale: 0.95 }}
+                onClick={() => notificationService.sendNotification('Test de notification', {
+                  body: 'Ceci est un test pour confirmer que les notifications fonctionnent !',
+                  tag: 'test-notification'
+                })}
+                className="w-full py-4 bg-slate-50 rounded-2xl text-slate-600 font-black text-xs uppercase tracking-widest border border-slate-100 hover:bg-slate-100 transition-all flex items-center justify-center gap-2"
+              >
+                <Bell className="w-4 h-4" /> Tester la notification
+              </motion.button>
             </div>
           )}
         </div>

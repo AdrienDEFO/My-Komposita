@@ -6,29 +6,59 @@ class NotificationService {
 
   async init() {
     if ('serviceWorker' in navigator) {
-      this.registration = await navigator.serviceWorker.ready;
+      try {
+        this.registration = await navigator.serviceWorker.ready;
+        console.log('NotificationService: Service Worker ready');
+      } catch (err) {
+        console.error('NotificationService: Failed to get SW registration', err);
+      }
     }
   }
 
-  async requestPermission(): Promise<boolean> {
+  async requestPermission(): Promise<'granted' | 'denied' | 'default'> {
     if (!('Notification' in window)) {
       console.warn('Notifications not supported');
-      return false;
+      return 'denied';
     }
 
-    const permission = await Notification.requestPermission();
-    return permission === 'granted';
+    try {
+      const permission = await Notification.requestPermission();
+      if (permission === 'granted') {
+        // Send a confirmation notification
+        await this.sendNotification('Notifications activées !', {
+          body: 'Vous recevrez désormais des rappels pour pratiquer votre allemand.',
+          tag: 'welcome-notification'
+        });
+      }
+      return permission;
+    } catch (err) {
+      console.error('Failed to request permission', err);
+      return 'denied';
+    }
   }
 
   async sendNotification(title: string, options?: NotificationOptions) {
     if (Notification.permission !== 'granted') return;
 
+    if (!this.registration && 'serviceWorker' in navigator) {
+      try {
+        this.registration = await navigator.serviceWorker.ready;
+      } catch (err) {
+        console.error('NotificationService: Registration failed on demand', err);
+      }
+    }
+
     if (this.registration) {
-      await this.registration.showNotification(title, {
-        icon: 'https://cdn-icons-png.flaticon.com/512/3079/3079165.png',
-        badge: 'https://cdn-icons-png.flaticon.com/512/3079/3079165.png',
-        ...options
-      });
+      try {
+        await this.registration.showNotification(title, {
+          icon: 'https://cdn-icons-png.flaticon.com/512/3079/3079165.png',
+          badge: 'https://cdn-icons-png.flaticon.com/512/3079/3079165.png',
+          ...options
+        } as any);
+      } catch (err) {
+        console.error('NotificationService: SW notification failed', err);
+        new Notification(title, options);
+      }
     } else {
       new Notification(title, options);
     }
