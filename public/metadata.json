@@ -35,5 +35,5 @@
       "label": "Apprendre l'allemand"
     }
   ],
-  "requestFramePermissions": ["notifications"]
+  "requestFramePermissions": ["notifications", "microphone"]
 }

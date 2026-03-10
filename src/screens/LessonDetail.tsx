@@ -2,10 +2,11 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { X, Star, Volume2, VolumeX, CheckCircle2, XCircle, Share2 } from 'lucide-react';
-import { Lesson, User, Language } from '../types';
+import { Lesson, User, Language, ExerciseType } from '../types';
 import { updateUserProgress } from '../services/db';
 import { triggerConfetti, shareProgress } from '../services/feedback';
 import Toast, { ToastType } from '../components/Toast';
+import PronunciationExercise from '../components/PronunciationExercise';
 
 interface LessonDetailProps {
   lesson: Lesson;
@@ -23,6 +24,7 @@ const LessonDetail: React.FC<LessonDetailProps> = ({ lesson, onFinish, user }) =
   const [pointsEarned, setPointsEarned] = useState(0);
   const [lives, setLives] = useState(user?.lives || 5);
   const [isMuted, setIsMuted] = useState(false);
+  const [speakingResult, setSpeakingResult] = useState<{ score: number; feedback: string } | null>(null);
   const [toast, setToast] = useState<{ message: string; type: ToastType; visible: boolean }>({
     message: '',
     type: 'info',
@@ -103,6 +105,7 @@ const LessonDetail: React.FC<LessonDetailProps> = ({ lesson, onFinish, user }) =
     setShowResult(false);
     setSelectedAnswer(null);
     setQroValue('');
+    setSpeakingResult(null);
     if (exerciseIdx < lesson.exercises.length - 1) {
       setExerciseIdx(prev => prev + 1);
     } else {
@@ -128,6 +131,23 @@ const LessonDetail: React.FC<LessonDetailProps> = ({ lesson, onFinish, user }) =
     // Points are added at the end
     updateUserProgress(pointsEarned, 0, lesson.id, lesson.targetWords.map(w => w.id));
     onFinish();
+  };
+
+  const handlePronunciationResult = (correct: boolean, score: number, feedback: string) => {
+    setIsCorrect(correct);
+    setSpeakingResult({ score, feedback });
+    setShowResult(true);
+
+    if (correct) {
+      if (!isMuted) correctSound.current.play();
+      setPointsEarned(p => p + 15); // Bonus points for speaking
+      speak(currentExercise.correctAnswer);
+    } else {
+      if (!isMuted) incorrectSound.current.play();
+      const newLives = Math.max(0, lives - 1);
+      setLives(newLives);
+      updateUserProgress(0, -1);
+    }
   };
 
   if (step === 'summary') {
@@ -317,7 +337,13 @@ const LessonDetail: React.FC<LessonDetailProps> = ({ lesson, onFinish, user }) =
         <div className="flex-1">
           <h2 className="text-2xl font-black text-slate-800 mb-8 leading-tight">{currentExercise.question}</h2>
           
-          {currentExercise.isQRO ? (
+          {currentExercise.type === ExerciseType.SPEAKING ? (
+            <PronunciationExercise 
+              targetWord={currentExercise.wordToSpeak || currentExercise.correctAnswer}
+              onResult={handlePronunciationResult}
+              disabled={showResult}
+            />
+          ) : currentExercise.isQRO ? (
             <div className="space-y-4">
               <input
                 type="text"
@@ -383,7 +409,12 @@ const LessonDetail: React.FC<LessonDetailProps> = ({ lesson, onFinish, user }) =
                   <h3 className={`text-xl font-black ${isCorrect ? 'text-green-800' : 'text-red-800'}`}>
                     {isCorrect ? 'Excellent !' : 'Dommage...'}
                   </h3>
-                  {!isCorrect && <p className="text-red-700 font-bold">Solution : {currentExercise.correctAnswer}</p>}
+                  {speakingResult && (
+                    <p className={`font-bold ${isCorrect ? 'text-green-700' : 'text-red-700'}`}>
+                      Score : {speakingResult.score}% - {speakingResult.feedback}
+                    </p>
+                  )}
+                  {!isCorrect && !speakingResult && <p className="text-red-700 font-bold">Solution : {currentExercise.correctAnswer}</p>}
                 </div>
               </div>
               <motion.button 
@@ -398,7 +429,7 @@ const LessonDetail: React.FC<LessonDetailProps> = ({ lesson, onFinish, user }) =
         )}
       </AnimatePresence>
 
-      {!showResult && (
+      {!showResult && currentExercise.type !== ExerciseType.SPEAKING && (
         <div className="p-6 border-t bg-white">
           <div className="max-w-3xl mx-auto w-full">
             <button 

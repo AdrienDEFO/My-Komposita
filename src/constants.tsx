@@ -727,6 +727,16 @@ export const generateLessons = (level: Level): Lesson[] => {
           isQRO: true
         });
       }
+
+      // 6. Speaking (Pronunciation)
+      exercises.push({
+        id: `ex-${i}-${wordIdx}-speak`,
+        type: ExerciseType.SPEAKING,
+        question: `Prononcez le mot : "${word.word}"`,
+        wordToSpeak: word.word,
+        correctAnswer: word.word,
+        explanation: "Enregistrez votre voix pour vérifier votre prononciation."
+      });
     });
 
     const category = targetWords.every(w => w.category === targetWords[0].category) 
