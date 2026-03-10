@@ -1,8 +1,24 @@
 import { GoogleGenAI } from "@google/genai";
 
-const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+const getApiKey = () => {
+  // In AI Studio, GEMINI_API_KEY is usually provided via process.env
+  // We check both process.env and import.meta.env for compatibility
+  const key = process.env.GEMINI_API_KEY || (import.meta as any).env?.VITE_GEMINI_API_KEY;
+  return key || '';
+};
+
+const ai = new GoogleGenAI({ apiKey: getApiKey() });
 
 export async function evaluatePronunciation(audioBase64: string, targetWord: string): Promise<{ score: number; feedback: string; isCorrect: boolean }> {
+  const apiKey = getApiKey();
+  if (!apiKey) {
+    return {
+      score: 0,
+      feedback: "Clé API manquante. Veuillez configurer GEMINI_API_KEY dans les paramètres.",
+      isCorrect: false
+    };
+  }
+  
   try {
     const response = await ai.models.generateContent({
       model: "gemini-3-flash-preview",
