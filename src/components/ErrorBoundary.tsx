@@ -32,34 +32,34 @@ class ErrorBoundary extends Component<Props, State> {
   public render() {
     if (this.state.hasError) {
       return (
-        <div className="min-h-screen bg-slate-50 flex flex-col items-center justify-center p-6 text-center">
-          <div className="w-20 h-20 bg-red-100 rounded-3xl flex items-center justify-center mb-6">
-            <AlertTriangle className="w-10 h-10 text-red-600" />
+        <div className="min-h-screen bg-slate-50 dark:bg-slate-900 flex flex-col items-center justify-center p-6 text-center">
+          <div className="w-20 h-20 bg-red-100 dark:bg-red-900/20 rounded-3xl flex items-center justify-center mb-6">
+            <AlertTriangle className="w-10 h-10 text-red-600 dark:text-red-400" />
           </div>
-          <h1 className="text-3xl font-black text-slate-900 mb-2">Oups ! Quelque chose s'est mal passé.</h1>
-          <p className="text-slate-500 font-medium mb-8 max-w-md">
+          <h1 className="text-3xl font-black text-slate-900 dark:text-white mb-2">Oups ! Quelque chose s'est mal passé.</h1>
+          <p className="text-slate-500 dark:text-slate-400 font-medium mb-8 max-w-md">
             Une erreur inattendue est survenue. Nous vous recommandons de recharger l'application.
           </p>
           
           <div className="space-y-4 w-full max-w-xs">
             <button
               onClick={() => window.location.reload()}
-              className="w-full py-4 bg-blue-600 text-white rounded-2xl font-black text-lg shadow-xl shadow-blue-100 flex items-center justify-center gap-2"
+              className="w-full py-4 bg-blue-600 text-white rounded-2xl font-black text-lg shadow-xl shadow-blue-100 dark:shadow-blue-900/20 flex items-center justify-center gap-2"
             >
               <RefreshCcw className="w-5 h-5" /> Recharger
             </button>
             
             <button
               onClick={this.handleReset}
-              className="w-full py-4 bg-white text-red-600 border-2 border-red-50 rounded-2xl font-black text-lg"
+              className="w-full py-4 bg-white dark:bg-slate-800 text-red-600 dark:text-red-400 border-2 border-red-50 dark:border-red-900/20 rounded-2xl font-black text-lg"
             >
               Réinitialiser l'application
             </button>
           </div>
           
           {(import.meta as any).env.DEV && (
-            <div className="mt-12 p-4 bg-slate-100 rounded-xl text-left overflow-auto max-w-xl w-full">
-              <p className="text-xs font-mono text-red-800 whitespace-pre-wrap">
+            <div className="mt-12 p-4 bg-slate-100 dark:bg-slate-800 rounded-xl text-left overflow-auto max-w-xl w-full">
+              <p className="text-xs font-mono text-red-800 dark:text-red-400 whitespace-pre-wrap">
                 {this.state.error?.toString()}
               </p>
             </div>

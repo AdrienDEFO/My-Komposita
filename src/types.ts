@@ -99,6 +99,7 @@ export interface User {
   notificationsEnabled?: boolean;
   reminderFrequency?: 'daily' | 'weekly' | 'none';
   theme?: Theme;
+  silentMode?: boolean;
 }
 
 export interface AppState {

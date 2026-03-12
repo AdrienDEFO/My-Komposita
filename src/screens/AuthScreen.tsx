@@ -1,7 +1,7 @@
 
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { LogIn, UserPlus, Mail, Lock, User as UserIcon, Puzzle, ArrowLeft, Send } from 'lucide-react';
+import { LogIn, UserPlus, Mail, Lock, User as UserIcon, Puzzle, ArrowLeft, Send, Eye, EyeOff } from 'lucide-react';
 import { User, Level, Language } from '../types';
 
 interface AuthScreenProps {
@@ -15,6 +15,7 @@ const AuthScreen: React.FC<AuthScreenProps> = ({ onLogin }) => {
   const [password, setPassword] = useState('');
   const [username, setUsername] = useState('');
   const [resetSent, setResetSent] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -37,13 +38,14 @@ const AuthScreen: React.FC<AuthScreenProps> = ({ onLogin }) => {
       dailyStreak: 0,
       lastDailyChallenge: 0,
       lastActivityTimestamp: 0,
-      learnedWords: []
+      learnedWords: [],
+      silentMode: false
     };
     onLogin(newUser);
   };
 
   return (
-    <div className="min-h-screen bg-blue-600 dark:bg-slate-950 flex flex-col items-center justify-center p-6 sm:p-12">
+    <div className="min-h-screen bg-blue-600 bg-gradient-to-br from-blue-600 to-indigo-700 dark:from-slate-950 dark:to-slate-900 flex flex-col items-center justify-center p-6 sm:p-12">
       <motion.div 
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -71,13 +73,13 @@ const AuthScreen: React.FC<AuthScreenProps> = ({ onLogin }) => {
           <div className="flex border-b border-slate-100 dark:border-slate-800 mb-8">
             <button 
               onClick={() => setIsLogin(true)}
-              className={`flex-1 pb-4 font-bold text-sm uppercase tracking-wider transition-all ${isLogin ? 'text-blue-600 border-b-4 border-blue-600' : 'text-slate-400 dark:text-slate-600'}`}
+              className={`flex-1 pb-4 font-bold text-sm uppercase tracking-wider transition-all ${isLogin ? 'text-blue-600 border-b-4 border-blue-600' : 'text-slate-400 dark:text-slate-500 hover:text-slate-500 dark:hover:text-slate-400'}`}
             >
               Connexion
             </button>
             <button 
               onClick={() => setIsLogin(false)}
-              className={`flex-1 pb-4 font-bold text-sm uppercase tracking-wider transition-all ${!isLogin ? 'text-blue-600 border-b-4 border-blue-600' : 'text-slate-400 dark:text-slate-600'}`}
+              className={`flex-1 pb-4 font-bold text-sm uppercase tracking-wider transition-all ${!isLogin ? 'text-blue-600 border-b-4 border-blue-600' : 'text-slate-400 dark:text-slate-500 hover:text-slate-500 dark:hover:text-slate-400'}`}
             >
               Inscription
             </button>
@@ -97,7 +99,7 @@ const AuthScreen: React.FC<AuthScreenProps> = ({ onLogin }) => {
                     setIsForgotPassword(false);
                     setResetSent(false);
                   }}
-                  className="flex items-center gap-2 text-blue-600 font-bold text-sm uppercase"
+                  className="flex items-center gap-2 text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 font-bold text-sm uppercase transition-colors"
                 >
                   <ArrowLeft className="w-4 h-4" /> Retour
                 </button>
@@ -178,13 +180,20 @@ const AuthScreen: React.FC<AuthScreenProps> = ({ onLogin }) => {
                 <div className="relative">
                   <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 dark:text-slate-600" />
                   <input 
-                    type="password" 
+                    type={showPassword ? "text" : "password"} 
                     placeholder="Mot de passe"
                     required
-                    className="w-full pl-12 pr-4 py-4 bg-slate-50 dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700 focus:ring-2 focus:ring-blue-500 outline-none font-medium dark:text-white"
+                    className="w-full pl-12 pr-12 py-4 bg-slate-50 dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700 focus:ring-2 focus:ring-blue-500 outline-none font-medium dark:text-white"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                   />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-600 hover:text-blue-600 transition-colors"
+                  >
+                    {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                  </button>
                 </div>
 
                 {isLogin && (
@@ -192,7 +201,7 @@ const AuthScreen: React.FC<AuthScreenProps> = ({ onLogin }) => {
                     <button 
                       type="button"
                       onClick={() => setIsForgotPassword(true)}
-                      className="text-blue-600 font-bold text-xs uppercase tracking-tight"
+                      className="text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 font-bold text-xs uppercase tracking-tight transition-colors"
                     >
                       Mot de passe oublié ?
                     </button>

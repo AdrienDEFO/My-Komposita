@@ -56,7 +56,7 @@ const PronunciationExercise: React.FC<PronunciationExerciseProps> = ({ targetWor
 
     } catch (err) {
       console.error("Erreur d'accès au microphone :", err);
-      alert("Impossible d'accéder au microphone. Veuillez vérifier vos permissions.");
+      onResult(false, 0, "Désolé, impossible d'accéder au microphone. Vérifiez vos permissions.");
     }
   };
 
@@ -90,10 +90,10 @@ const PronunciationExercise: React.FC<PronunciationExerciseProps> = ({ targetWor
   };
 
   return (
-    <div className="flex flex-col items-center gap-6 p-6 bg-blue-50/50 rounded-[2.5rem] border-2 border-blue-100">
+    <div className="flex flex-col items-center gap-6 p-6 bg-blue-50/50 dark:bg-blue-900/20 rounded-[2.5rem] border-2 border-blue-100 dark:border-blue-900/30">
       <div className="text-center">
-        <p className="text-slate-500 font-bold mb-2">Cliquez pour enregistrer</p>
-        <h3 className="text-4xl font-black text-blue-600 mb-4">{targetWord}</h3>
+        <p className="text-slate-500 dark:text-slate-400 font-bold mb-2">Cliquez pour enregistrer</p>
+        <h3 className="text-4xl font-black text-blue-600 dark:text-blue-400 mb-4">{targetWord}</h3>
       </div>
 
       <div className="relative">
@@ -108,7 +108,7 @@ const PronunciationExercise: React.FC<PronunciationExerciseProps> = ({ targetWor
               whileTap={{ scale: 0.95 }}
               onClick={startRecording}
               disabled={disabled || isAnalyzing}
-              className="w-24 h-24 bg-blue-600 rounded-full flex items-center justify-center text-white shadow-xl shadow-blue-200 disabled:opacity-50"
+              className="w-24 h-24 bg-blue-600 rounded-full flex items-center justify-center text-white shadow-xl shadow-blue-200 dark:shadow-blue-900/40 disabled:opacity-50"
             >
               <Mic className="w-10 h-10" />
             </motion.button>
@@ -121,7 +121,7 @@ const PronunciationExercise: React.FC<PronunciationExerciseProps> = ({ targetWor
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={stopRecording}
-              className="w-24 h-24 bg-red-500 rounded-full flex items-center justify-center text-white shadow-xl shadow-red-200"
+              className="w-24 h-24 bg-red-500 rounded-full flex items-center justify-center text-white shadow-xl shadow-red-200 dark:shadow-red-900/40"
             >
               <Square className="w-10 h-10 fill-current" />
             </motion.button>
@@ -146,7 +146,7 @@ const PronunciationExercise: React.FC<PronunciationExerciseProps> = ({ targetWor
         )}
         
         {isAnalyzing && (
-          <div className="flex items-center gap-2 text-blue-600 font-bold">
+          <div className="flex items-center gap-2 text-blue-600 dark:text-blue-400 font-bold">
             <Loader2 className="w-5 h-5 animate-spin" />
             Analyse de la prononciation...
           </div>
@@ -155,7 +155,7 @@ const PronunciationExercise: React.FC<PronunciationExerciseProps> = ({ targetWor
         {audioUrl && !isRecording && !isAnalyzing && (
           <button
             onClick={playRecording}
-            className="flex items-center gap-2 text-slate-600 font-bold hover:text-blue-600 transition-colors"
+            className="flex items-center gap-2 text-slate-600 dark:text-slate-300 font-bold hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
           >
             <Play className="w-4 h-4 fill-current" /> Réécouter votre essai
           </button>

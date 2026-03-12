@@ -34,10 +34,10 @@ const Toast: React.FC<ToastProps> = ({ message, type = 'info', isVisible, onClos
 
   const getBgColor = () => {
     switch (type) {
-      case 'success': return 'bg-green-50 border-green-100';
-      case 'error': return 'bg-red-50 border-red-100';
-      case 'warning': return 'bg-orange-50 border-orange-100';
-      default: return 'bg-blue-50 border-blue-100';
+      case 'success': return 'bg-green-50 dark:bg-green-900/20 border-green-100 dark:border-green-900/30';
+      case 'error': return 'bg-red-50 dark:bg-red-900/20 border-red-100 dark:border-red-900/30';
+      case 'warning': return 'bg-orange-50 dark:bg-orange-900/20 border-orange-100 dark:border-orange-900/30';
+      default: return 'bg-blue-50 dark:bg-blue-900/20 border-blue-100 dark:border-blue-900/30';
     }
   };
 
@@ -51,7 +51,7 @@ const Toast: React.FC<ToastProps> = ({ message, type = 'info', isVisible, onClos
           className={`fixed bottom-24 left-1/2 -translate-x-1/2 z-[100] flex items-center gap-3 px-6 py-4 rounded-2xl border shadow-xl ${getBgColor()} min-w-[280px] max-w-[90%]`}
         >
           {getIcon()}
-          <p className="text-sm font-black text-slate-800">{message}</p>
+          <p className="text-sm font-black text-slate-800 dark:text-slate-100">{message}</p>
         </motion.div>
       )}
     </AnimatePresence>

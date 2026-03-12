@@ -1,7 +1,7 @@
 
 import React, { useState, useRef } from 'react';
 import { motion } from 'motion/react';
-import { LogOut, Info, ChevronRight, UserCircle, Globe, Languages, Mail, ChevronLeft, Puzzle, Target, Edit2, Camera, Check, Share2, Bell, BellOff, Sun, Moon } from 'lucide-react';
+import { LogOut, Info, ChevronRight, UserCircle, Globe, Languages, Mail, ChevronLeft, Puzzle, Target, Edit2, Camera, Check, Share2, Bell, BellOff, Sun, Moon, MicOff } from 'lucide-react';
 import { getDB, saveDB } from '../services/db.ts';
 import { CONTACT } from '../constants.tsx';
 import { Language, User, Level, Theme } from '../types.ts';
@@ -355,7 +355,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ onLogout, onLevelChange, 
             <UserCircle className="w-32 h-32 text-blue-600" />
           )}
         </div>
-        <h2 className="text-4xl font-black text-slate-900 dark:text-white mb-2">{user?.username}</h2>
+        <h2 className="text-4xl font-black text-slate-900 dark:text-white mb-2">{user?.username || 'Apprenant'}</h2>
         <p className="text-slate-400 font-bold mb-6 text-lg">{user?.email}</p>
         <div className="inline-block bg-blue-100 dark:bg-blue-900/30 px-6 py-2 rounded-full shadow-sm">
           <span className="text-blue-700 dark:text-blue-400 font-black text-xs uppercase tracking-widest">Niveau {user?.level}</span>
@@ -426,6 +426,35 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ onLogout, onLevelChange, 
             </p>
           </div>
           <ChevronRight className="w-6 h-6 text-slate-300 group-hover:text-indigo-600 transition-colors" />
+        </button>
+
+        <button 
+          onClick={() => {
+            if (user) {
+              const updatedUser = { ...user, silentMode: !user.silentMode };
+              onUserUpdate(updatedUser);
+              const db = getDB();
+              db.user = updatedUser;
+              saveDB(db);
+            }
+          }}
+          className="w-full flex items-center p-6 bg-white dark:bg-slate-800 rounded-[2.5rem] border border-slate-100 dark:border-slate-700 shadow-sm btn-bounce group hover:border-red-200 dark:hover:border-red-900/50 transition-all"
+        >
+          <div className={`w-14 h-14 ${user?.silentMode ? 'bg-red-50 dark:bg-red-900/20 text-red-600' : 'bg-green-50 dark:bg-green-900/20 text-green-600'} rounded-2xl flex items-center justify-center group-hover:bg-red-600 group-hover:text-white transition-colors`}>
+            <MicOff className="w-7 h-7" />
+          </div>
+          <div className="flex-1 text-left ml-5">
+            <p className="font-black text-slate-800 dark:text-slate-100 text-lg leading-none">Mode Silencieux</p>
+            <p className="text-xs font-bold text-slate-400 uppercase mt-2 tracking-widest">
+              {user?.silentMode ? 'Activé (Pas d\'oral)' : 'Désactivé'}
+            </p>
+          </div>
+          <div className={`w-12 h-6 ${user?.silentMode ? 'bg-red-500' : 'bg-slate-100 dark:bg-slate-700'} rounded-full relative transition-colors`}>
+            <motion.div 
+              animate={{ x: user?.silentMode ? 24 : 4 }}
+              className="absolute top-1 w-4 h-4 bg-white rounded-full shadow-sm"
+            />
+          </div>
         </button>
 
         <button 

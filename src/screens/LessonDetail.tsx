@@ -24,6 +24,7 @@ const LessonDetail: React.FC<LessonDetailProps> = ({ lesson, onFinish, user }) =
   const [pointsEarned, setPointsEarned] = useState(0);
   const [lives, setLives] = useState(user?.lives || 5);
   const [isMuted, setIsMuted] = useState(false);
+  const [canSpeak, setCanSpeak] = useState(user?.silentMode ? false : true);
   const [speakingResult, setSpeakingResult] = useState<{ score: number; feedback: string } | null>(null);
   const [toast, setToast] = useState<{ message: string; type: ToastType; visible: boolean }>({
     message: '',
@@ -75,6 +76,16 @@ const LessonDetail: React.FC<LessonDetailProps> = ({ lesson, onFinish, user }) =
     if (step === 'intro3') speak(lesson.targetWords[2].word);
   }, [step]);
 
+  useEffect(() => {
+    if (step === 'exercises' && currentExercise?.type === ExerciseType.SPEAKING && !canSpeak && !showResult) {
+      // Auto-skip if user previously chose "I can't speak"
+      setIsCorrect(true);
+      setSpeakingResult({ score: 100, feedback: "Exercice passé (Mode silencieux)" });
+      setShowResult(true);
+      setPointsEarned(p => p + 5);
+    }
+  }, [exerciseIdx, step, canSpeak, showResult]);
+
   const handleCheckAnswer = () => {
     const answer = currentExercise.isQRO ? qroValue : selectedAnswer;
     const correct = answer?.toLowerCase().trim() === currentExercise.correctAnswer.toLowerCase().trim();
@@ -97,7 +108,6 @@ const LessonDetail: React.FC<LessonDetailProps> = ({ lesson, onFinish, user }) =
 
   const handleNext = () => {
     if (lives === 0 && !isCorrect) {
-      // If lives are exhausted and the answer was wrong, we can't continue
       setStep('summary');
       return;
     }
@@ -106,6 +116,7 @@ const LessonDetail: React.FC<LessonDetailProps> = ({ lesson, onFinish, user }) =
     setSelectedAnswer(null);
     setQroValue('');
     setSpeakingResult(null);
+
     if (exerciseIdx < lesson.exercises.length - 1) {
       setExerciseIdx(prev => prev + 1);
     } else {
@@ -134,6 +145,12 @@ const LessonDetail: React.FC<LessonDetailProps> = ({ lesson, onFinish, user }) =
   };
 
   const handlePronunciationResult = (correct: boolean, score: number, feedback: string) => {
+    // If it's a technical error or service is down, allow retry or skip without penalty
+    if (score === 0 && (feedback.includes("Désolé") || feedback.includes("indisponible"))) {
+      setToast({ message: feedback, type: 'error', visible: true });
+      return;
+    }
+
     setIsCorrect(correct);
     setSpeakingResult({ score, feedback });
     setShowResult(true);
@@ -148,6 +165,15 @@ const LessonDetail: React.FC<LessonDetailProps> = ({ lesson, onFinish, user }) =
       setLives(newLives);
       updateUserProgress(0, -1);
     }
+  };
+
+  const skipSpeaking = () => {
+    setCanSpeak(false);
+    // Mark as correct but with fewer points (or none) to allow progression
+    setIsCorrect(true);
+    setSpeakingResult({ score: 100, feedback: "Exercice passé (Mode silencieux)" });
+    setShowResult(true);
+    setPointsEarned(p => p + 5); // Small reward for skipping instead of failing
   };
 
   if (step === 'summary') {
@@ -338,11 +364,21 @@ const LessonDetail: React.FC<LessonDetailProps> = ({ lesson, onFinish, user }) =
           <h2 className="text-2xl font-black text-slate-800 dark:text-white mb-8 leading-tight">{currentExercise.question}</h2>
           
           {currentExercise.type === ExerciseType.SPEAKING ? (
-            <PronunciationExercise 
-              targetWord={currentExercise.wordToSpeak || currentExercise.correctAnswer}
-              onResult={handlePronunciationResult}
-              disabled={showResult}
-            />
+            <div className="space-y-6">
+              <PronunciationExercise 
+                targetWord={currentExercise.wordToSpeak || currentExercise.correctAnswer}
+                onResult={handlePronunciationResult}
+                disabled={showResult}
+              />
+              {!showResult && (
+                <button
+                  onClick={skipSpeaking}
+                  className="w-full py-4 text-slate-400 dark:text-slate-500 font-bold text-sm uppercase tracking-widest hover:text-blue-600 transition-colors"
+                >
+                  Je ne peux pas parler maintenant
+                </button>
+              )}
+            </div>
           ) : currentExercise.isQRO ? (
             <div className="space-y-4">
               <input

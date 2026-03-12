@@ -13,7 +13,7 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({ user }) => {
     { name: 'Lalende Waffo', points: 4200, avatar: 'LW' },
     { name: 'Sophie M.', points: 3800, avatar: 'SM' },
     { name: 'Thomas K.', points: 3500, avatar: 'TK' },
-    { name: user?.username || 'Vous', points: user?.points || 0, avatar: user?.username?.[0] || 'V', current: true },
+    { name: user?.username || 'Vous', points: user?.points || 0, avatar: (user?.username?.[0] || 'V').toUpperCase(), current: true },
   ].sort((a, b) => b.points - a.points);
 
   return (

@@ -137,7 +137,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ onStartPlacement, onStartDailyC
           animate={{ opacity: 1, x: 0 }}
         >
           <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">{TRANSLATIONS.welcome[uiLang]}</p>
-          <h1 className="text-4xl font-black text-slate-900 dark:text-white">{user?.username} !</h1>
+          <h1 className="text-4xl font-black text-slate-900 dark:text-white">{user?.username || 'Apprenant'} !</h1>
         </motion.div>
         <motion.div 
           initial={{ opacity: 0, x: 20 }}
@@ -322,49 +322,49 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ onStartPlacement, onStartDailyC
 
         <div>
             <div className="flex justify-between items-center px-1 mb-4">
-                <h2 className="text-xl font-black text-slate-800">Lexique acquis ({learnedWordsList.length})</h2>
-                <button onClick={() => setShowDict(true)} className="text-blue-600 font-black text-xs uppercase tracking-widest">Tout voir</button>
+                <h2 className="text-xl font-black text-slate-800 dark:text-white">Lexique acquis ({learnedWordsList.length})</h2>
+                <button onClick={() => setShowDict(true)} className="text-blue-600 dark:text-blue-400 font-black text-xs uppercase tracking-widest">Tout voir</button>
             </div>
             
             <div className="grid grid-cols-1 gap-3">
               {learnedWordsList.slice(0, 4).map(word => (
-                <div key={word.id} className="bg-white p-4 rounded-2xl flex justify-between items-center border border-slate-50 shadow-sm hover:border-blue-100 transition-colors">
+                <div key={word.id} className="bg-white dark:bg-slate-800 p-4 rounded-2xl flex justify-between items-center border border-slate-50 dark:border-slate-700 shadow-sm hover:border-blue-100 dark:hover:border-blue-900 transition-colors">
                   <div>
                     <div className="flex items-center gap-2">
                       <span className="text-[10px] font-black text-blue-400 uppercase">{word.article || word.type}</span>
-                      <p className="font-black text-slate-800 text-lg">{word.word}</p>
+                      <p className="font-black text-slate-800 dark:text-slate-100 text-lg">{word.word}</p>
                     </div>
                     <div className="flex flex-col">
-                      <p className="text-[11px] text-slate-400 font-bold uppercase tracking-tight">{word.translation[Language.FR]}</p>
-                      <p className="text-[10px] text-slate-300 font-bold uppercase tracking-tight">{word.translation[Language.EN]}</p>
+                      <p className="text-[11px] text-slate-400 dark:text-slate-500 font-bold uppercase tracking-tight">{word.translation[Language.FR]}</p>
+                      <p className="text-[10px] text-slate-300 dark:text-slate-600 font-bold uppercase tracking-tight">{word.translation[Language.EN]}</p>
                     </div>
 
                     {word.exampleSentence && (
-                      <div className="mt-2 p-2 bg-blue-50/50 rounded-xl border border-blue-50 relative group/example">
+                      <div className="mt-2 p-2 bg-blue-50/50 dark:bg-blue-900/20 rounded-xl border border-blue-50 dark:border-blue-900/30 relative group/example">
                         <button 
                           onClick={() => speak(word.exampleSentence!)}
-                          className="absolute top-1.5 right-1.5 p-1 bg-white rounded-lg text-blue-600 shadow-sm opacity-0 group-hover/example:opacity-100 transition-opacity"
+                          className="absolute top-1.5 right-1.5 p-1 bg-white dark:bg-slate-700 rounded-lg text-blue-600 dark:text-blue-400 shadow-sm opacity-0 group-hover/example:opacity-100 transition-opacity"
                         >
                           <Volume2 className="w-3 h-3" />
                         </button>
-                        <p className="text-blue-600 font-black text-[10px] pr-5 leading-tight">"{word.exampleSentence}"</p>
+                        <p className="text-blue-600 dark:text-blue-400 font-black text-[10px] pr-5 leading-tight">"{word.exampleSentence}"</p>
                       </div>
                     )}
                   </div>
                   <button 
                     onClick={() => speak(word.word)} 
-                    className="p-4 bg-slate-50 rounded-2xl text-slate-400 hover:bg-blue-600 hover:text-white transition-all btn-bounce"
+                    className="p-4 bg-slate-50 dark:bg-slate-700 rounded-2xl text-slate-400 dark:text-slate-500 hover:bg-blue-600 dark:hover:bg-blue-500 hover:text-white dark:hover:text-white transition-all btn-bounce"
                   >
                     <Volume2 className="w-5 h-5" />
                   </button>
                 </div>
               ))}
               {learnedWordsList.length === 0 && (
-                <div className="text-center py-16 bg-white rounded-[2.5rem] border-2 border-dashed border-slate-100">
-                  <div className="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <Sparkles className="w-6 h-6 text-slate-200" />
+                <div className="text-center py-16 bg-white dark:bg-slate-800 rounded-[2.5rem] border-2 border-dashed border-slate-100 dark:border-slate-700">
+                  <div className="w-16 h-16 bg-slate-50 dark:bg-slate-700 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <Sparkles className="w-6 h-6 text-slate-200 dark:text-slate-600" />
                   </div>
-                  <p className="text-slate-300 font-black italic">Commencez une leçon pour enrichir votre lexique !</p>
+                  <p className="text-slate-300 dark:text-slate-600 font-black italic">Commencez une leçon pour enrichir votre lexique !</p>
                 </div>
               )}
             </div>

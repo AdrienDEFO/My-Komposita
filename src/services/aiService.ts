@@ -33,11 +33,13 @@ export async function evaluatePronunciation(audioBase64: string, targetWord: str
             },
             {
               text: `L'utilisateur essaie de prononcer le mot allemand suivant : "${targetWord}". 
-              Évaluez sa prononciation. 
+              Évaluez sa prononciation à partir de l'audio fourni. 
+              Soyez indulgent : si le mot est reconnaissable malgré un accent ou un léger bruit de fond, accordez un score de passage (>= 70).
+              Si l'audio est totalement inaudible ou si le mot est incorrect, donnez un score plus bas.
               Répondez UNIQUEMENT au format JSON suivant :
               {
                 "score": (un nombre entre 0 et 100),
-                "feedback": "un court message d'encouragement ou de correction en français",
+                "feedback": "un court message d'encouragement ou de correction constructive en français (max 15 mots)",
                 "isCorrect": (true si le score est >= 70, sinon false)
               }`
             },
@@ -54,11 +56,21 @@ export async function evaluatePronunciation(audioBase64: string, targetWord: str
     const jsonStr = jsonMatch ? jsonMatch[0] : text;
     
     return JSON.parse(jsonStr);
-  } catch (error) {
+  } catch (error: any) {
     console.error("Erreur lors de l'évaluation de la prononciation :", error);
+    
+    // Check for specific API errors (quota, key, etc.)
+    const errorMessage = error?.message || "";
+    const isServiceDown = errorMessage.includes("API_KEY") || 
+                         errorMessage.includes("quota") || 
+                         errorMessage.includes("429") || 
+                         errorMessage.includes("503");
+
     return {
       score: 0,
-      feedback: "Désolé, je n'ai pas pu analyser votre voix. Réessayez !",
+      feedback: isServiceDown 
+        ? "Le service vocal est temporairement indisponible. Vous pouvez passer cet exercice." 
+        : "Désolé, je n'ai pas pu analyser votre voix. Réessayez !",
       isCorrect: false
     };
   }
