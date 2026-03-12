@@ -43,7 +43,7 @@ const AuthScreen: React.FC<AuthScreenProps> = ({ onLogin }) => {
   };
 
   return (
-    <div className="min-h-screen bg-blue-600 flex flex-col items-center justify-center p-6 sm:p-12">
+    <div className="min-h-screen bg-blue-600 dark:bg-slate-950 flex flex-col items-center justify-center p-6 sm:p-12">
       <motion.div 
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -54,30 +54,30 @@ const AuthScreen: React.FC<AuthScreenProps> = ({ onLogin }) => {
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
             transition={{ type: 'spring', delay: 0.2 }}
-            className="inline-flex w-20 h-20 bg-white/20 backdrop-blur-md rounded-3xl items-center justify-center mb-4 border border-white/30 shadow-xl"
+            className="inline-flex w-20 h-20 bg-white/20 dark:bg-blue-900/20 backdrop-blur-md rounded-3xl items-center justify-center mb-4 border border-white/30 dark:border-blue-800/30 shadow-xl"
           >
             <Puzzle className="text-white w-10 h-10" />
           </motion.div>
           <h1 className="text-4xl font-black text-white mb-2">My Komposita</h1>
-          <p className="text-blue-100 font-medium">L'allemand par les mots composés</p>
+          <p className="text-blue-100 dark:text-blue-300 font-medium">L'allemand par les mots composés</p>
         </div>
 
         <motion.div 
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ delay: 0.3 }}
-          className="bg-white rounded-[2.5rem] p-8 shadow-2xl overflow-hidden"
+          className="bg-white dark:bg-slate-900 rounded-[2.5rem] p-8 shadow-2xl overflow-hidden"
         >
-          <div className="flex border-b border-slate-100 mb-8">
+          <div className="flex border-b border-slate-100 dark:border-slate-800 mb-8">
             <button 
               onClick={() => setIsLogin(true)}
-              className={`flex-1 pb-4 font-bold text-sm uppercase tracking-wider transition-all ${isLogin ? 'text-blue-600 border-b-4 border-blue-600' : 'text-slate-400'}`}
+              className={`flex-1 pb-4 font-bold text-sm uppercase tracking-wider transition-all ${isLogin ? 'text-blue-600 border-b-4 border-blue-600' : 'text-slate-400 dark:text-slate-600'}`}
             >
               Connexion
             </button>
             <button 
               onClick={() => setIsLogin(false)}
-              className={`flex-1 pb-4 font-bold text-sm uppercase tracking-wider transition-all ${!isLogin ? 'text-blue-600 border-b-4 border-blue-600' : 'text-slate-400'}`}
+              className={`flex-1 pb-4 font-bold text-sm uppercase tracking-wider transition-all ${!isLogin ? 'text-blue-600 border-b-4 border-blue-600' : 'text-slate-400 dark:text-slate-600'}`}
             >
               Inscription
             </button>
@@ -103,31 +103,31 @@ const AuthScreen: React.FC<AuthScreenProps> = ({ onLogin }) => {
                 </button>
                 
                 <div className="text-center">
-                  <h3 className="text-xl font-black text-slate-800 mb-2">Mot de passe oublié ?</h3>
-                  <p className="text-slate-500 text-sm">Entrez votre email pour recevoir un lien de récupération.</p>
+                  <h3 className="text-xl font-black text-slate-800 dark:text-white mb-2">Mot de passe oublié ?</h3>
+                  <p className="text-slate-500 dark:text-slate-400 text-sm">Entrez votre email pour recevoir un lien de récupération.</p>
                 </div>
 
                 {resetSent ? (
                   <motion.div 
                     initial={{ scale: 0.9, opacity: 0 }}
                     animate={{ scale: 1, opacity: 1 }}
-                    className="bg-green-50 p-6 rounded-3xl border border-green-100 text-center"
+                    className="bg-green-50 dark:bg-green-900/20 p-6 rounded-3xl border border-green-100 dark:border-green-900/30 text-center"
                   >
-                    <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <div className="w-12 h-12 bg-green-100 dark:bg-green-900/40 rounded-full flex items-center justify-center mx-auto mb-4">
                       <Send className="w-6 h-6 text-green-600" />
                     </div>
-                    <p className="text-green-800 font-bold">Email envoyé !</p>
-                    <p className="text-green-600 text-xs mt-1 text-pretty">Consultez votre boîte de réception pour réinitialiser votre mot de passe.</p>
+                    <p className="text-green-800 dark:text-green-400 font-bold">Email envoyé !</p>
+                    <p className="text-green-600 dark:text-green-500 text-xs mt-1 text-pretty">Consultez votre boîte de réception pour réinitialiser votre mot de passe.</p>
                   </motion.div>
                 ) : (
                   <form onSubmit={handleSubmit} className="space-y-4">
                     <div className="relative">
-                      <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+                      <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 dark:text-slate-600" />
                       <input 
                         type="email" 
                         placeholder="Email"
                         required
-                        className="w-full pl-12 pr-4 py-4 bg-slate-50 rounded-2xl border border-slate-100 focus:ring-2 focus:ring-blue-500 outline-none font-medium"
+                        className="w-full pl-12 pr-4 py-4 bg-slate-50 dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700 focus:ring-2 focus:ring-blue-500 outline-none font-medium dark:text-white"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                       />
@@ -135,7 +135,7 @@ const AuthScreen: React.FC<AuthScreenProps> = ({ onLogin }) => {
                     <motion.button 
                       whileTap={{ scale: 0.95 }}
                       type="submit"
-                      className="w-full bg-blue-600 text-white py-5 rounded-2xl font-black text-lg shadow-xl shadow-blue-100"
+                      className="w-full bg-blue-600 text-white py-5 rounded-2xl font-black text-lg shadow-xl shadow-blue-100 dark:shadow-none"
                     >
                       Envoyer le lien
                     </motion.button>
@@ -153,35 +153,35 @@ const AuthScreen: React.FC<AuthScreenProps> = ({ onLogin }) => {
               >
                 {!isLogin && (
                   <div className="relative">
-                    <UserIcon className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+                    <UserIcon className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 dark:text-slate-600" />
                     <input 
                       type="text" 
                       placeholder="Nom d'utilisateur"
                       required
-                      className="w-full pl-12 pr-4 py-4 bg-slate-50 rounded-2xl border border-slate-100 focus:ring-2 focus:ring-blue-500 outline-none font-medium"
+                      className="w-full pl-12 pr-4 py-4 bg-slate-50 dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700 focus:ring-2 focus:ring-blue-500 outline-none font-medium dark:text-white"
                       value={username}
                       onChange={(e) => setUsername(e.target.value)}
                     />
                   </div>
                 )}
                 <div className="relative">
-                  <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+                  <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 dark:text-slate-600" />
                   <input 
                     type="email" 
                     placeholder="Email"
                     required
-                    className="w-full pl-12 pr-4 py-4 bg-slate-50 rounded-2xl border border-slate-100 focus:ring-2 focus:ring-blue-500 outline-none font-medium"
+                    className="w-full pl-12 pr-4 py-4 bg-slate-50 dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700 focus:ring-2 focus:ring-blue-500 outline-none font-medium dark:text-white"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                   />
                 </div>
                 <div className="relative">
-                  <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+                  <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 dark:text-slate-600" />
                   <input 
                     type="password" 
                     placeholder="Mot de passe"
                     required
-                    className="w-full pl-12 pr-4 py-4 bg-slate-50 rounded-2xl border border-slate-100 focus:ring-2 focus:ring-blue-500 outline-none font-medium"
+                    className="w-full pl-12 pr-4 py-4 bg-slate-50 dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700 focus:ring-2 focus:ring-blue-500 outline-none font-medium dark:text-white"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                   />
@@ -202,7 +202,7 @@ const AuthScreen: React.FC<AuthScreenProps> = ({ onLogin }) => {
                 <motion.button 
                   whileTap={{ scale: 0.95 }}
                   type="submit"
-                  className="w-full bg-blue-600 text-white py-5 rounded-2xl font-black text-lg shadow-xl shadow-blue-100 flex items-center justify-center gap-3 mt-4"
+                  className="w-full bg-blue-600 text-white py-5 rounded-2xl font-black text-lg shadow-xl shadow-blue-100 dark:shadow-none flex items-center justify-center gap-3 mt-4"
                 >
                   {isLogin ? <LogIn className="w-6 h-6" /> : <UserPlus className="w-6 h-6" />}
                   {isLogin ? 'Se connecter' : "Créer un compte"}

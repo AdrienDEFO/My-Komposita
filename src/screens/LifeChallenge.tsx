@@ -115,9 +115,9 @@ const LifeChallenge: React.FC<LifeChallengeProps> = ({ onComplete, onCancel, use
   const currentQuestion = testQuestions[currentQ];
 
   return (
-    <div className="h-screen bg-white flex flex-col">
-      <header className="p-6 flex items-center gap-4 border-b">
-        <div className="flex-1 h-3 bg-slate-100 rounded-full overflow-hidden">
+    <div className="h-screen bg-white dark:bg-slate-900 flex flex-col">
+      <header className="p-6 flex items-center gap-4 border-b dark:border-slate-800">
+        <div className="flex-1 h-3 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
           <div className="h-full bg-red-600 transition-all duration-500" style={{ width: `${((currentQ + 1) / testQuestions.length) * 100}%` }} />
         </div>
         <span className="text-red-600 font-black text-sm">{currentQ + 1}/{testQuestions.length}</span>
@@ -125,8 +125,8 @@ const LifeChallenge: React.FC<LifeChallengeProps> = ({ onComplete, onCancel, use
 
       <div className="flex-1 p-8 flex flex-col justify-center">
         <div className="mb-8">
-            <span className="bg-red-50 text-red-600 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest mb-2 inline-block border border-red-100">Défi de Survie</span>
-            <h2 className="text-3xl font-black text-slate-800 leading-tight">{currentQuestion.question}</h2>
+            <span className="bg-red-50 dark:bg-red-900/20 text-red-600 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest mb-2 inline-block border border-red-100 dark:border-red-900/30">Défi de Survie</span>
+            <h2 className="text-3xl font-black text-slate-800 dark:text-white leading-tight">{currentQuestion.question}</h2>
         </div>
 
         {currentQuestion.isQRO ? (
@@ -137,8 +137,8 @@ const LifeChallenge: React.FC<LifeChallengeProps> = ({ onComplete, onCancel, use
               onChange={(e) => !isAnswered && setQroValue(e.target.value)}
               className={`w-full p-6 rounded-3xl border-4 text-xl font-bold outline-none transition-all ${
                 isAnswered 
-                  ? (qroValue.toLowerCase().trim() === currentQuestion.correctAnswer.toLowerCase().trim() ? 'border-green-500 bg-green-50' : 'border-red-500 bg-red-50')
-                  : 'border-slate-100 focus:border-red-600'
+                  ? (qroValue.toLowerCase().trim() === currentQuestion.correctAnswer.toLowerCase().trim() ? 'border-green-500 bg-green-50 dark:bg-green-900/20' : 'border-red-500 bg-red-50 dark:bg-red-900/20')
+                  : 'border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-800 text-slate-700 dark:text-white focus:border-red-600'
               }`}
               placeholder="Votre réponse..."
               autoFocus
@@ -152,10 +152,10 @@ const LifeChallenge: React.FC<LifeChallengeProps> = ({ onComplete, onCancel, use
                 onClick={() => handleSelect(i)}
                 className={`w-full p-5 rounded-2xl border-b-4 font-bold text-left text-lg transition-all ${
                   selectedIdx === i 
-                    ? (opt === currentQuestion.correctAnswer ? 'border-green-600 bg-green-50 text-green-700' : 'border-red-600 bg-red-50 text-red-700')
+                    ? (opt === currentQuestion.correctAnswer ? 'border-green-600 bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-400' : 'border-red-600 bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-400')
                     : isAnswered && opt === currentQuestion.correctAnswer
-                      ? 'border-green-600 bg-green-50 text-green-700'
-                      : 'border-slate-200 bg-white text-slate-700 hover:bg-slate-50'
+                      ? 'border-green-600 bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-400'
+                      : 'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700'
                 }`}
               >
                 {opt}
@@ -166,8 +166,8 @@ const LifeChallenge: React.FC<LifeChallengeProps> = ({ onComplete, onCancel, use
       </div>
 
       {isAnswered && (
-        <div className="p-8 border-t bg-white animate-in slide-in-from-bottom duration-300">
-          <button onClick={handleNext} className="w-full bg-red-600 py-5 rounded-[2rem] text-white font-black text-xl shadow-xl shadow-red-100">CONTINUER</button>
+        <div className="p-8 border-t dark:border-slate-800 bg-white dark:bg-slate-900 animate-in slide-in-from-bottom duration-300">
+          <button onClick={handleNext} className="w-full bg-red-600 py-5 rounded-[2rem] text-white font-black text-xl shadow-xl shadow-red-100 dark:shadow-none">CONTINUER</button>
         </div>
       )}
     </div>

@@ -1,5 +1,5 @@
 
-import { AppState, Level } from '../types';
+import { AppState, Level, Theme } from '../types';
 import { MAX_LIVES, LIFE_REFILL_TIME } from '../constants';
 
 const DB_KEY = 'my_komposita_pwa_db';
@@ -14,6 +14,10 @@ export const getDB = (): AppState => {
     const data = localStorage.getItem(DB_KEY);
     if (!data) return DEFAULT_STATE;
     const state = JSON.parse(data);
+    
+    if (state.user && !state.user.theme) {
+      state.user.theme = Theme.LIGHT;
+    }
     
     // Auto-refill lives if 24h passed
     if (state.user && state.user.lives < MAX_LIVES) {

@@ -217,15 +217,15 @@ const LessonDetail: React.FC<LessonDetailProps> = ({ lesson, onFinish, user }) =
         initial={{ opacity: 0, x: 100 }}
         animate={{ opacity: 1, x: 0 }}
         exit={{ opacity: 0, x: -100 }}
-        className="h-screen flex flex-col bg-white p-8"
+        className="h-screen flex flex-col bg-white dark:bg-slate-900 p-8"
       >
         <header className="flex justify-between items-center mb-12">
-          <button onClick={onFinish} className="p-2"><X className="w-6 h-6 text-slate-300" /></button>
+          <button onClick={onFinish} className="p-2"><X className="w-6 h-6 text-slate-300 dark:text-slate-600" /></button>
           <div className="flex items-center gap-4">
             <button onClick={() => setIsMuted(!isMuted)} className="p-2 text-slate-400">
               {isMuted ? <VolumeX /> : <Volume2 />}
             </button>
-            <span className="text-blue-600 font-black text-sm uppercase tracking-widest">Nouveau mot {wordIndex + 1}/3</span>
+            <span className="text-blue-600 dark:text-blue-400 font-black text-sm uppercase tracking-widest">Nouveau mot {wordIndex + 1}/3</span>
           </div>
         </header>
         <div className="flex-1 flex flex-col items-center justify-center text-center max-w-2xl mx-auto w-full">
@@ -233,39 +233,39 @@ const LessonDetail: React.FC<LessonDetailProps> = ({ lesson, onFinish, user }) =
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
             transition={{ type: 'spring', delay: 0.2 }}
-            className="w-48 h-48 bg-blue-50 rounded-[3rem] flex items-center justify-center mb-8 shadow-inner"
+            className="w-48 h-48 bg-blue-50 dark:bg-blue-900/20 rounded-[3rem] flex items-center justify-center mb-8 shadow-inner"
           >
-            <span className="text-7xl font-black text-blue-600">{word.word[0].toUpperCase()}</span>
+            <span className="text-7xl font-black text-blue-600 dark:text-blue-400">{word.word[0].toUpperCase()}</span>
           </motion.div>
-          <p className="text-blue-400 font-black text-xl uppercase mb-2">{word.article || word.type}</p>
+          <p className="text-blue-400 dark:text-blue-500 font-black text-xl uppercase mb-2">{word.article || word.type}</p>
           <div className="flex items-center gap-3 mb-4">
-            <h2 className="text-6xl font-black text-slate-900">{word.word}</h2>
+            <h2 className="text-6xl font-black text-slate-900 dark:text-white">{word.word}</h2>
             <button 
               onClick={() => speak(word.word)}
-              className="p-3 bg-blue-50 rounded-2xl text-blue-600 hover:bg-blue-100 transition-colors"
+              className="p-3 bg-blue-50 dark:bg-blue-900/30 rounded-2xl text-blue-600 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-900/50 transition-colors"
             >
               <Volume2 className="w-6 h-6" />
             </button>
           </div>
-          <p className="text-3xl text-slate-400 font-bold italic">"{word.translation[Language.FR]}"</p>
-          <p className="text-xl text-slate-300 font-bold italic">"{word.translation[Language.EN]}"</p>
+          <p className="text-3xl text-slate-400 dark:text-slate-500 font-bold italic">"{word.translation[Language.FR]}"</p>
+          <p className="text-xl text-slate-300 dark:text-slate-600 font-bold italic">"{word.translation[Language.EN]}"</p>
           
           {word.exampleSentence && (
             <motion.div 
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: 0.3 }}
-              className="mt-8 p-6 bg-blue-50/50 rounded-3xl border border-blue-100 max-w-lg w-full relative group"
+              className="mt-8 p-6 bg-blue-50/50 dark:bg-blue-900/10 rounded-3xl border border-blue-100 dark:border-blue-900/30 max-w-lg w-full relative group"
             >
               <button 
                 onClick={() => speak(word.exampleSentence!)}
-                className="absolute top-4 right-4 p-2 bg-white rounded-xl text-blue-600 shadow-sm opacity-0 group-hover:opacity-100 transition-opacity"
+                className="absolute top-4 right-4 p-2 bg-white dark:bg-slate-800 rounded-xl text-blue-600 dark:text-blue-400 shadow-sm opacity-0 group-hover:opacity-100 transition-opacity"
               >
                 <Volume2 className="w-4 h-4" />
               </button>
-              <p className="text-blue-600 font-black text-lg mb-2 pr-8">"{word.exampleSentence}"</p>
+              <p className="text-blue-600 dark:text-blue-400 font-black text-lg mb-2 pr-8">"{word.exampleSentence}"</p>
               {word.exampleTranslation && (
-                <p className="text-slate-500 font-bold italic text-sm">
+                <p className="text-slate-500 dark:text-slate-400 font-bold italic text-sm">
                   {word.exampleTranslation[user?.language || Language.FR]}
                 </p>
               )}
@@ -277,30 +277,30 @@ const LessonDetail: React.FC<LessonDetailProps> = ({ lesson, onFinish, user }) =
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.4 }}
-              className="bg-slate-50 px-8 py-4 rounded-3xl border border-slate-100"
+              className="bg-slate-50 dark:bg-slate-800 px-8 py-4 rounded-3xl border border-slate-100 dark:border-slate-700"
             >
               <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Partie 1</p>
-              <p className="text-xl font-black text-slate-700">{word.components.word1}</p>
+              <p className="text-xl font-black text-slate-700 dark:text-slate-200">{word.components.word1}</p>
             </motion.div>
             {word.components.linkingElement && (
               <motion.div 
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.5 }}
-                className="bg-blue-50 px-4 py-4 rounded-3xl border border-blue-100"
+                className="bg-blue-50 dark:bg-blue-900/30 px-4 py-4 rounded-3xl border border-blue-100 dark:border-blue-900/30"
               >
                 <p className="text-[10px] font-black text-blue-400 uppercase tracking-widest mb-1">Lien</p>
-                <p className="text-xl font-black text-blue-700">-{word.components.linkingElement}-</p>
+                <p className="text-xl font-black text-blue-700 dark:text-blue-300">-{word.components.linkingElement}-</p>
               </motion.div>
             )}
             <motion.div 
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.6 }}
-              className="bg-slate-50 px-8 py-4 rounded-3xl border border-slate-100"
+              className="bg-slate-50 dark:bg-slate-800 px-8 py-4 rounded-3xl border border-slate-100 dark:border-slate-700"
             >
               <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Partie 2</p>
-              <p className="text-xl font-black text-slate-700">{word.components.word2}</p>
+              <p className="text-xl font-black text-slate-700 dark:text-slate-200">{word.components.word2}</p>
             </motion.div>
           </div>
         </div>
@@ -312,7 +312,7 @@ const LessonDetail: React.FC<LessonDetailProps> = ({ lesson, onFinish, user }) =
               else if (step === 'intro2') setStep('intro3');
               else setStep('exercises');
             }} 
-            className="w-full bg-blue-600 py-5 rounded-[2rem] text-white font-black text-xl shadow-xl shadow-blue-100"
+            className="w-full bg-blue-600 py-5 rounded-[2rem] text-white font-black text-xl shadow-xl shadow-blue-100 dark:shadow-blue-900/20"
           >
             {step === 'intro3' ? "C'EST PARTI !" : "SUIVANT"}
           </motion.button>
@@ -322,10 +322,10 @@ const LessonDetail: React.FC<LessonDetailProps> = ({ lesson, onFinish, user }) =
   }
 
   return (
-    <div className="h-screen flex flex-col bg-white">
-      <header className="px-6 py-4 flex items-center gap-4 border-b">
-        <button onClick={onFinish} className="p-2"><X className="w-6 h-6 text-slate-300" /></button>
-        <div className="flex-1 h-3 bg-slate-100 rounded-full overflow-hidden">
+    <div className="h-screen flex flex-col bg-white dark:bg-slate-900">
+      <header className="px-6 py-4 flex items-center gap-4 border-b dark:border-slate-800">
+        <button onClick={onFinish} className="p-2"><X className="w-6 h-6 text-slate-300 dark:text-slate-600" /></button>
+        <div className="flex-1 h-3 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
           <div className="h-full bg-blue-600 transition-all duration-500" style={{ width: `${((exerciseIdx + 1) / lesson.exercises.length) * 100}%` }} />
         </div>
         <button onClick={() => setIsMuted(!isMuted)} className="p-2 text-slate-400">
@@ -335,7 +335,7 @@ const LessonDetail: React.FC<LessonDetailProps> = ({ lesson, onFinish, user }) =
 
       <div className="flex-1 p-6 flex flex-col max-w-3xl mx-auto w-full">
         <div className="flex-1">
-          <h2 className="text-2xl font-black text-slate-800 mb-8 leading-tight">{currentExercise.question}</h2>
+          <h2 className="text-2xl font-black text-slate-800 dark:text-white mb-8 leading-tight">{currentExercise.question}</h2>
           
           {currentExercise.type === ExerciseType.SPEAKING ? (
             <PronunciationExercise 
@@ -352,8 +352,8 @@ const LessonDetail: React.FC<LessonDetailProps> = ({ lesson, onFinish, user }) =
                 placeholder="Tapez votre réponse..."
                 className={`w-full p-6 rounded-3xl border-4 text-xl font-bold outline-none transition-all ${
                   showResult 
-                    ? (isCorrect ? 'border-green-500 bg-green-50' : 'border-red-500 bg-red-50')
-                    : 'border-slate-100 focus:border-blue-600'
+                    ? (isCorrect ? 'border-green-500 bg-green-50 dark:bg-green-900/20' : 'border-red-500 bg-red-50 dark:bg-red-900/20')
+                    : 'border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-800 text-slate-800 dark:text-white focus:border-blue-600'
                 }`}
                 autoFocus
               />
@@ -373,12 +373,12 @@ const LessonDetail: React.FC<LessonDetailProps> = ({ lesson, onFinish, user }) =
                   onClick={() => !showResult && setSelectedAnswer(opt)}
                   className={`w-full p-5 rounded-2xl border-b-4 font-bold text-left text-lg transition-all ${
                     selectedAnswer === opt 
-                      ? 'border-blue-600 bg-blue-50 text-blue-700 translate-y-1' 
-                      : 'border-slate-200 bg-white text-slate-700 hover:bg-slate-50'
+                      ? 'border-blue-600 bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 translate-y-1' 
+                      : 'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700'
                   } ${
                     showResult && opt === currentExercise.correctAnswer 
-                      ? '!border-green-600 !bg-green-100 !text-green-800' 
-                      : (showResult && selectedAnswer === opt && !isCorrect ? '!border-red-600 !bg-red-100 !text-red-800' : '')
+                      ? '!border-green-600 !bg-green-100 dark:!bg-green-900/40 !text-green-800 dark:!text-green-300' 
+                      : (showResult && selectedAnswer === opt && !isCorrect ? '!border-red-600 !bg-red-100 dark:!bg-red-900/40 !text-red-800 dark:!text-red-300' : '')
                   }`}
                 >
                   {opt}
@@ -396,25 +396,25 @@ const LessonDetail: React.FC<LessonDetailProps> = ({ lesson, onFinish, user }) =
             initial={{ y: 100 }}
             animate={{ y: 0 }}
             exit={{ y: 100 }}
-            className={`p-6 border-t ${isCorrect ? 'bg-green-100' : 'bg-red-100'}`}
+            className={`p-6 border-t dark:border-slate-800 ${isCorrect ? 'bg-green-100 dark:bg-green-900/40' : 'bg-red-100 dark:bg-red-900/40'}`}
           >
             <div className="max-w-3xl mx-auto w-full">
               <div className="flex items-center gap-4 mb-4">
                 {isCorrect ? (
-                  <CheckCircle2 className="w-10 h-10 text-green-600" />
+                  <CheckCircle2 className="w-10 h-10 text-green-600 dark:text-green-400" />
                 ) : (
-                  <XCircle className="w-10 h-10 text-red-600" />
+                  <XCircle className="w-10 h-10 text-red-600 dark:text-red-400" />
                 )}
                 <div>
-                  <h3 className={`text-xl font-black ${isCorrect ? 'text-green-800' : 'text-red-800'}`}>
+                  <h3 className={`text-xl font-black ${isCorrect ? 'text-green-800 dark:text-green-300' : 'text-red-800 dark:text-red-300'}`}>
                     {isCorrect ? 'Excellent !' : 'Dommage...'}
                   </h3>
                   {speakingResult && (
-                    <p className={`font-bold ${isCorrect ? 'text-green-700' : 'text-red-700'}`}>
+                    <p className={`font-bold ${isCorrect ? 'text-green-700 dark:text-green-400' : 'text-red-700 dark:text-red-400'}`}>
                       Score : {speakingResult.score}% - {speakingResult.feedback}
                     </p>
                   )}
-                  {!isCorrect && !speakingResult && <p className="text-red-700 font-bold">Solution : {currentExercise.correctAnswer}</p>}
+                  {!isCorrect && !speakingResult && <p className="text-red-700 dark:text-red-400 font-bold">Solution : {currentExercise.correctAnswer}</p>}
                 </div>
               </div>
               <motion.button 
@@ -430,12 +430,12 @@ const LessonDetail: React.FC<LessonDetailProps> = ({ lesson, onFinish, user }) =
       </AnimatePresence>
 
       {!showResult && currentExercise.type !== ExerciseType.SPEAKING && (
-        <div className="p-6 border-t bg-white">
+        <div className="p-6 border-t dark:border-slate-800 bg-white dark:bg-slate-900">
           <div className="max-w-3xl mx-auto w-full">
             <button 
               disabled={currentExercise.isQRO ? !qroValue : !selectedAnswer} 
               onClick={handleCheckAnswer} 
-              className="w-full bg-blue-600 py-5 rounded-2xl text-white font-black text-xl shadow-xl shadow-blue-100 disabled:opacity-30 transform transition active:scale-95"
+              className="w-full bg-blue-600 py-5 rounded-2xl text-white font-black text-xl shadow-xl shadow-blue-100 dark:shadow-blue-900/20 disabled:opacity-30 transform transition active:scale-95"
             >
               VÉRIFIER
             </button>

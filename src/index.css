@@ -10,17 +10,25 @@
 :root {
   --safe-area-inset-top: env(safe-area-inset-top, 0px);
   --safe-area-inset-bottom: env(safe-area-inset-bottom, 0px);
+  --bg-color: #f0f4f8;
+  --text-color: #1e293b;
+}
+
+.dark {
+  --bg-color: #0f172a;
+  --text-color: #f8fafc;
 }
 
 body {
   font-family: var(--font-sans);
-  background-color: #f0f4f8;
+  background-color: var(--bg-color);
+  color: var(--text-color);
   padding-top: var(--safe-area-inset-top);
   padding-bottom: var(--safe-area-inset-bottom);
   margin: 0;
   overflow-x: hidden;
   -webkit-tap-highlight-color: transparent;
-  color: #1e293b;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 #root {

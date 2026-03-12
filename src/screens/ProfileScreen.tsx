@@ -1,10 +1,10 @@
 
 import React, { useState, useRef } from 'react';
 import { motion } from 'motion/react';
-import { LogOut, Info, ChevronRight, UserCircle, Globe, Languages, Mail, ChevronLeft, Puzzle, Target, Edit2, Camera, Check, Share2, Bell, BellOff } from 'lucide-react';
+import { LogOut, Info, ChevronRight, UserCircle, Globe, Languages, Mail, ChevronLeft, Puzzle, Target, Edit2, Camera, Check, Share2, Bell, BellOff, Sun, Moon } from 'lucide-react';
 import { getDB, saveDB } from '../services/db.ts';
 import { CONTACT } from '../constants.tsx';
-import { Language, User, Level } from '../types.ts';
+import { Language, User, Level, Theme } from '../types.ts';
 import { shareProgress } from '../services/feedback';
 import { notificationService } from '../services/notificationService';
 import Toast, { ToastType } from '../components/Toast';
@@ -112,23 +112,30 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ onLogout, onLevelChange, 
     onUserUpdate(updatedUser);
   };
 
+  const toggleTheme = () => {
+    if (!user) return;
+    const newTheme = user.theme === Theme.DARK ? Theme.LIGHT : Theme.DARK;
+    const updatedUser = { ...user, theme: newTheme };
+    onUserUpdate(updatedUser);
+  };
+
   if (showNotifications) {
     return (
-      <div className="p-6 h-full bg-slate-50 animate-slide-up">
+      <div className="p-6 h-full bg-slate-50 dark:bg-slate-900 animate-slide-up">
         <button onClick={() => setShowNotifications(false)} className="flex items-center gap-2 text-blue-600 font-black uppercase text-xs mb-8">
           <ChevronLeft className="w-5 h-5" /> Retour
         </button>
-        <h2 className="text-3xl font-black text-slate-900 mb-8">Rappels & Notifications</h2>
+        <h2 className="text-3xl font-black text-slate-900 dark:text-white mb-8">Rappels & Notifications</h2>
         
-        <div className="bg-white p-6 rounded-[2.5rem] border border-slate-100 mb-6">
+        <div className="bg-white dark:bg-slate-800 p-6 rounded-[2.5rem] border border-slate-100 dark:border-slate-700 mb-6">
           <div className="flex items-center justify-between mb-8">
             <div>
-              <p className="font-black text-slate-800 text-lg">Activer les rappels</p>
+              <p className="font-black text-slate-800 dark:text-slate-100 text-lg">Activer les rappels</p>
               <p className="text-xs font-bold text-slate-400">Recevez des notifications pour pratiquer</p>
             </div>
             <button 
               onClick={toggleNotifications}
-              className={`w-16 h-8 rounded-full transition-all relative ${user?.notificationsEnabled ? 'bg-blue-600' : 'bg-slate-200'}`}
+              className={`w-16 h-8 rounded-full transition-all relative ${user?.notificationsEnabled ? 'bg-blue-600' : 'bg-slate-200 dark:bg-slate-700'}`}
             >
               <motion.div 
                 animate={{ x: user?.notificationsEnabled ? 32 : 4 }}
@@ -147,7 +154,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ onLogout, onLevelChange, 
                       key={freq}
                       onClick={() => changeFrequency(freq)}
                       className={`p-4 rounded-2xl border-2 font-black text-xs uppercase tracking-widest transition-all ${
-                        user.reminderFrequency === freq ? 'border-blue-600 bg-blue-50 text-blue-700' : 'border-slate-50 bg-slate-50 text-slate-400'
+                        user.reminderFrequency === freq ? 'border-blue-600 bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400' : 'border-slate-50 dark:border-slate-700 bg-slate-50 dark:bg-slate-700 text-slate-400'
                       }`}
                     >
                       {freq === 'daily' ? 'Quotidien' : 'Hebdomadaire'}
@@ -162,7 +169,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ onLogout, onLevelChange, 
                   body: 'Ceci est un test pour confirmer que les notifications fonctionnent !',
                   tag: 'test-notification'
                 })}
-                className="w-full py-4 bg-slate-50 rounded-2xl text-slate-600 font-black text-xs uppercase tracking-widest border border-slate-100 hover:bg-slate-100 transition-all flex items-center justify-center gap-2"
+                className="w-full py-4 bg-slate-50 dark:bg-slate-700 rounded-2xl text-slate-600 dark:text-slate-300 font-black text-xs uppercase tracking-widest border border-slate-100 dark:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-600 transition-all flex items-center justify-center gap-2"
               >
                 <Bell className="w-4 h-4" /> Tester la notification
               </motion.button>
@@ -170,8 +177,8 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ onLogout, onLevelChange, 
           )}
         </div>
 
-        <div className="p-6 bg-blue-50 rounded-[2rem] border border-blue-100">
-          <p className="text-xs font-bold text-blue-600 leading-relaxed">
+        <div className="p-6 bg-blue-50 dark:bg-blue-900/20 rounded-[2rem] border border-blue-100 dark:border-blue-900/30">
+          <p className="text-xs font-bold text-blue-600 dark:text-blue-400 leading-relaxed">
             Note : Pour recevoir des rappels même lorsque l'application est fermée, assurez-vous de l'installer sur votre écran d'accueil (PWA).
           </p>
         </div>
@@ -181,11 +188,11 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ onLogout, onLevelChange, 
 
   if (showLevel) {
     return (
-      <div className="p-6 h-full bg-slate-50 animate-slide-up">
+      <div className="p-6 h-full bg-slate-50 dark:bg-slate-900 animate-slide-up">
         <button onClick={() => setShowLevel(false)} className="flex items-center gap-2 text-blue-600 font-black uppercase text-xs mb-8">
           <ChevronLeft className="w-5 h-5" /> Retour
         </button>
-        <h2 className="text-3xl font-black text-slate-900 mb-8">Changer de niveau</h2>
+        <h2 className="text-3xl font-black text-slate-900 dark:text-white mb-8">Changer de niveau</h2>
         <div className="space-y-3">
           {Object.values(Level).map((lvl) => (
             <button
@@ -195,7 +202,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ onLogout, onLevelChange, 
                 setShowLevel(false);
               }}
               className={`w-full p-5 rounded-3xl border-2 flex justify-between items-center transition-all ${
-                user?.level === lvl ? 'border-blue-600 bg-blue-50 text-blue-700' : 'border-white bg-white text-slate-600'
+                user?.level === lvl ? 'border-blue-600 bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400' : 'border-white dark:border-slate-800 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300'
               }`}
             >
               <span className="font-black">{lvl}</span>
@@ -209,18 +216,18 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ onLogout, onLevelChange, 
 
   if (showLang) {
     return (
-      <div className="p-6 h-full bg-slate-50 animate-slide-up">
+      <div className="p-6 h-full bg-slate-50 dark:bg-slate-900 animate-slide-up">
         <button onClick={() => setShowLang(false)} className="flex items-center gap-2 text-blue-600 font-black uppercase text-xs mb-8">
           <ChevronLeft className="w-5 h-5" /> Retour
         </button>
-        <h2 className="text-3xl font-black text-slate-900 mb-8">Langue d'interface</h2>
+        <h2 className="text-3xl font-black text-slate-900 dark:text-white mb-8">Langue d'interface</h2>
         <div className="space-y-3">
           {Object.values(Language).map((lang) => (
             <button
               key={lang}
               onClick={() => changeLanguage(lang)}
               className={`w-full p-5 rounded-3xl border-2 flex justify-between items-center transition-all ${
-                user?.language === lang ? 'border-blue-600 bg-blue-50 text-blue-700' : 'border-white bg-white text-slate-600'
+                user?.language === lang ? 'border-blue-600 bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400' : 'border-white dark:border-slate-800 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300'
               }`}
             >
               <span className="font-black">{lang}</span>
@@ -234,31 +241,31 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ onLogout, onLevelChange, 
 
   if (showAbout) {
     return (
-      <div className="p-6 h-full bg-slate-50 animate-slide-up">
+      <div className="p-6 h-full bg-slate-50 dark:bg-slate-900 animate-slide-up">
         <button onClick={() => setShowAbout(false)} className="flex items-center gap-2 text-blue-600 font-black uppercase text-xs mb-8">
           <ChevronLeft className="w-5 h-5" /> Retour
         </button>
         
         <div className="text-center mb-8">
-          <div className="w-20 h-20 bg-blue-600 rounded-[2rem] flex items-center justify-center mx-auto mb-4 text-white shadow-xl shadow-blue-200">
+          <div className="w-20 h-20 bg-blue-600 rounded-[2rem] flex items-center justify-center mx-auto mb-4 text-white shadow-xl shadow-blue-200 dark:shadow-blue-900/20">
             <Puzzle className="w-10 h-10" />
           </div>
-          <h2 className="text-2xl font-black text-slate-900">{CONTACT.appName}</h2>
+          <h2 className="text-2xl font-black text-slate-900 dark:text-white">{CONTACT.appName}</h2>
           <p className="text-slate-400 font-bold">Version {CONTACT.version}</p>
         </div>
 
-        <div className="bg-white p-6 rounded-[2.5rem] border border-slate-100 mb-6">
-          <h3 className="text-lg font-black mb-3">Notre Équipe</h3>
+        <div className="bg-white dark:bg-slate-800 p-6 rounded-[2.5rem] border border-slate-100 dark:border-slate-700 mb-6">
+          <h3 className="text-lg font-black mb-3 dark:text-slate-100">Notre Équipe</h3>
           <div className="space-y-6">
             {CONTACT.team.map((member, i) => (
               <div key={i} className="flex gap-4">
                 <div className="w-1 bg-blue-600 rounded-full shrink-0" />
                 <div>
-                  <p className="text-[10px] font-black text-blue-600 uppercase tracking-widest">{member.role}</p>
-                  <p className="font-black text-slate-800">{member.name}</p>
+                  <p className="text-[10px] font-black text-blue-600 dark:text-blue-400 uppercase tracking-widest">{member.role}</p>
+                  <p className="font-black text-slate-800 dark:text-slate-200">{member.name}</p>
                   <div className="flex items-center gap-4 mt-1 opacity-60">
-                    <Mail className="w-3 h-3" />
-                    <span className="text-[10px] font-bold">{member.email}</span>
+                    <Mail className="w-3 h-3 dark:text-slate-400" />
+                    <span className="text-[10px] font-bold dark:text-slate-400">{member.email}</span>
                   </div>
                 </div>
               </div>
@@ -275,16 +282,16 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ onLogout, onLevelChange, 
       <motion.div 
         initial={{ opacity: 0, x: 20 }}
         animate={{ opacity: 1, x: 0 }}
-        className="p-6 h-full bg-slate-50"
+        className="p-6 h-full bg-slate-50 dark:bg-slate-900"
       >
         <button onClick={() => setShowEdit(false)} className="flex items-center gap-2 text-blue-600 font-black uppercase text-xs mb-8">
           <ChevronLeft className="w-5 h-5" /> Retour
         </button>
-        <h2 className="text-3xl font-black text-slate-900 mb-8">Modifier le profil</h2>
+        <h2 className="text-3xl font-black text-slate-900 dark:text-white mb-8">Modifier le profil</h2>
         
         <div className="flex flex-col items-center mb-8">
           <div className="relative">
-            <div className="w-32 h-32 rounded-full bg-white shadow-xl border-4 border-white overflow-hidden flex items-center justify-center">
+            <div className="w-32 h-32 rounded-full bg-white dark:bg-slate-800 shadow-xl border-4 border-white dark:border-slate-700 overflow-hidden flex items-center justify-center">
               {editAvatar ? (
                 <img src={editAvatar} alt="Avatar" className="w-full h-full object-cover" referrerPolicy="no-referrer" />
               ) : (
@@ -293,7 +300,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ onLogout, onLevelChange, 
             </div>
             <button 
               onClick={() => fileInputRef.current?.click()}
-              className="absolute bottom-0 right-0 w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center text-white border-4 border-slate-50 shadow-lg"
+              className="absolute bottom-0 right-0 w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center text-white border-4 border-slate-50 dark:border-slate-900 shadow-lg"
             >
               <Camera className="w-5 h-5" />
             </button>
@@ -315,7 +322,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ onLogout, onLevelChange, 
               type="text" 
               value={editName}
               onChange={(e) => setEditName(e.target.value)}
-              className="w-full p-5 bg-white rounded-3xl border border-slate-100 shadow-sm outline-none focus:ring-2 focus:ring-blue-500 font-black text-slate-700"
+              className="w-full p-5 bg-white dark:bg-slate-800 rounded-3xl border border-slate-100 dark:border-slate-700 shadow-sm outline-none focus:ring-2 focus:ring-blue-500 font-black text-slate-700 dark:text-slate-200"
               placeholder="Votre nom"
             />
           </div>
@@ -323,7 +330,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ onLogout, onLevelChange, 
           <motion.button 
             whileTap={{ scale: 0.95 }}
             onClick={handleUpdateProfile}
-            className="w-full bg-blue-600 text-white py-5 rounded-3xl font-black text-lg shadow-xl shadow-blue-100 flex items-center justify-center gap-3"
+            className="w-full bg-blue-600 text-white py-5 rounded-3xl font-black text-lg shadow-xl shadow-blue-100 dark:shadow-blue-900/20 flex items-center justify-center gap-3"
           >
             <Check className="w-6 h-6" /> Enregistrer les modifications
           </motion.button>
@@ -337,34 +344,34 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ onLogout, onLevelChange, 
       <div className="text-center pt-12 relative">
         <button 
           onClick={() => setShowEdit(true)}
-          className="absolute top-12 right-0 p-4 bg-white rounded-2xl border border-slate-100 shadow-sm text-blue-600 hover:bg-slate-50 transition-colors"
+          className="absolute top-12 right-0 p-4 bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm text-blue-600 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors"
         >
           <Edit2 className="w-6 h-6" />
         </button>
-        <div className="w-40 h-40 bg-white rounded-full flex items-center justify-center mx-auto mb-6 shadow-2xl border-4 border-white overflow-hidden">
+        <div className="w-40 h-40 bg-white dark:bg-slate-800 rounded-full flex items-center justify-center mx-auto mb-6 shadow-2xl border-4 border-white dark:border-slate-700 overflow-hidden">
           {user?.avatar ? (
             <img src={user.avatar} alt="Profile" className="w-full h-full object-cover" referrerPolicy="no-referrer" />
           ) : (
             <UserCircle className="w-32 h-32 text-blue-600" />
           )}
         </div>
-        <h2 className="text-4xl font-black text-slate-900 mb-2">{user?.username}</h2>
+        <h2 className="text-4xl font-black text-slate-900 dark:text-white mb-2">{user?.username}</h2>
         <p className="text-slate-400 font-bold mb-6 text-lg">{user?.email}</p>
-        <div className="inline-block bg-blue-100 px-6 py-2 rounded-full shadow-sm">
-          <span className="text-blue-700 font-black text-xs uppercase tracking-widest">Niveau {user?.level}</span>
+        <div className="inline-block bg-blue-100 dark:bg-blue-900/30 px-6 py-2 rounded-full shadow-sm">
+          <span className="text-blue-700 dark:text-blue-400 font-black text-xs uppercase tracking-widest">Niveau {user?.level}</span>
         </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <button 
           onClick={() => setShowLevel(true)}
-          className="w-full flex items-center p-6 bg-white rounded-[2.5rem] border border-slate-100 shadow-sm btn-bounce group hover:border-orange-200 transition-all"
+          className="w-full flex items-center p-6 bg-white dark:bg-slate-800 rounded-[2.5rem] border border-slate-100 dark:border-slate-700 shadow-sm btn-bounce group hover:border-orange-200 dark:hover:border-orange-900/50 transition-all"
         >
-          <div className="w-14 h-14 bg-orange-50 rounded-2xl flex items-center justify-center text-orange-600 group-hover:bg-orange-600 group-hover:text-white transition-colors">
+          <div className="w-14 h-14 bg-orange-50 dark:bg-orange-900/20 rounded-2xl flex items-center justify-center text-orange-600 group-hover:bg-orange-600 group-hover:text-white transition-colors">
             <Target className="w-7 h-7" />
           </div>
           <div className="flex-1 text-left ml-5">
-            <p className="font-black text-slate-800 text-lg leading-none">Niveau</p>
+            <p className="font-black text-slate-800 dark:text-slate-100 text-lg leading-none">Niveau</p>
             <p className="text-xs font-bold text-slate-400 uppercase mt-2 tracking-widest">{user?.level}</p>
           </div>
           <ChevronRight className="w-6 h-6 text-slate-300 group-hover:text-orange-600 transition-colors" />
@@ -372,27 +379,48 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ onLogout, onLevelChange, 
 
         <button 
           onClick={() => setShowLang(true)}
-          className="w-full flex items-center p-6 bg-white rounded-[2.5rem] border border-slate-100 shadow-sm btn-bounce group hover:border-blue-200 transition-all"
+          className="w-full flex items-center p-6 bg-white dark:bg-slate-800 rounded-[2.5rem] border border-slate-100 dark:border-slate-700 shadow-sm btn-bounce group hover:border-blue-200 dark:hover:border-blue-900/50 transition-all"
         >
-          <div className="w-14 h-14 bg-blue-50 rounded-2xl flex items-center justify-center text-blue-600 group-hover:bg-blue-600 group-hover:text-white transition-colors">
+          <div className="w-14 h-14 bg-blue-50 dark:bg-blue-900/20 rounded-2xl flex items-center justify-center text-blue-600 group-hover:bg-blue-600 group-hover:text-white transition-colors">
             <Languages className="w-7 h-7" />
           </div>
           <div className="flex-1 text-left ml-5">
-            <p className="font-black text-slate-800 text-lg leading-none">Langue</p>
+            <p className="font-black text-slate-800 dark:text-slate-100 text-lg leading-none">Langue</p>
             <p className="text-xs font-bold text-slate-400 uppercase mt-2 tracking-widest">{user?.language}</p>
           </div>
           <ChevronRight className="w-6 h-6 text-slate-300 group-hover:text-blue-600 transition-colors" />
         </button>
 
         <button 
-          onClick={() => setShowNotifications(true)}
-          className="w-full flex items-center p-6 bg-white rounded-[2.5rem] border border-slate-100 shadow-sm btn-bounce group hover:border-indigo-200 transition-all"
+          onClick={toggleTheme}
+          className="w-full flex items-center p-6 bg-white dark:bg-slate-800 rounded-[2.5rem] border border-slate-100 dark:border-slate-700 shadow-sm btn-bounce group hover:border-yellow-200 dark:hover:border-yellow-900/50 transition-all"
         >
-          <div className="w-14 h-14 bg-indigo-50 rounded-2xl flex items-center justify-center text-indigo-600 group-hover:bg-indigo-600 group-hover:text-white transition-colors">
+          <div className="w-14 h-14 bg-yellow-50 dark:bg-yellow-900/20 rounded-2xl flex items-center justify-center text-yellow-600 group-hover:bg-yellow-600 group-hover:text-white transition-colors">
+            {user?.theme === Theme.DARK ? <Moon className="w-7 h-7" /> : <Sun className="w-7 h-7" />}
+          </div>
+          <div className="flex-1 text-left ml-5">
+            <p className="font-black text-slate-800 dark:text-slate-100 text-lg leading-none">Thème</p>
+            <p className="text-xs font-bold text-slate-400 uppercase mt-2 tracking-widest">
+              {user?.theme === Theme.DARK ? 'Sombre' : 'Clair'}
+            </p>
+          </div>
+          <div className="w-12 h-6 bg-slate-100 dark:bg-slate-700 rounded-full relative transition-colors">
+            <motion.div 
+              animate={{ x: user?.theme === Theme.DARK ? 24 : 4 }}
+              className="absolute top-1 w-4 h-4 bg-white dark:bg-slate-300 rounded-full shadow-sm"
+            />
+          </div>
+        </button>
+
+        <button 
+          onClick={() => setShowNotifications(true)}
+          className="w-full flex items-center p-6 bg-white dark:bg-slate-800 rounded-[2.5rem] border border-slate-100 dark:border-slate-700 shadow-sm btn-bounce group hover:border-indigo-200 dark:hover:border-indigo-900/50 transition-all"
+        >
+          <div className="w-14 h-14 bg-indigo-50 dark:bg-indigo-900/20 rounded-2xl flex items-center justify-center text-indigo-600 group-hover:bg-indigo-600 group-hover:text-white transition-colors">
             {user?.notificationsEnabled ? <Bell className="w-7 h-7" /> : <BellOff className="w-7 h-7" />}
           </div>
           <div className="flex-1 text-left ml-5">
-            <p className="font-black text-slate-800 text-lg leading-none">Notifications</p>
+            <p className="font-black text-slate-800 dark:text-slate-100 text-lg leading-none">Notifications</p>
             <p className="text-xs font-bold text-slate-400 uppercase mt-2 tracking-widest">
               {user?.notificationsEnabled ? 'Activées' : 'Désactivées'}
             </p>
@@ -402,20 +430,20 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ onLogout, onLevelChange, 
 
         <button 
           onClick={() => setShowAbout(true)}
-          className="w-full flex items-center p-6 bg-white rounded-[2.5rem] border border-slate-100 shadow-sm btn-bounce group hover:border-slate-300 transition-all"
+          className="w-full flex items-center p-6 bg-white dark:bg-slate-800 rounded-[2.5rem] border border-slate-100 dark:border-slate-700 shadow-sm btn-bounce group hover:border-slate-300 dark:hover:border-slate-600 transition-all"
         >
-          <div className="w-14 h-14 bg-slate-50 rounded-2xl flex items-center justify-center text-slate-400 group-hover:bg-slate-800 group-hover:text-white transition-colors">
+          <div className="w-14 h-14 bg-slate-50 dark:bg-slate-700 rounded-2xl flex items-center justify-center text-slate-400 group-hover:bg-slate-800 group-hover:text-white transition-colors">
             <Info className="w-7 h-7" />
           </div>
           <div className="flex-1 text-left ml-5">
-            <p className="font-black text-slate-800 text-lg">À propos</p>
+            <p className="font-black text-slate-800 dark:text-slate-100 text-lg">À propos</p>
           </div>
           <ChevronRight className="w-6 h-6 text-slate-300 group-hover:text-slate-800 transition-colors" />
         </button>
 
         <button 
           onClick={handleShare}
-          className="w-full flex items-center p-6 bg-blue-600 rounded-[2.5rem] border border-blue-700 shadow-xl shadow-blue-100 btn-bounce hover:bg-blue-700 transition-all"
+          className="w-full flex items-center p-6 bg-blue-600 rounded-[2.5rem] border border-blue-700 shadow-xl shadow-blue-100 dark:shadow-blue-900/20 btn-bounce hover:bg-blue-700 transition-all"
         >
           <div className="w-14 h-14 bg-white/20 rounded-2xl flex items-center justify-center text-white">
             <Share2 className="w-7 h-7" />
@@ -425,12 +453,12 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ onLogout, onLevelChange, 
 
         <button 
           onClick={onLogout}
-          className="w-full flex items-center p-6 bg-red-50 rounded-[2.5rem] border border-red-100 btn-bounce md:col-span-2 hover:bg-red-100 transition-all"
+          className="w-full flex items-center p-6 bg-red-50 dark:bg-red-900/10 rounded-[2.5rem] border border-red-100 dark:border-red-900/20 btn-bounce md:col-span-2 hover:bg-red-100 dark:hover:bg-red-900/20 transition-all"
         >
-          <div className="w-14 h-14 bg-white rounded-2xl flex items-center justify-center text-red-500 shadow-sm shadow-red-100">
+          <div className="w-14 h-14 bg-white dark:bg-slate-800 rounded-2xl flex items-center justify-center text-red-500 shadow-sm shadow-red-100 dark:shadow-red-900/10">
             <LogOut className="w-7 h-7" />
           </div>
-          <p className="font-black text-red-700 ml-5 flex-1 text-left text-lg">Se déconnecter</p>
+          <p className="font-black text-red-700 dark:text-red-400 ml-5 flex-1 text-left text-lg">Se déconnecter</p>
         </button>
       </div>
 

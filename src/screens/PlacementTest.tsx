@@ -195,16 +195,16 @@ const PlacementTest: React.FC<PlacementTestProps> = ({ onComplete, targetLevel }
   const currentQuestion = testQuestions[currentQ];
 
   return (
-    <div className="h-screen bg-white flex flex-col">
-      <header className="px-6 py-6 flex items-center gap-4 border-b">
-        <div className="flex-1 h-3 bg-slate-100 rounded-full overflow-hidden">
+    <div className="h-screen bg-white dark:bg-slate-900 flex flex-col">
+      <header className="px-6 py-6 flex items-center gap-4 border-b dark:border-slate-800">
+        <div className="flex-1 h-3 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
           <div className="h-full bg-blue-600 transition-all duration-500" style={{ width: `${((currentQ + 1) / testQuestions.length) * 100}%` }} />
         </div>
-        <span className="font-black text-slate-400">{currentQ + 1}/{testQuestions.length}</span>
+        <span className="font-black text-slate-400 dark:text-slate-500">{currentQ + 1}/{testQuestions.length}</span>
       </header>
 
       <div className="flex-1 p-8 flex flex-col">
-        <h2 className="text-3xl font-black text-slate-800 mb-12 leading-tight">{currentQuestion.question}</h2>
+        <h2 className="text-3xl font-black text-slate-800 dark:text-white mb-12 leading-tight">{currentQuestion.question}</h2>
         
         {currentQuestion.isQRO ? (
           <div className="space-y-4">
@@ -215,8 +215,8 @@ const PlacementTest: React.FC<PlacementTestProps> = ({ onComplete, targetLevel }
               placeholder="Tapez votre réponse..."
               className={`w-full p-6 rounded-3xl border-4 text-xl font-bold outline-none transition-all ${
                 isAnswered 
-                  ? (qroValue.toLowerCase().trim() === currentQuestion.correctAnswer.toLowerCase().trim() ? 'border-green-500 bg-green-50' : 'border-red-500 bg-red-50')
-                  : 'border-slate-100 focus:border-blue-600'
+                  ? (qroValue.toLowerCase().trim() === currentQuestion.correctAnswer.toLowerCase().trim() ? 'border-green-500 bg-green-50 dark:bg-green-900/20' : 'border-red-500 bg-red-50 dark:bg-red-900/20')
+                  : 'border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-800 text-slate-700 dark:text-white focus:border-blue-600'
               }`}
               autoFocus
             />
@@ -233,9 +233,9 @@ const PlacementTest: React.FC<PlacementTestProps> = ({ onComplete, targetLevel }
                 className={`p-6 border-2 rounded-3xl font-bold text-left text-xl transition-all ${
                   isAnswered 
                     ? (opt === currentQuestion.correctAnswer 
-                        ? 'border-green-500 bg-green-50 text-green-700' 
-                        : (selectedIdx === i ? 'border-red-500 bg-red-50 text-red-700' : 'border-slate-100 text-slate-300'))
-                    : (selectedIdx === i ? 'border-blue-600 bg-blue-50 text-blue-700' : 'border-slate-100 text-slate-700 hover:bg-slate-50')
+                        ? 'border-green-500 bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-400' 
+                        : (selectedIdx === i ? 'border-red-500 bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-400' : 'border-slate-100 dark:border-slate-800 text-slate-300 dark:text-slate-600'))
+                    : (selectedIdx === i ? 'border-blue-600 bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400' : 'border-slate-100 dark:border-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800')
                 }`}
               >
                 {opt}
@@ -245,12 +245,12 @@ const PlacementTest: React.FC<PlacementTestProps> = ({ onComplete, targetLevel }
         )}
       </div>
 
-      <div className="p-8 border-t">
+      <div className="p-8 border-t dark:border-slate-800">
         {!isAnswered && currentQuestion.isQRO ? (
           <button 
             disabled={!qroValue} 
             onClick={handleCheckQRO} 
-            className="w-full bg-blue-600 text-white py-5 rounded-[2rem] font-black text-xl shadow-xl shadow-blue-100 disabled:opacity-30 transform transition active:scale-95"
+            className="w-full bg-blue-600 text-white py-5 rounded-[2rem] font-black text-xl shadow-xl shadow-blue-100 dark:shadow-none disabled:opacity-30 transform transition active:scale-95"
           >
             VÉRIFIER
           </button>
@@ -258,7 +258,7 @@ const PlacementTest: React.FC<PlacementTestProps> = ({ onComplete, targetLevel }
           <button 
             disabled={!isAnswered} 
             onClick={handleNext} 
-            className="w-full bg-blue-600 text-white py-5 rounded-[2rem] font-black text-xl shadow-xl shadow-blue-100 disabled:opacity-30 transform transition active:scale-95"
+            className="w-full bg-blue-600 text-white py-5 rounded-[2rem] font-black text-xl shadow-xl shadow-blue-100 dark:shadow-none disabled:opacity-30 transform transition active:scale-95"
           >
             {currentQ === testQuestions.length - 1 ? 'VOIR LE RÉSULTAT' : 'SUIVANT'}
           </button>

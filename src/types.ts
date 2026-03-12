@@ -13,6 +13,11 @@ export enum Language {
   DE = 'Deutsch'
 }
 
+export enum Theme {
+  LIGHT = 'light',
+  DARK = 'dark'
+}
+
 export enum WordType {
   NOUN = 'NOM',
   ADJECTIVE = 'ADJECTIF',
@@ -93,6 +98,7 @@ export interface User {
   learnedWords: string[];
   notificationsEnabled?: boolean;
   reminderFrequency?: 'daily' | 'weekly' | 'none';
+  theme?: Theme;
 }
 
 export interface AppState {

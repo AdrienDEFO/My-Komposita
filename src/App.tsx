@@ -1,7 +1,7 @@
 
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Level, User, Lesson } from './types';
+import { Level, User, Lesson, Theme } from './types';
 import { getDB, saveDB, clearDB } from './services/db';
 import { generateLessons } from './constants';
 import AuthScreen from './screens/AuthScreen';
@@ -23,6 +23,14 @@ export default function App() {
   const [showPlacement, setShowPlacement] = useState(false);
   const [showLifeChallenge, setShowLifeChallenge] = useState(false);
   const [targetLevel, setTargetLevel] = useState<Level | undefined>(undefined);
+
+  useEffect(() => {
+    if (user?.theme === Theme.DARK) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  }, [user?.theme]);
 
   useEffect(() => {
     // Hide splash screen once React is mounted

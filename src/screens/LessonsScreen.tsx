@@ -40,7 +40,7 @@ const LessonsScreen: React.FC<LessonsScreenProps> = ({ onStartLesson, onStartSki
     <div className="p-6 space-y-6 pb-32">
       <header className="flex justify-between items-start">
         <div>
-          <h2 className="text-3xl font-black text-slate-900">Parcours {selectedLevel}</h2>
+          <h2 className="text-3xl font-black text-slate-900 dark:text-white">Parcours {selectedLevel}</h2>
           <p className="text-slate-400 font-bold uppercase text-[10px] tracking-widest mt-1">
             {selectedLevel === currentLevel ? `Étape ${user?.unlockedBatches || 1}` : 'Niveau débloqué'}
           </p>
@@ -48,7 +48,7 @@ const LessonsScreen: React.FC<LessonsScreenProps> = ({ onStartLesson, onStartSki
         {nextLevel && selectedLevel === currentLevel && (
           <button 
             onClick={() => onStartSkipTest(nextLevel)}
-            className="bg-blue-50 text-blue-600 px-4 py-2 rounded-xl font-black text-[10px] uppercase tracking-widest border border-blue-100 hover:bg-blue-600 hover:text-white transition-all"
+            className="bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 px-4 py-2 rounded-xl font-black text-[10px] uppercase tracking-widest border border-blue-100 dark:border-blue-900/30 hover:bg-blue-600 dark:hover:bg-blue-600 hover:text-white transition-all"
           >
             Sauter vers {nextLevel}
           </button>
@@ -66,10 +66,10 @@ const LessonsScreen: React.FC<LessonsScreenProps> = ({ onStartLesson, onStartSki
               onClick={() => setSelectedLevel(lvl)}
               className={`px-6 py-3 rounded-2xl font-black text-xs whitespace-nowrap transition-all border-2 ${
                 selectedLevel === lvl 
-                  ? 'bg-blue-600 text-white border-blue-600 shadow-lg shadow-blue-100' 
+                  ? 'bg-blue-600 text-white border-blue-600 shadow-lg shadow-blue-100 dark:shadow-blue-900/20' 
                   : isUnlocked 
-                    ? 'bg-white text-slate-600 border-white hover:border-blue-100' 
-                    : 'bg-slate-50 text-slate-300 border-slate-50 opacity-50 cursor-not-allowed'
+                    ? 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border-white dark:border-slate-800 hover:border-blue-100 dark:hover:border-blue-900' 
+                    : 'bg-slate-50 dark:bg-slate-900 text-slate-300 dark:text-slate-700 border-slate-50 dark:border-slate-900 opacity-50 cursor-not-allowed'
               }`}
             >
               {lvl}

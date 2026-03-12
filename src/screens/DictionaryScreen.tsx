@@ -51,7 +51,7 @@ const FlashcardModal: React.FC<{
             transition={{ duration: 0.4, type: 'spring', damping: 20 }}
             onClick={() => setIsFlipped(!isFlipped)}
             className={`w-full h-full rounded-[3rem] p-8 flex flex-col items-center justify-center text-center cursor-pointer shadow-2xl border-4 ${
-              isFlipped ? 'bg-white border-blue-600' : 'bg-blue-600 border-white/20'
+              isFlipped ? 'bg-white dark:bg-slate-800 border-blue-600' : 'bg-blue-600 border-white/20'
             }`}
           >
             {!isFlipped ? (
@@ -72,18 +72,18 @@ const FlashcardModal: React.FC<{
             ) : (
               <>
                 <span className="text-blue-200 font-black text-xs uppercase tracking-[0.3em] mb-4">Traduction & Contexte</span>
-                <h3 className="text-3xl font-black text-slate-800 mb-2">{word.translation[uiLang]}</h3>
+                <h3 className="text-3xl font-black text-slate-800 dark:text-slate-100 mb-2">{word.translation[uiLang]}</h3>
                 <p className="text-slate-400 font-bold italic mb-8">{word.translation[Language.EN]}</p>
                 
                 {word.exampleSentence && (
-                  <div className="bg-blue-50 p-6 rounded-3xl border border-blue-100 w-full relative group/example">
+                  <div className="bg-blue-50 dark:bg-blue-900/20 p-6 rounded-3xl border border-blue-100 dark:border-blue-900/30 w-full relative group/example">
                     <button 
                       onClick={(e) => { e.stopPropagation(); speak(word.exampleSentence!); }}
-                      className="absolute top-4 right-4 p-2 bg-white rounded-xl text-blue-600 shadow-sm opacity-0 group-hover/example:opacity-100 transition-opacity"
+                      className="absolute top-4 right-4 p-2 bg-white dark:bg-slate-800 rounded-xl text-blue-600 shadow-sm opacity-0 group-hover/example:opacity-100 transition-opacity"
                     >
                       <Volume2 className="w-4 h-4" />
                     </button>
-                    <p className="text-blue-600 font-black text-lg mb-2 pr-8">"{word.exampleSentence}"</p>
+                    <p className="text-blue-600 dark:text-blue-400 font-black text-lg mb-2 pr-8">"{word.exampleSentence}"</p>
                     {word.exampleTranslation && (
                       <p className="text-slate-400 font-bold italic text-sm">
                         {word.exampleTranslation[uiLang]}
@@ -92,10 +92,10 @@ const FlashcardModal: React.FC<{
                   </div>
                 )}
 
-                <div className="mt-auto pt-6 flex gap-2 text-[10px] font-bold text-slate-300">
-                  <span className="bg-slate-50 px-3 py-1 rounded-lg">{word.components.word1}</span>
-                  {word.components.linkingElement && <span className="bg-blue-50 text-blue-400 px-3 py-1 rounded-lg">-{word.components.linkingElement}-</span>}
-                  <span className="bg-slate-50 px-3 py-1 rounded-lg">{word.components.word2}</span>
+                <div className="mt-auto pt-6 flex gap-2 text-[10px] font-bold text-slate-300 dark:text-slate-500">
+                  <span className="bg-slate-50 dark:bg-slate-900 px-3 py-1 rounded-lg">{word.components.word1}</span>
+                  {word.components.linkingElement && <span className="bg-blue-50 dark:bg-blue-900/40 text-blue-400 px-3 py-1 rounded-lg">-{word.components.linkingElement}-</span>}
+                  <span className="bg-slate-50 dark:bg-slate-900 px-3 py-1 rounded-lg">{word.components.word2}</span>
                 </div>
               </>
             )}
@@ -155,7 +155,7 @@ const DictionaryScreen: React.FC<DictionaryScreenProps> = ({ user }) => {
     <div className="p-6 space-y-6 animate-slide-up pb-32">
       <header className="flex justify-between items-start">
         <div>
-          <h1 className="text-3xl font-black text-slate-900">Dictionnaire</h1>
+          <h1 className="text-3xl font-black text-slate-900 dark:text-white">Dictionnaire</h1>
           <p className="text-slate-400 font-bold uppercase text-[10px] tracking-widest mt-1">
             Explorez les mots composés par thèmes
           </p>
@@ -163,7 +163,7 @@ const DictionaryScreen: React.FC<DictionaryScreenProps> = ({ user }) => {
         {filteredWords.length > 0 && (
           <button 
             onClick={() => setShowFlashcards(true)}
-            className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-xl font-black text-[10px] uppercase tracking-widest shadow-lg shadow-blue-100 hover:bg-blue-700 transition-all"
+            className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-xl font-black text-[10px] uppercase tracking-widest shadow-lg shadow-blue-100 dark:shadow-none hover:bg-blue-700 transition-all"
           >
             <Layers className="w-4 h-4" /> Flashcards
           </button>
@@ -171,11 +171,11 @@ const DictionaryScreen: React.FC<DictionaryScreenProps> = ({ user }) => {
       </header>
 
       <div className="relative">
-        <Search className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-300 w-5 h-5" />
+        <Search className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-300 dark:text-slate-600 w-5 h-5" />
         <input 
           type="text" 
           placeholder="Rechercher un mot..."
-          className="w-full pl-14 pr-4 py-5 bg-white rounded-[1.5rem] border-none shadow-sm focus:ring-2 focus:ring-blue-500 font-bold text-slate-700"
+          className="w-full pl-14 pr-4 py-5 bg-white dark:bg-slate-800 rounded-[1.5rem] border-none shadow-sm focus:ring-2 focus:ring-blue-500 font-bold text-slate-700 dark:text-slate-100"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
         />
@@ -193,7 +193,7 @@ const DictionaryScreen: React.FC<DictionaryScreenProps> = ({ user }) => {
         <button 
           onClick={() => setSelectedCategory(null)}
           className={`px-6 py-3 rounded-2xl font-black text-xs uppercase tracking-widest transition-all whitespace-nowrap ${
-            selectedCategory === null ? 'bg-blue-600 text-white shadow-lg shadow-blue-100' : 'bg-white text-slate-400 shadow-sm'
+            selectedCategory === null ? 'bg-blue-600 text-white shadow-lg shadow-blue-100 dark:shadow-none' : 'bg-white dark:bg-slate-800 text-slate-400 dark:text-slate-500 shadow-sm'
           }`}
         >
           Tous
@@ -203,7 +203,7 @@ const DictionaryScreen: React.FC<DictionaryScreenProps> = ({ user }) => {
             key={cat}
             onClick={() => setSelectedCategory(cat)}
             className={`px-6 py-3 rounded-2xl font-black text-xs uppercase tracking-widest transition-all whitespace-nowrap ${
-              selectedCategory === cat ? 'bg-blue-600 text-white shadow-lg shadow-blue-100' : 'bg-white text-slate-400 shadow-sm'
+              selectedCategory === cat ? 'bg-blue-600 text-white shadow-lg shadow-blue-100 dark:shadow-none' : 'bg-white dark:bg-slate-800 text-slate-400 dark:text-slate-500 shadow-sm'
             }`}
           >
             {cat}
@@ -213,28 +213,28 @@ const DictionaryScreen: React.FC<DictionaryScreenProps> = ({ user }) => {
 
       <div className="space-y-3">
         {filteredWords.map(word => (
-          <div key={word.id} className="bg-white p-5 rounded-[2rem] flex justify-between items-center border border-slate-50 shadow-sm group hover:border-blue-100 transition-all">
+          <div key={word.id} className="bg-white dark:bg-slate-800 p-5 rounded-[2rem] flex justify-between items-center border border-slate-50 dark:border-slate-700 shadow-sm group hover:border-blue-100 dark:hover:border-blue-900 transition-all">
             <div className="flex-1">
               <div className="flex items-center gap-2 mb-1">
                 <span className="text-[10px] font-black text-blue-400 uppercase">{word.article || word.type}</span>
-                <span className="text-[10px] font-black text-slate-300 uppercase tracking-tighter bg-slate-50 px-2 py-0.5 rounded-full">{word.level}</span>
-                <span className="text-[10px] font-black text-slate-300 uppercase tracking-tighter bg-slate-50 px-2 py-0.5 rounded-full">{word.category}</span>
+                <span className="text-[10px] font-black text-slate-300 dark:text-slate-600 uppercase tracking-tighter bg-slate-50 dark:bg-slate-900 px-2 py-0.5 rounded-full">{word.level}</span>
+                <span className="text-[10px] font-black text-slate-300 dark:text-slate-600 uppercase tracking-tighter bg-slate-50 dark:bg-slate-900 px-2 py-0.5 rounded-full">{word.category}</span>
               </div>
-              <h3 className="font-black text-slate-800 text-xl">{word.word}</h3>
+              <h3 className="font-black text-slate-800 dark:text-slate-100 text-xl">{word.word}</h3>
               <div className="flex flex-col">
                 <p className="text-sm text-slate-400 font-bold uppercase tracking-tight">{word.translation[Language.FR]}</p>
-                <p className="text-xs text-slate-300 font-bold uppercase tracking-tight">{word.translation[Language.EN]}</p>
+                <p className="text-xs text-slate-300 dark:text-slate-500 font-bold uppercase tracking-tight">{word.translation[Language.EN]}</p>
               </div>
 
               {word.exampleSentence && (
-                <div className="mt-3 p-3 bg-blue-50/30 rounded-2xl border border-blue-50/50 relative group/example">
+                <div className="mt-3 p-3 bg-blue-50/30 dark:bg-blue-900/10 rounded-2xl border border-blue-50/50 dark:border-blue-900/20 relative group/example">
                   <button 
                     onClick={() => speak(word.exampleSentence!)}
-                    className="absolute top-2 right-2 p-1.5 bg-white rounded-lg text-blue-600 shadow-sm opacity-0 group-hover/example:opacity-100 transition-opacity"
+                    className="absolute top-2 right-2 p-1.5 bg-white dark:bg-slate-800 rounded-lg text-blue-600 shadow-sm opacity-0 group-hover/example:opacity-100 transition-opacity"
                   >
                     <Volume2 className="w-3 h-3" />
                   </button>
-                  <p className="text-blue-600 font-black text-xs pr-6">"{word.exampleSentence}"</p>
+                  <p className="text-blue-600 dark:text-blue-400 font-black text-xs pr-6">"{word.exampleSentence}"</p>
                   {word.exampleTranslation && (
                     <p className="text-slate-400 font-bold italic text-[10px] mt-1">
                       {word.exampleTranslation[uiLang]}
@@ -243,15 +243,15 @@ const DictionaryScreen: React.FC<DictionaryScreenProps> = ({ user }) => {
                 </div>
               )}
               
-              <div className="mt-3 flex gap-2 text-[10px] font-bold text-slate-300">
-                <span className="bg-slate-50 px-2 py-1 rounded-lg">{word.components.word1}</span>
-                {word.components.linkingElement && <span className="bg-blue-50 text-blue-400 px-2 py-1 rounded-lg">-{word.components.linkingElement}-</span>}
-                <span className="bg-slate-50 px-2 py-1 rounded-lg">{word.components.word2}</span>
+              <div className="mt-3 flex gap-2 text-[10px] font-bold text-slate-300 dark:text-slate-600">
+                <span className="bg-slate-50 dark:bg-slate-900 px-2 py-1 rounded-lg">{word.components.word1}</span>
+                {word.components.linkingElement && <span className="bg-blue-50 dark:bg-blue-900/40 text-blue-400 px-2 py-1 rounded-lg">-{word.components.linkingElement}-</span>}
+                <span className="bg-slate-50 dark:bg-slate-900 px-2 py-1 rounded-lg">{word.components.word2}</span>
               </div>
             </div>
             <button 
               onClick={() => speak(word.word)} 
-              className="p-5 bg-slate-50 rounded-[1.5rem] text-slate-400 group-hover:bg-blue-600 group-hover:text-white transition-all btn-bounce"
+              className="p-5 bg-slate-50 dark:bg-slate-900 rounded-[1.5rem] text-slate-400 dark:text-slate-600 group-hover:bg-blue-600 group-hover:text-white transition-all btn-bounce"
             >
               <Volume2 className="w-6 h-6" />
             </button>
@@ -259,12 +259,12 @@ const DictionaryScreen: React.FC<DictionaryScreenProps> = ({ user }) => {
         ))}
 
         {filteredWords.length === 0 && (
-          <div className="text-center py-20 bg-white rounded-[3rem] border-2 border-dashed border-slate-100">
-            <div className="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-6">
-              <BookOpen className="w-10 h-10 text-slate-200" />
+          <div className="text-center py-20 bg-white dark:bg-slate-800 rounded-[3rem] border-2 border-dashed border-slate-100 dark:border-slate-700">
+            <div className="w-20 h-20 bg-slate-50 dark:bg-slate-900 rounded-full flex items-center justify-center mx-auto mb-6">
+              <BookOpen className="w-10 h-10 text-slate-200 dark:text-slate-700" />
             </div>
-            <h3 className="text-xl font-black text-slate-400 mb-2">Aucun résultat</h3>
-            <p className="text-slate-300 font-bold italic">Essayez une autre recherche ou catégorie.</p>
+            <h3 className="text-xl font-black text-slate-400 dark:text-slate-500 mb-2">Aucun résultat</h3>
+            <p className="text-slate-300 dark:text-slate-600 font-bold italic">Essayez une autre recherche ou catégorie.</p>
           </div>
         )}
       </div>
